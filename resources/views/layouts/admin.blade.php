@@ -22,7 +22,7 @@
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         @auth
-        <aside class="w-64 glass-card border-r border-slate-700/50 flex flex-col">
+        <aside class="w-64 glass-card border-r border-slate-700/50 flex flex-col z-10">
             <!-- Logo -->
             <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
                 <span class="terminal-text font-mono text-lg">~/admin</span>

@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ showDeleteModal: false, deleteId: null }">
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
         <div>
@@ -72,21 +72,18 @@
                             </div>
                         </td>
                         <td class="px-6 py-5 text-right">
-                            <div class="flex items-center justify-end space-x-1">
+                            <div class="flex items-center justify-end space-x-2">
                                 <button 
                                     wire:click="openEditModal({{ $project->id }})"
-                                    class="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-all duration-200"
-                                    title="Edit"
+                                    class="px-3 py-1.5 text-xs text-cyan-400 hover:bg-cyan-500/20 rounded-lg transition-all duration-200 border border-cyan-500/30"
                                 >
-                                    <i data-lucide="edit-3" class="w-4 h-4 pointer-events-none"></i>
+                                    Edit
                                 </button>
                                 <button 
-                                    wire:click="delete({{ $project->id }})"
-                                    wire:confirm="Apakah Anda yakin ingin menghapus project ini?"
-                                    class="p-2.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
-                                    title="Delete"
+                                    @click="deleteId = {{ $project->id }}; showDeleteModal = true"
+                                    class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30"
                                 >
-                                    <i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i>
+                                    Delete
                                 </button>
                             </div>
                         </td>
@@ -324,4 +321,30 @@
             </div>
         </div>
     @endif
+
+    <!-- Delete Confirmation Modal -->
+    <div 
+        x-show="showDeleteModal" 
+        x-cloak
+        class="fixed inset-0 z-[100] flex items-center justify-center"
+    >
+        <div class="fixed inset-0 bg-black/80" @click="showDeleteModal = false"></div>
+        <div class="relative bg-slate-800 rounded-lg p-4 border border-red-500/30 shadow-2xl" style="width: 280px;">
+            <p class="text-white text-sm mb-4 text-center">Hapus item ini?</p>
+            <div class="flex justify-center space-x-2">
+                <button 
+                    @click="showDeleteModal = false" 
+                    class="px-4 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded transition-all"
+                >
+                    Batal
+                </button>
+                <button 
+                    @click="$wire.delete(deleteId); showDeleteModal = false" 
+                    class="px-4 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-all"
+                >
+                    Hapus
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
