@@ -19,11 +19,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create admin user
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@portfolio.local',
-            'password' => bcrypt('password'),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@portfolio.local'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('password'),
+            ]
+        );
 
         // Seed Experiences (CV Data)
         Experience::create([
@@ -96,5 +98,7 @@ class DatabaseSeeder extends Seeder
         Skill::create(['name' => 'Proxmox VE', 'category' => 'Tools', 'level' => 85, 'icon' => 'server', 'sort_order' => 2]);
         Skill::create(['name' => 'Git', 'category' => 'Tools', 'level' => 75, 'icon' => 'git-branch', 'sort_order' => 3]);
         Skill::create(['name' => 'Tailscale', 'category' => 'Tools', 'level' => 85, 'icon' => 'network', 'sort_order' => 4]);
+        Skill::create(['name' => 'SSH', 'category' => 'Tools', 'level' => 90, 'icon' => 'terminal', 'sort_order' => 5]);
+        Skill::create(['name' => 'Termius', 'category' => 'Tools', 'level' => 85, 'icon' => 'monitor', 'sort_order' => 6]);
     }
 }

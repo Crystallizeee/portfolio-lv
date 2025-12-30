@@ -11,6 +11,53 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Debug Proxmox API
+Route::get('/debug-proxmox', function () {
+    $host = config('services.proxmox.host');
+    $node = config('services.proxmox.node');
+    $tokenId = config('services.proxmox.token_id');
+    $tokenSecret = config('services.proxmox.token_secret');
+    
+    $result = [
+        'config' => [
+            'host' => $host,
+            'node' => $node,
+            'token_id' => $tokenId ? 'SET' : 'NOT SET',
+            'token_secret' => $tokenSecret ? 'SET' : 'NOT SET',
+        ]
+    ];
+    
+    if ($host && $tokenId && $tokenSecret) {
+        try {
+            // Test node status
+            $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+                ->withHeaders([
+                    'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
+                ])
+                ->timeout(5)
+                ->get("https://{$host}:8006/api2/json/nodes/{$node}/status");
+            
+            $result['node_api_status'] = $response->status();
+            
+            // Test Nextcloud VM 106 (QEMU)
+            $containerResponse = \Illuminate\Support\Facades\Http::withoutVerifying()
+                ->withHeaders([
+                    'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
+                ])
+                ->timeout(5)
+                ->get("https://{$host}:8006/api2/json/nodes/{$node}/qemu/106/status/current");
+            
+            $result['container_api_status'] = $containerResponse->status();
+            $result['container_response'] = $containerResponse->json();
+            
+        } catch (\Exception $e) {
+            $result['error'] = $e->getMessage();
+        }
+    }
+    
+    return response()->json($result);
+});
+
 // Admin Routes
 Route::prefix('admin')->group(function () {
     // Guest routes
