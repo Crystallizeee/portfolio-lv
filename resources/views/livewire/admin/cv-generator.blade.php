@@ -252,6 +252,48 @@
                         </button>
                     </div>
 
+                    <!-- Education Toggle -->
+                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <div>
+                            <div class="font-medium text-slate-200">Education</div>
+                            <div class="text-xs text-slate-400">Import from Profile</div>
+                        </div>
+                        <button 
+                            wire:click="$toggle('useDbEducations')" 
+                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbEducations ? 'bg-pink-500' : 'bg-slate-700' }}"
+                        >
+                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbEducations ? 'translate-x-6' : 'translate-x-1' }}"/>
+                        </button>
+                    </div>
+
+                    @if($useDbEducations)
+                    <div class="text-xs text-slate-400 px-2">
+                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
+                        Uses education data from Profile Settings.
+                    </div>
+                    @endif
+
+                    <!-- Certifications Toggle -->
+                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <div>
+                            <div class="font-medium text-slate-200">Certifications</div>
+                            <div class="text-xs text-slate-400">Import from Certificates</div>
+                        </div>
+                        <button 
+                            wire:click="$toggle('useDbCertifications')" 
+                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbCertifications ? 'bg-yellow-500' : 'bg-slate-700' }}"
+                        >
+                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbCertifications ? 'translate-x-6' : 'translate-x-1' }}"/>
+                        </button>
+                    </div>
+
+                    @if($useDbCertifications)
+                    <div class="text-xs text-slate-400 px-2">
+                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
+                        Uses data from Manage Certificates.
+                    </div>
+                    @endif
+
                     <div class="pt-6 border-t border-slate-700">
                         <button 
                             wire:click="generatePdf"

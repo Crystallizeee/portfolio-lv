@@ -6,6 +6,8 @@ use App\Livewire\Admin\AdminDashboard;
 use App\Livewire\Admin\ManageProjects;
 use App\Livewire\Admin\ManageExperiences;
 use App\Livewire\Admin\ManageSkills;
+use App\Livewire\Admin\ProfileSettings;
+use App\Livewire\Admin\ManageCertificates;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,6 +74,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/experiences', ManageExperiences::class)->name('admin.experiences');
         Route::get('/skills', ManageSkills::class)->name('admin.skills');
         Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
+        Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
+        Route::get('/profile', ProfileSettings::class)->name('admin.profile');
         Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
     });
 });

@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\Experience;
 use App\Models\Skill;
+use App\Models\Education;
+use App\Models\Certificate;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,8 +24,10 @@ class CvGenerator extends Component
     // Toggles
     public $useDbExperiences = true;
     public $useDbSkills = true;
+    public $useDbEducations = true;
+    public $useDbCertifications = true;
 
-    // Dynamic Lists
+    // Dynamic Lists (for manual input)
     public $educations = [];
     public $certifications = [];
     public $manualExperiences = [];
@@ -40,7 +44,7 @@ class CvGenerator extends Component
         $this->website = $user ? $user->website : '';
         $this->summary = $user ? $user->summary : '';
         
-        // Initialize with one empty item for better UX
+        // Initialize with one empty item for manual input
         $this->educations = [
             ['school' => '', 'degree' => '', 'year' => '']
         ];
@@ -101,6 +105,8 @@ class CvGenerator extends Component
             'email' => 'required|email',
         ]);
 
+        $userId = Auth::id();
+
         $data = [
             'personal' => [
                 'name' => $this->name,
@@ -111,8 +117,12 @@ class CvGenerator extends Component
                 'website' => $this->website,
                 'summary' => $this->summary,
             ],
-            'educations' => $this->educations,
-            'certifications' => $this->certifications,
+            'educations' => $this->useDbEducations 
+                ? Education::where('user_id', $userId)->orderBy('sort_order')->get()->toArray() 
+                : array_filter($this->educations, fn($e) => !empty($e['school'])),
+            'certifications' => $this->useDbCertifications 
+                ? Certificate::where('user_id', $userId)->orderBy('sort_order')->get()->toArray() 
+                : array_filter($this->certifications, fn($c) => !empty($c['name'])),
             'experiences' => $this->useDbExperiences 
                 ? Experience::orderBy('sort_order')->get()->toArray() 
                 : $this->manualExperiences, 

@@ -1,0 +1,339 @@
+<div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Avatar Section --}}
+        <div class="lg:col-span-1">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold text-white font-mono mb-4 flex items-center">
+                    <i data-lucide="camera" class="w-5 h-5 mr-2 text-cyan-400"></i>
+                    Avatar
+                </h3>
+
+                <div class="flex flex-col items-center">
+                    {{-- Avatar Preview --}}
+                    <div class="w-32 h-32 rounded-full overflow-hidden bg-slate-700 mb-4 relative">
+                        @if($newAvatar)
+                            <img src="{{ $newAvatar->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
+                        @elseif($avatar)
+                            <img src="{{ Storage::url($avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i data-lucide="user" class="w-16 h-16 text-slate-500"></i>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Upload Input --}}
+                    <div class="w-full">
+                        <input 
+                            type="file" 
+                            wire:model="newAvatar" 
+                            accept="image/*"
+                            class="hidden"
+                            id="avatar-input"
+                        >
+                        <label 
+                            for="avatar-input" 
+                            class="block w-full py-2 px-4 text-center text-sm bg-slate-700/50 hover:bg-cyan-500/20 rounded-lg text-slate-300 hover:text-cyan-400 transition-colors cursor-pointer"
+                        >
+                            <i data-lucide="upload" class="w-4 h-4 inline mr-2"></i>
+                            Choose Photo
+                        </label>
+                        @error('newAvatar') 
+                            <span class="text-sm text-red-400 mt-1">{{ $message }}</span> 
+                        @enderror
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    @if($newAvatar)
+                        <button 
+                            wire:click="updateAvatar" 
+                            class="w-full mt-3 py-2 px-4 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+                        >
+                            Save Avatar
+                        </button>
+                    @endif
+
+                    @if($avatar)
+                        <button 
+                            wire:click="removeAvatar" 
+                            wire:confirm="Are you sure you want to remove your avatar?"
+                            class="w-full mt-3 py-2 px-4 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 font-medium transition-colors"
+                        >
+                            Remove Avatar
+                        </button>
+                    @endif
+
+                    @if(session('avatar_success'))
+                        <div class="mt-3 text-sm text-green-400">
+                            {{ session('avatar_success') }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Profile & Password Section --}}
+        <div class="lg:col-span-2 space-y-6">
+            {{-- Profile Information --}}
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold text-white font-mono mb-4 flex items-center">
+                    <i data-lucide="user-pen" class="w-5 h-5 mr-2 text-cyan-400"></i>
+                    Profile Information
+                </h3>
+
+                <form wire:submit="updateProfile" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Name --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Name</label>
+                            <input 
+                                type="text" 
+                                wire:model="name"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                            @error('name') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Email --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Email</label>
+                            <input 
+                                type="email" 
+                                wire:model="email"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                            @error('email') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Phone --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Phone</label>
+                            <input 
+                                type="text" 
+                                wire:model="phone"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                            @error('phone') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Website --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Website</label>
+                            <input 
+                                type="url" 
+                                wire:model="website"
+                                placeholder="https://"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                            @error('website') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    {{-- LinkedIn --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">LinkedIn</label>
+                        <input 
+                            type="url" 
+                            wire:model="linkedin"
+                            placeholder="https://linkedin.com/in/username"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                        >
+                        @error('linkedin') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    {{-- Address --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Address</label>
+                        <input 
+                            type="text" 
+                            wire:model="address"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                        >
+                        @error('address') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    {{-- Summary --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Bio / Summary</label>
+                        <textarea 
+                            wire:model="summary"
+                            rows="4"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors resize-none"
+                        ></textarea>
+                        @error('summary') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4">
+                        @if(session('profile_success'))
+                            <span class="text-sm text-green-400">{{ session('profile_success') }}</span>
+                        @else
+                            <span></span>
+                        @endif
+                        <button 
+                            type="submit"
+                            class="py-2 px-6 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+                        >
+                            Save Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Password Update --}}
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold text-white font-mono mb-4 flex items-center">
+                    <i data-lucide="lock" class="w-5 h-5 mr-2 text-cyan-400"></i>
+                    Update Password
+                </h3>
+
+                <form wire:submit="updatePassword" class="space-y-4">
+                    {{-- Current Password --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Current Password</label>
+                        <input 
+                            type="password" 
+                            wire:model="current_password"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                        >
+                        @error('current_password') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- New Password --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">New Password</label>
+                            <input 
+                                type="password" 
+                                wire:model="new_password"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                            @error('new_password') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Confirm Password --}}
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Confirm New Password</label>
+                            <input 
+                                type="password" 
+                                wire:model="new_password_confirmation"
+                                class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4">
+                        @if(session('password_success'))
+                            <span class="text-sm text-green-400">{{ session('password_success') }}</span>
+                        @else
+                            <span></span>
+                        @endif
+                        <button 
+                            type="submit"
+                            class="py-2 px-6 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+                        >
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Education Section --}}
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold text-white font-mono mb-4 flex items-center">
+                    <i data-lucide="graduation-cap" class="w-5 h-5 mr-2 text-pink-400"></i>
+                    Education
+                </h3>
+
+                {{-- Education Form --}}
+                <form wire:submit="saveEducation" class="mb-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm text-slate-400 mb-1">School / University</label>
+                            <input 
+                                type="text" 
+                                wire:model="educationForm.school"
+                                placeholder="e.g. University of Indonesia"
+                                class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-pink-400 focus:outline-none transition-colors"
+                            >
+                            @error('educationForm.school') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-1">Year</label>
+                            <input 
+                                type="text" 
+                                wire:model="educationForm.year"
+                                placeholder="e.g. 2019 - 2023"
+                                class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-pink-400 focus:outline-none transition-colors"
+                            >
+                            @error('educationForm.year') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="block text-sm text-slate-400 mb-1">Degree / Major</label>
+                        <input 
+                            type="text" 
+                            wire:model="educationForm.degree"
+                            placeholder="e.g. Bachelor of Computer Science"
+                            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-pink-400 focus:outline-none transition-colors"
+                        >
+                        @error('educationForm.degree') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        @if($editingEducationId)
+                            <button 
+                                type="button"
+                                wire:click="resetEducationForm"
+                                class="py-2 px-4 text-slate-400 hover:text-white transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        @else
+                            <span></span>
+                        @endif
+                        <button 
+                            type="submit"
+                            class="py-2 px-6 bg-pink-500 hover:bg-pink-600 rounded-lg text-white font-medium transition-colors"
+                        >
+                            {{ $editingEducationId ? 'Update' : 'Add Education' }}
+                        </button>
+                    </div>
+                </form>
+
+                @if(session('education_success'))
+                    <div class="mb-4 text-sm text-green-400">{{ session('education_success') }}</div>
+                @endif
+
+                {{-- Education List --}}
+                <div class="space-y-3">
+                    @forelse($educations as $edu)
+                        <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg border border-slate-700 group hover:border-slate-600 transition-colors">
+                            <div>
+                                <div class="font-medium text-white">{{ $edu['school'] }}</div>
+                                <div class="text-sm text-slate-400">{{ $edu['degree'] }} • {{ $edu['year'] }}</div>
+                            </div>
+                            <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                    wire:click="editEducation({{ $edu['id'] }})"
+                                    class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                                >
+                                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                                </button>
+                                <button 
+                                    wire:click="deleteEducation({{ $edu['id'] }})"
+                                    wire:confirm="Are you sure you want to delete this education?"
+                                    class="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                                >
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-slate-500">
+                            No education added yet
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

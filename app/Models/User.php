@@ -26,6 +26,7 @@ class User extends Authenticatable
         'linkedin',
         'website',
         'summary',
+        'avatar',
     ];
 
     /**
