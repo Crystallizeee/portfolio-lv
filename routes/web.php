@@ -71,6 +71,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/projects', ManageProjects::class)->name('admin.projects');
         Route::get('/experiences', ManageExperiences::class)->name('admin.experiences');
         Route::get('/skills', ManageSkills::class)->name('admin.skills');
+        Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
         Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
     });
 });

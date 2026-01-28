@@ -24,6 +24,11 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => bcrypt('password'),
+                'phone' => '+62 812 3456 7890',
+                'address' => 'Jakarta, Indonesia',
+                'linkedin' => 'linkedin.com/in/admin',
+                'website' => 'admin-portfolio.com',
+                'summary' => 'Experienced Admin with a passion for clean code.',
             ]
         );
 

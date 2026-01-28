@@ -35,16 +35,7 @@
                     <a href="#projects" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Projects</a>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <button 
-                        @click="$dispatch('toggle-command-palette')"
-                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
-                    >
-                        <kbd class="font-mono">Ctrl</kbd>
-                        <span>+</span>
-                        <kbd class="font-mono">K</kbd>
-                    </button>
-                </div>
+
             </div>
         </div>
     </nav>
@@ -71,64 +62,7 @@
         </div>
     </footer>
 
-    <!-- Command Palette Modal -->
-    <div 
-        x-data="commandPalette()" 
-        x-show="open" 
-        x-cloak
-        @toggle-command-palette.window="toggle()"
-        @keydown.escape.window="open = false"
-        class="fixed inset-0 z-[100] overflow-y-auto"
-    >
-        <!-- Backdrop -->
-        <div 
-            class="fixed inset-0 bg-black/70 backdrop-blur-sm" 
-            @click="open = false"
-        ></div>
-        
-        <!-- Modal -->
-        <div class="fixed inset-x-4 top-24 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-xl">
-            <div class="glass-card glow-cyan overflow-hidden">
-                <!-- Terminal Header -->
-                <div class="flex items-center space-x-2 px-4 py-3 border-b border-slate-700/50">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="ml-4 font-mono text-sm text-slate-400">terminal</span>
-                </div>
-                
-                <!-- Input -->
-                <div class="p-4">
-                    <div class="flex items-center space-x-3">
-                        <span class="terminal-text font-mono text-sm">user@portfolio:~$</span>
-                        <input 
-                            x-ref="commandInput"
-                            x-model="command"
-                            @keydown.enter="handleEnter()"
-                            type="text" 
-                            placeholder="Type a command..."
-                            class="flex-1 bg-transparent border-none outline-none text-slate-200 font-mono text-sm placeholder-slate-500"
-                        >
-                    </div>
-                </div>
-                
-                <!-- Suggestions -->
-                <div class="border-t border-slate-700/50 max-h-64 overflow-y-auto">
-                    <template x-for="suggestion in suggestions" :key="suggestion.name">
-                        <button 
-                            @click="execute(suggestion.name)"
-                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-700/50 transition-colors"
-                        >
-                            <div class="flex items-center space-x-3">
-                                <span class="terminal-text font-mono text-sm" x-text="suggestion.name"></span>
-                            </div>
-                            <span class="text-slate-500 text-sm" x-text="suggestion.label"></span>
-                        </button>
-                    </template>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     @livewireScripts
     

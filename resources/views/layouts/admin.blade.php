@@ -54,6 +54,12 @@
                     <i data-lucide="cpu" class="w-5 h-5"></i>
                     <span class="font-medium">Skills</span>
                 </a>
+
+                <a href="{{ route('admin.cv-generator') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.cv-generator') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span class="font-medium">CV Generator</span>
+                </a>
             </nav>
             
             <!-- Footer -->
