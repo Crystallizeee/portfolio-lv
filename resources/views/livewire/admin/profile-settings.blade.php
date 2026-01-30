@@ -9,21 +9,33 @@
                 </h3>
 
                 <div class="flex flex-col items-center">
-                    {{-- Avatar Preview --}}
-                    <div class="w-32 h-32 rounded-full overflow-hidden bg-slate-700 mb-4 relative">
-                        @if($newAvatar)
-                            <img src="{{ $newAvatar->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
-                        @elseif($avatar)
-                            <img src="{{ Storage::url($avatar) }}" alt="Avatar" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center">
-                                <i data-lucide="user" class="w-16 h-16 text-slate-500"></i>
-                            </div>
-                        @endif
+                    {{-- Avatar Preview with Upload Overlay --}}
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-input').click()">
+                        {{-- Main Avatar Image --}}
+                        <div class="w-40 h-40 rounded-full overflow-hidden bg-slate-700 relative ring-4 ring-slate-700 group-hover:ring-cyan-500/50 shadow-lg shadow-black/50 group-hover:shadow-cyan-500/20 transition-all duration-300 mx-auto" style="width: 10rem; height: 10rem;">
+                            @if($newAvatar)
+                                <img src="{{ $newAvatar->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
+                            @elseif($avatar)
+                                <img src="{{ Storage::url($avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-slate-800">
+                                    <i data-lucide="user" class="w-16 h-16 text-slate-500 group-hover:text-slate-400 transition-colors"></i>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Hover Overlay --}}
+                        <div class="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity duration-300 backdrop-blur-[2px]">
+                            <i data-lucide="camera" class="w-8 h-8 text-white mb-2"></i>
+                            <span class="text-xs font-mono text-white font-medium">CHANGE</span>
+                        </div>
+
+                        {{-- Glow Effect --}}
+                        <div class="absolute -inset-4 bg-cyan-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 -z-10 transition-opacity duration-500"></div>
                     </div>
 
-                    {{-- Upload Input --}}
-                    <div class="w-full">
+                    {{-- Hidden Upload Input --}}
+                    <div class="w-full text-center mt-4">
                         <input 
                             type="file" 
                             wire:model="newAvatar" 
@@ -31,15 +43,11 @@
                             class="hidden"
                             id="avatar-input"
                         >
-                        <label 
-                            for="avatar-input" 
-                            class="block w-full py-2 px-4 text-center text-sm bg-slate-700/50 hover:bg-cyan-500/20 rounded-lg text-slate-300 hover:text-cyan-400 transition-colors cursor-pointer"
-                        >
-                            <i data-lucide="upload" class="w-4 h-4 inline mr-2"></i>
-                            Choose Photo
-                        </label>
+                        <p class="text-xs text-slate-500 font-mono">
+                            Click avatar to upload
+                        </p>
                         @error('newAvatar') 
-                            <span class="text-sm text-red-400 mt-1">{{ $message }}</span> 
+                            <span class="text-sm text-red-400 mt-1 block">{{ $message }}</span> 
                         @enderror
                     </div>
 

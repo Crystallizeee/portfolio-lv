@@ -216,88 +216,91 @@
             <div class="glass-card p-6 rounded-xl border border-slate-700/50 sticky top-6">
                 <h3 class="text-lg font-bold text-white mb-4">Configuration</h3>
                 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <!-- Experiences Toggle -->
-                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <div>
-                            <div class="font-medium text-slate-200">Experiences</div>
-                            <div class="text-xs text-slate-400">Import from database</div>
+                    <div 
+                        wire:click="$toggle('useDbExperiences')"
+                        wire:key="toggle-exp-{{ $useDbExperiences ? 'on' : 'off' }}"
+                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg {{ $useDbExperiences ? 'bg-purple-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
+                                <i data-lucide="briefcase" class="w-4 h-4 {{ $useDbExperiences ? 'text-purple-400' : 'text-slate-400' }} transition-colors"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white text-sm">Experiences</div>
+                                <div class="text-xs text-slate-500">From database</div>
+                            </div>
                         </div>
-                        <button 
-                            wire:click="$toggle('useDbExperiences')" 
-                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbExperiences ? 'bg-purple-500' : 'bg-slate-700' }}"
-                        >
-                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbExperiences ? 'translate-x-6' : 'translate-x-1' }}"/>
-                        </button>
+                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbExperiences ? 'bg-purple-500' : 'bg-slate-600' }}">
+                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbExperiences ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                        </div>
                     </div>
-                    
-                    @if($useDbExperiences)
-                    <div class="text-xs text-slate-400 px-2">
-                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
-                        Uses existing data from Manage Experiences.
-                    </div>
-                    @endif
 
                     <!-- Skills Toggle -->
-                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <div>
-                            <div class="font-medium text-slate-200">Skills</div>
-                            <div class="text-xs text-slate-400">Import from database</div>
+                    <div 
+                        wire:click="$toggle('useDbSkills')"
+                        wire:key="toggle-skills-{{ $useDbSkills ? 'on' : 'off' }}"
+                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg {{ $useDbSkills ? 'bg-cyan-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
+                                <i data-lucide="cpu" class="w-4 h-4 {{ $useDbSkills ? 'text-cyan-400' : 'text-slate-400' }} transition-colors"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white text-sm">Skills</div>
+                                <div class="text-xs text-slate-500">From database</div>
+                            </div>
                         </div>
-                        <button 
-                            wire:click="$toggle('useDbSkills')" 
-                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbSkills ? 'bg-purple-500' : 'bg-slate-700' }}"
-                        >
-                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbSkills ? 'translate-x-6' : 'translate-x-1' }}"/>
-                        </button>
+                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbSkills ? 'bg-cyan-500' : 'bg-slate-600' }}">
+                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbSkills ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                        </div>
                     </div>
 
                     <!-- Education Toggle -->
-                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <div>
-                            <div class="font-medium text-slate-200">Education</div>
-                            <div class="text-xs text-slate-400">Import from Profile</div>
+                    <div 
+                        wire:click="$toggle('useDbEducations')"
+                        wire:key="toggle-edu-{{ $useDbEducations ? 'on' : 'off' }}"
+                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg {{ $useDbEducations ? 'bg-pink-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
+                                <i data-lucide="graduation-cap" class="w-4 h-4 {{ $useDbEducations ? 'text-pink-400' : 'text-slate-400' }} transition-colors"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white text-sm">Education</div>
+                                <div class="text-xs text-slate-500">From Profile</div>
+                            </div>
                         </div>
-                        <button 
-                            wire:click="$toggle('useDbEducations')" 
-                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbEducations ? 'bg-pink-500' : 'bg-slate-700' }}"
-                        >
-                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbEducations ? 'translate-x-6' : 'translate-x-1' }}"/>
-                        </button>
+                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbEducations ? 'bg-pink-500' : 'bg-slate-600' }}">
+                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbEducations ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                        </div>
                     </div>
-
-                    @if($useDbEducations)
-                    <div class="text-xs text-slate-400 px-2">
-                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
-                        Uses education data from Profile Settings.
-                    </div>
-                    @endif
 
                     <!-- Certifications Toggle -->
-                    <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <div>
-                            <div class="font-medium text-slate-200">Certifications</div>
-                            <div class="text-xs text-slate-400">Import from Certificates</div>
+                    <div 
+                        wire:click="$toggle('useDbCertifications')"
+                        wire:key="toggle-cert-{{ $useDbCertifications ? 'on' : 'off' }}"
+                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                    >
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg {{ $useDbCertifications ? 'bg-yellow-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
+                                <i data-lucide="award" class="w-4 h-4 {{ $useDbCertifications ? 'text-yellow-400' : 'text-slate-400' }} transition-colors"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-white text-sm">Certifications</div>
+                                <div class="text-xs text-slate-500">From Certificates</div>
+                            </div>
                         </div>
-                        <button 
-                            wire:click="$toggle('useDbCertifications')" 
-                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-slate-900 {{ $useDbCertifications ? 'bg-yellow-500' : 'bg-slate-700' }}"
-                        >
-                            <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition {{ $useDbCertifications ? 'translate-x-6' : 'translate-x-1' }}"/>
-                        </button>
+                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbCertifications ? 'bg-yellow-500' : 'bg-slate-600' }}">
+                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbCertifications ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                        </div>
                     </div>
 
-                    @if($useDbCertifications)
-                    <div class="text-xs text-slate-400 px-2">
-                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
-                        Uses data from Manage Certificates.
-                    </div>
-                    @endif
-
-                    <div class="pt-6 border-t border-slate-700">
+                    <div class="pt-4 mt-2 border-t border-slate-700/50">
                         <button 
                             wire:click="generatePdf"
-                            class="w-full flex items-center justify-center space-x-2 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-bold hover:from-cyan-400 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-cyan-500/20"
+                            class="w-full flex items-center justify-center space-x-2 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-bold hover:from-cyan-400 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:scale-[1.02]"
                         >
                             <i data-lucide="download" class="w-5 h-5"></i>
                             <span>Generate CV</span>

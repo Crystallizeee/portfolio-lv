@@ -24,9 +24,10 @@ class ServerStatus extends Component
             $this->getNextcloudStatus(),
             $this->getPortfolioStatus(),
             $this->getFinanceBotStatus(),
+            $this->getWazuhStatus(),
             [
                 'name' => 'Tailscale VPN',
-                'node' => 'mesh-network',
+                'node' => 'Secure Mesh',
                 'status' => 'connected',
                 'cpu' => '-',
                 'memory' => '-',
@@ -37,11 +38,17 @@ class ServerStatus extends Component
         ];
     }
 
+    protected function getWazuhStatus(): array
+    {
+        // Wazuh is a VM (ID 110), not an LXC container.
+        return $this->getVmStatus(110, 'Wazuh Security', 'Sec-Worker-01', 'shield');
+    }
+
     protected function getProxmoxStatus(): array
     {
         $default = [
-            'name' => 'Proxmox VE',
-            'node' => config('services.proxmox.node', 'pve-01'),
+            'name' => 'Infrastructure',
+            'node' => 'Hypervisor-01',
             'status' => 'offline',
             'cpu' => 'N/A',
             'memory' => 'N/A',
@@ -78,8 +85,8 @@ class ServerStatus extends Component
                     $uptime = $this->formatUptime($data['uptime'] ?? 0);
                     
                     return [
-                        'name' => 'Proxmox VE',
-                        'node' => $node,
+                        'name' => 'Infrastructure',
+                        'node' => 'Hypervisor-01',
                         'status' => 'online',
                         'cpu' => $cpuUsage . '%',
                         'memory' => $memPercent . '%',
@@ -98,17 +105,17 @@ class ServerStatus extends Component
 
     protected function getNextcloudStatus(): array
     {
-        return $this->getVmStatus(106, 'Nextcloud', 'VM-106', 'cloud');
+        return $this->getVmStatus(106, 'Nextcloud', 'Storage-Node', 'cloud');
     }
 
     protected function getPortfolioStatus(): array
     {
-        return $this->getLxcStatus(104, 'Portfolio', 'LXC-104', 'globe');
+        return $this->getLxcStatus(104, 'Portfolio', 'App-Worker-01', 'globe');
     }
 
     protected function getFinanceBotStatus(): array
     {
-        return $this->getLxcStatus(102, 'Finance Bot', 'LXC-102', 'bot');
+        return $this->getLxcStatus(102, 'Finance Bot', 'Auto-Worker-01', 'bot');
     }
 
     protected function getVmStatus(int $vmid, string $name, string $nodeLabel, string $icon): array
