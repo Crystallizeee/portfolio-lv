@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        $middleware->trustProxies(at: [
+            // List of trusted proxies (e.g., Cloudflare IP ranges) or '*' for all
+            '*', 
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
