@@ -312,34 +312,56 @@
                 @endif
 
                 {{-- Education List --}}
-                <div class="space-y-3">
-                    @forelse($educations as $edu)
-                        <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg border border-slate-700 group hover:border-slate-600 transition-colors">
-                            <div>
-                                <div class="font-medium text-white">{{ $edu['school'] }}</div>
-                                <div class="text-sm text-slate-400">{{ $edu['degree'] }} • {{ $edu['year'] }}</div>
+                <div class="space-y-4">
+                    @foreach($educations as $edu)
+                        <div class="p-5 bg-slate-800/40 rounded-xl border border-slate-700/50 relative group transition-all hover:border-slate-600 hover:bg-slate-800/60">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center">
+                                        <i data-lucide="university" class="w-5 h-5 text-pink-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-white">{{ $edu['school'] }}</div>
+                                        <div class="text-xs text-slate-500 font-mono">Education</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button 
+                                        wire:click="editEducation({{ $edu['id'] }})"
+                                        class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                                        title="Edit"
+                                    >
+                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                    </button>
+                                    <button 
+                                        wire:click="deleteEducation({{ $edu['id'] }})"
+                                        wire:confirm="Are you sure you want to delete this education?"
+                                        class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        title="Delete"
+                                    >
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button 
-                                    wire:click="editEducation({{ $edu['id'] }})"
-                                    class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
-                                >
-                                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                                </button>
-                                <button 
-                                    wire:click="deleteEducation({{ $edu['id'] }})"
-                                    wire:confirm="Are you sure you want to delete this education?"
-                                    class="p-2 text-slate-400 hover:text-red-400 transition-colors"
-                                >
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pl-[3.25rem]">
+                                <div>
+                                    <div class="text-xs text-slate-500 mb-1">Degree / Major</div>
+                                    <div class="text-sm text-slate-300">{{ $edu['degree'] }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500 mb-1">Year</div>
+                                    <div class="text-sm text-slate-300 font-mono">{{ $edu['year'] }}</div>
+                                </div>
                             </div>
                         </div>
-                    @empty
-                        <div class="text-center py-4 text-slate-500">
-                            No education added yet
+                    @endforeach
+
+                    @if(count($educations) === 0)
+                        <div class="text-center py-8 border-2 border-dashed border-slate-700 rounded-xl text-slate-500">
+                            No education added yet.
                         </div>
-                    @endforelse
+                    @endif
                 </div>
             </div>
         </div>

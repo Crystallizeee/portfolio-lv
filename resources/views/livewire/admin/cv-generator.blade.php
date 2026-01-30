@@ -63,39 +63,56 @@
 
             <!-- Education -->
             <div class="glass-card p-6 rounded-xl border border-slate-700/50">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-bold text-white flex items-center space-x-2">
                         <i data-lucide="graduation-cap" class="w-5 h-5 text-pink-400"></i>
                         <span>Education</span>
                     </h3>
                     <button wire:click="addEducation" class="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center space-x-1">
                         <i data-lucide="plus" class="w-3 h-3"></i>
-                        <span>Add</span>
+                        <span>Add Education</span>
                     </button>
                 </div>
                 
                 <div class="space-y-4">
                     @foreach($educations as $index => $education)
-                        <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700 relative group transition-all hover:border-slate-600">
-                            <button wire:click="removeEducation({{ $index }})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-5 bg-slate-800/40 rounded-xl border border-slate-700/50 relative group transition-all hover:border-slate-600 hover:bg-slate-800/60">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center">
+                                        <i data-lucide="university" class="w-5 h-5 text-pink-400"></i>
+                                    </div>
+                                    <span class="text-sm font-mono text-slate-500">Education #{{ $index + 1 }}</span>
+                                </div>
+                                <button wire:click="removeEducation({{ $index }})" class="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg" title="Remove">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="md:col-span-2">
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">School / University</label>
-                                    <input wire:model="educations.{{ $index }}.school" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-pink-400 focus:outline-none">
+                                    <label class="block text-xs font-medium text-slate-400 mb-1.5">School / University</label>
+                                    <input wire:model="educations.{{ $index }}.school" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-white focus:border-pink-400 focus:outline-none focus:bg-slate-800 transition-all placeholder-slate-600" placeholder="e.g. University of Indonesia">
                                 </div>
+                                
                                 <div>
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">Year</label>
-                                    <input wire:model="educations.{{ $index }}.year" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-pink-400 focus:outline-none" placeholder="e.g. 2019 - 2023">
+                                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Degree / Major</label>
+                                    <input wire:model="educations.{{ $index }}.degree" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-white focus:border-pink-400 focus:outline-none focus:bg-slate-800 transition-all placeholder-slate-600" placeholder="e.g. Bachelor of Computer Science">
                                 </div>
-                                <div class="md:col-span-3">
-                                    <label class="block text-xs font-medium text-slate-400 mb-1">Degree / Major</label>
-                                    <input wire:model="educations.{{ $index }}.degree" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-pink-400 focus:outline-none">
+
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Year</label>
+                                    <input wire:model="educations.{{ $index }}.year" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-white focus:border-pink-400 focus:outline-none focus:bg-slate-800 transition-all placeholder-slate-600" placeholder="e.g. 2019 - 2023">
                                 </div>
                             </div>
                         </div>
                     @endforeach
+                    
+                    @if(count($educations) === 0)
+                        <div class="text-center py-8 border-2 border-dashed border-slate-700 rounded-xl text-slate-500">
+                            No education added yet. Click "Add Education" to start.
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -216,84 +233,88 @@
             <div class="glass-card p-6 rounded-xl border border-slate-700/50 sticky top-6">
                 <h3 class="text-lg font-bold text-white mb-4">Configuration</h3>
                 
-                <div class="space-y-3">
+                <div class="space-y-4">
                     <!-- Experiences Toggle -->
                     <div 
                         wire:click="$toggle('useDbExperiences')"
-                        wire:key="toggle-exp-{{ $useDbExperiences ? 'on' : 'off' }}"
-                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbExperiences ? 'bg-purple-500/10 border-purple-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg {{ $useDbExperiences ? 'bg-purple-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
-                                <i data-lucide="briefcase" class="w-4 h-4 {{ $useDbExperiences ? 'text-purple-400' : 'text-slate-400' }} transition-colors"></i>
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbExperiences ? 'bg-purple-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="briefcase" class="w-5 h-5 {{ $useDbExperiences ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbExperiences ? 'text-white' : 'text-slate-300' }}">Experiences</div>
+                                    <div class="text-xs {{ $useDbExperiences ? 'text-purple-200' : 'text-slate-500' }}">From database</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="font-medium text-white text-sm">Experiences</div>
-                                <div class="text-xs text-slate-500">From database</div>
+                            <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbExperiences ? 'border-purple-400 bg-purple-400' : 'border-slate-600' }}">
+                                @if($useDbExperiences) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
                             </div>
-                        </div>
-                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbExperiences ? 'bg-purple-500' : 'bg-slate-600' }}">
-                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbExperiences ? 'translate-x-6' : 'translate-x-1' }}"></span>
                         </div>
                     </div>
 
                     <!-- Skills Toggle -->
                     <div 
                         wire:click="$toggle('useDbSkills')"
-                        wire:key="toggle-skills-{{ $useDbSkills ? 'on' : 'off' }}"
-                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbSkills ? 'bg-cyan-500/10 border-cyan-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg {{ $useDbSkills ? 'bg-cyan-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
-                                <i data-lucide="cpu" class="w-4 h-4 {{ $useDbSkills ? 'text-cyan-400' : 'text-slate-400' }} transition-colors"></i>
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbSkills ? 'bg-cyan-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="cpu" class="w-5 h-5 {{ $useDbSkills ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbSkills ? 'text-white' : 'text-slate-300' }}">Skills</div>
+                                    <div class="text-xs {{ $useDbSkills ? 'text-cyan-200' : 'text-slate-500' }}">From database</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="font-medium text-white text-sm">Skills</div>
-                                <div class="text-xs text-slate-500">From database</div>
+                             <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbSkills ? 'border-cyan-400 bg-cyan-400' : 'border-slate-600' }}">
+                                @if($useDbSkills) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
                             </div>
-                        </div>
-                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbSkills ? 'bg-cyan-500' : 'bg-slate-600' }}">
-                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbSkills ? 'translate-x-6' : 'translate-x-1' }}"></span>
                         </div>
                     </div>
 
                     <!-- Education Toggle -->
                     <div 
                         wire:click="$toggle('useDbEducations')"
-                        wire:key="toggle-edu-{{ $useDbEducations ? 'on' : 'off' }}"
-                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbEducations ? 'bg-pink-500/10 border-pink-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg {{ $useDbEducations ? 'bg-pink-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
-                                <i data-lucide="graduation-cap" class="w-4 h-4 {{ $useDbEducations ? 'text-pink-400' : 'text-slate-400' }} transition-colors"></i>
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbEducations ? 'bg-pink-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="graduation-cap" class="w-5 h-5 {{ $useDbEducations ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbEducations ? 'text-white' : 'text-slate-300' }}">Education</div>
+                                    <div class="text-xs {{ $useDbEducations ? 'text-pink-200' : 'text-slate-500' }}">From Profile</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="font-medium text-white text-sm">Education</div>
-                                <div class="text-xs text-slate-500">From Profile</div>
+                             <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbEducations ? 'border-pink-400 bg-pink-400' : 'border-slate-600' }}">
+                                @if($useDbEducations) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
                             </div>
-                        </div>
-                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbEducations ? 'bg-pink-500' : 'bg-slate-600' }}">
-                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbEducations ? 'translate-x-6' : 'translate-x-1' }}"></span>
                         </div>
                     </div>
 
                     <!-- Certifications Toggle -->
                     <div 
                         wire:click="$toggle('useDbCertifications')"
-                        wire:key="toggle-cert-{{ $useDbCertifications ? 'on' : 'off' }}"
-                        class="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbCertifications ? 'bg-yellow-500/10 border-yellow-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg {{ $useDbCertifications ? 'bg-yellow-500/20' : 'bg-slate-700' }} flex items-center justify-center flex-shrink-0 transition-colors">
-                                <i data-lucide="award" class="w-4 h-4 {{ $useDbCertifications ? 'text-yellow-400' : 'text-slate-400' }} transition-colors"></i>
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbCertifications ? 'bg-yellow-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="award" class="w-5 h-5 {{ $useDbCertifications ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbCertifications ? 'text-white' : 'text-slate-300' }}">Certifications</div>
+                                    <div class="text-xs {{ $useDbCertifications ? 'text-yellow-200' : 'text-slate-500' }}">From Certificates</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="font-medium text-white text-sm">Certifications</div>
-                                <div class="text-xs text-slate-500">From Certificates</div>
+                             <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbCertifications ? 'border-yellow-400 bg-yellow-400' : 'border-slate-600' }}">
+                                @if($useDbCertifications) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
                             </div>
-                        </div>
-                        <div class="relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out {{ $useDbCertifications ? 'bg-yellow-500' : 'bg-slate-600' }}">
-                            <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out {{ $useDbCertifications ? 'translate-x-6' : 'translate-x-1' }}"></span>
                         </div>
                     </div>
 
