@@ -20,6 +20,7 @@ class ProfileSettings extends Component
     public $phone;
     public $address;
     public $linkedin;
+    public $github;
     public $website;
     public $summary;
     
@@ -39,6 +40,7 @@ class ProfileSettings extends Component
         'school' => '',
         'degree' => '',
         'year' => '',
+        'thesis' => '',
     ];
 
     public function mount()
@@ -49,6 +51,7 @@ class ProfileSettings extends Component
         $this->phone = $user->phone;
         $this->address = $user->address;
         $this->linkedin = $user->linkedin;
+        $this->github = $user->github;
         $this->website = $user->website;
         $this->summary = $user->summary;
         $this->avatar = $user->avatar;
@@ -69,6 +72,7 @@ class ProfileSettings extends Component
             'educationForm.school' => 'required|string|max:255',
             'educationForm.degree' => 'required|string|max:255',
             'educationForm.year' => 'required|string|max:50',
+            'educationForm.thesis' => 'nullable|string|max:1000',
         ]);
 
         if ($this->editingEducationId) {
@@ -76,6 +80,7 @@ class ProfileSettings extends Component
                 'school' => $this->educationForm['school'],
                 'degree' => $this->educationForm['degree'],
                 'year' => $this->educationForm['year'],
+                'thesis' => $this->educationForm['thesis'],
             ]);
         } else {
             Education::create([
@@ -83,6 +88,7 @@ class ProfileSettings extends Component
                 'school' => $this->educationForm['school'],
                 'degree' => $this->educationForm['degree'],
                 'year' => $this->educationForm['year'],
+                'thesis' => $this->educationForm['thesis'],
                 'sort_order' => count($this->educations),
             ]);
         }
@@ -100,6 +106,7 @@ class ProfileSettings extends Component
             'school' => $education->school,
             'degree' => $education->degree,
             'year' => $education->year,
+            'thesis' => $education->thesis,
         ];
     }
 
@@ -113,7 +120,7 @@ class ProfileSettings extends Component
     public function resetEducationForm()
     {
         $this->editingEducationId = null;
-        $this->educationForm = ['school' => '', 'degree' => '', 'year' => ''];
+        $this->educationForm = ['school' => '', 'degree' => '', 'year' => '', 'thesis' => ''];
     }
 
     public function updateProfile()
@@ -124,6 +131,7 @@ class ProfileSettings extends Component
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:500',
             'linkedin' => 'nullable|url|max:255',
+            'github' => 'nullable|url|max:255',
             'website' => 'nullable|url|max:255',
             'summary' => 'nullable|string|max:2000',
         ]);
@@ -135,6 +143,7 @@ class ProfileSettings extends Component
             'phone' => $this->phone,
             'address' => $this->address,
             'linkedin' => $this->linkedin,
+            'github' => $this->github,
             'website' => $this->website,
             'summary' => $this->summary,
         ]);

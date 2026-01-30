@@ -18,6 +18,7 @@ class ManageCertificates extends Component
         'year' => '',
         'credential_id' => '',
         'credential_url' => '',
+        'description' => '',
     ];
 
     public function mount()
@@ -54,6 +55,7 @@ class ManageCertificates extends Component
             'year' => '',
             'credential_id' => '',
             'credential_url' => '',
+            'description' => '',
         ];
     }
 
@@ -67,6 +69,7 @@ class ManageCertificates extends Component
             'year' => $cert->year,
             'credential_id' => $cert->credential_id,
             'credential_url' => $cert->credential_url,
+            'description' => $cert->description,
         ];
         $this->showModal = true;
     }
@@ -79,6 +82,7 @@ class ManageCertificates extends Component
             'form.year' => 'required|string|max:50',
             'form.credential_id' => 'nullable|string|max:255',
             'form.credential_url' => 'nullable|url|max:500',
+            'form.description' => 'nullable|string|max:2000',
         ]);
 
         if ($this->editingId) {
@@ -88,6 +92,7 @@ class ManageCertificates extends Component
                 'year' => $this->form['year'],
                 'credential_id' => $this->form['credential_id'],
                 'credential_url' => $this->form['credential_url'],
+                'description' => $this->form['description'],
             ]);
             session()->flash('success', 'Certificate updated successfully!');
         } else {
@@ -98,6 +103,7 @@ class ManageCertificates extends Component
                 'year' => $this->form['year'],
                 'credential_id' => $this->form['credential_id'],
                 'credential_url' => $this->form['credential_url'],
+                'description' => $this->form['description'],
                 'sort_order' => count($this->certificates),
             ]);
             session()->flash('success', 'Certificate added successfully!');

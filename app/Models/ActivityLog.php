@@ -4,20 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\LogsActivity;
 
-class Education extends Model
+class ActivityLog extends Model
 {
-    use LogsActivity;
-    protected $table = 'educations';
-
     protected $fillable = [
         'user_id',
-        'school',
-        'degree',
-        'year',
-        'thesis',
-        'sort_order',
+        'action',
+        'description',
+        'model_type',
+        'model_id',
+        'properties',
+    ];
+
+    protected $casts = [
+        'properties' => 'array',
     ];
 
     public function user(): BelongsTo

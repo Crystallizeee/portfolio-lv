@@ -8,10 +8,12 @@ use App\Livewire\Admin\ManageExperiences;
 use App\Livewire\Admin\ManageSkills;
 use App\Livewire\Admin\ProfileSettings;
 use App\Livewire\Admin\ManageCertificates;
+use App\Livewire\Admin\ManageLanguages;
+use App\Livewire\Admin\ActivityLogs;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\BackupController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 // Debug Proxmox API
 Route::get('/debug-proxmox', function () {
@@ -75,6 +77,16 @@ Route::prefix('admin')->group(function () {
         Route::get('/skills', ManageSkills::class)->name('admin.skills');
         Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
         Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
+        Route::get('/languages', ManageLanguages::class)->name('admin.languages');
+        Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
+        
+        // Backup & Restore
+        Route::get('/backup', function () {
+            return view('admin.backup');
+        })->name('admin.backup');
+        Route::get('/backup/export', [BackupController::class, 'export'])->name('admin.backup.export');
+        Route::post('/backup/import', [BackupController::class, 'import'])->name('admin.backup.import');
+        
         Route::get('/profile', ProfileSettings::class)->name('admin.profile');
         Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
     });

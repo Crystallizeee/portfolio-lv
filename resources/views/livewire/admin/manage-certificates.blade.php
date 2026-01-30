@@ -58,6 +58,12 @@
                         </p>
                     </div>
                 @endif
+
+                @if($cert['description'])
+                    <div class="mt-2 text-sm text-slate-400">
+                        {{ \Illuminate\Support\Str::limit($cert['description'], 100) }}
+                    </div>
+                @endif
                 
                 @if($cert['credential_url'])
                     <a 
@@ -145,6 +151,17 @@
                             class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-yellow-400 focus:outline-none transition-colors"
                         >
                         @error('form.credential_id') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Description (Optional)</label>
+                        <textarea 
+                            wire:model="form.description"
+                            rows="3"
+                            placeholder="What did you learn?"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-yellow-400 focus:outline-none transition-colors resize-none"
+                        ></textarea>
+                        @error('form.description') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
 
                     <div>

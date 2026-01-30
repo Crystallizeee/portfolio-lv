@@ -13,6 +13,9 @@
 
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -65,6 +68,24 @@
                    class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.certificates') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
                     <i data-lucide="award" class="w-5 h-5"></i>
                     <span class="font-medium">Certificates</span>
+                </a>
+
+                <a href="{{ route('admin.languages') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.languages') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
+                    <i data-lucide="languages" class="w-5 h-5"></i>
+                    <span class="font-medium">Languages</span>
+                </a>
+
+                <a href="{{ route('admin.activity-logs') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.activity-logs') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                    <span class="font-medium">Activity Log</span>
+                </a>
+
+                <a href="{{ route('admin.backup') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.backup') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
+                    <i data-lucide="database-backup" class="w-5 h-5"></i>
+                    <span class="font-medium">Backup & Restore</span>
                 </a>
 
                 <a href="{{ route('admin.profile') }}" 

@@ -149,6 +149,18 @@
                         @error('linkedin') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
 
+                    {{-- GitHub --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">GitHub</label>
+                        <input 
+                            type="url" 
+                            wire:model="github"
+                            placeholder="https://github.com/username"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                        >
+                        @error('github') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
                     {{-- Address --}}
                     <div>
                         <label class="block text-sm text-slate-400 mb-1">Address</label>
@@ -286,6 +298,15 @@
                         >
                         @error('educationForm.degree') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
+                    <div class="mt-3">
+                        <label class="block text-sm text-slate-400 mb-1">Thesis / Final Project (Optional)</label>
+                        <textarea 
+                            wire:model="educationForm.thesis"
+                            rows="2"
+                            placeholder="e.g. Analysis of security vulnerabilities in banking systems..."
+                            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-pink-400 focus:outline-none transition-colors resize-none"
+                        ></textarea>
+                    </div>
                     <div class="flex items-center justify-between mt-4">
                         @if($editingEducationId)
                             <button 
@@ -353,6 +374,13 @@
                                     <div class="text-xs text-slate-500 mb-1">Year</div>
                                     <div class="text-sm text-slate-300 font-mono">{{ $edu['year'] }}</div>
                                 </div>
+                                @if(!empty($edu['thesis']))
+                                <div class="md:col-span-2 mt-2 pt-2 border-t border-slate-700/50">
+                                    <div class="text-xs text-slate-500 mb-1">Thesis</div>
+                                    <div class="text-sm text-slate-300 italic">"{{ $edu['thesis'] }}"</div>
+                                </div>
+                                @endif
+
                             </div>
                         </div>
                     @endforeach

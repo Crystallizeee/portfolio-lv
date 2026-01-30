@@ -46,6 +46,11 @@
                         <label class="block text-sm font-medium text-slate-300 mb-2">Address</label>
                         <input wire:model="address" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-purple-400 focus:outline-none focus:bg-slate-800 transition-colors">
                     </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">GitHub URL</label>
+                        <input wire:model="github" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-purple-400 focus:outline-none focus:bg-slate-800 transition-colors">
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2">LinkedIn URL</label>
                         <input wire:model="linkedin" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-purple-400 focus:outline-none focus:bg-slate-800 transition-colors">
@@ -104,6 +109,10 @@
                                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Year</label>
                                     <input wire:model="educations.{{ $index }}.year" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-white focus:border-pink-400 focus:outline-none focus:bg-slate-800 transition-all placeholder-slate-600" placeholder="e.g. 2019 - 2023">
                                 </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Thesis / Final Project (Optional)</label>
+                                    <textarea wire:model="educations.{{ $index }}.thesis" rows="2" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-white focus:border-pink-400 focus:outline-none focus:bg-slate-800 transition-all placeholder-slate-600 resize-none" placeholder="e.g. Analysis of..."></textarea>
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -147,6 +156,10 @@
                                 <div>
                                     <label class="block text-xs font-medium text-slate-400 mb-1">Year</label>
                                     <input wire:model="certifications.{{ $index }}.year" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-yellow-400 focus:outline-none">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-slate-400 mb-1">Description (Optional)</label>
+                                    <textarea wire:model="certifications.{{ $index }}.description" rows="2" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-yellow-400 focus:outline-none resize-none" placeholder="What did you learn?"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -226,6 +239,42 @@
                 </div>
             </div>
             @endif
+
+            <!-- Manual Languages -->
+            @if(!$useDbLanguages)
+            <div class="glass-card p-6 rounded-xl border border-slate-700/50">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i data-lucide="languages" class="w-5 h-5 text-green-400"></i>
+                        <span>Languages</span>
+                    </h3>
+                    <button wire:click="addManualLanguage" class="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex items-center space-x-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    @foreach($manualLanguages as $index => $lang)
+                        <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700 relative group transition-all hover:border-slate-600">
+                            <button wire:click="removeManualLanguage({{ $index }})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-400 mb-1">Language</label>
+                                    <input wire:model="manualLanguages.{{ $index }}.name" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-green-400 focus:outline-none" placeholder="e.g. English">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-400 mb-1">Level</label>
+                                    <input wire:model="manualLanguages.{{ $index }}.level" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-green-400 focus:outline-none" placeholder="e.g. Fluent">
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </div>
 
         <!-- Sidebar / Settings -->
@@ -234,6 +283,15 @@
                 <h3 class="text-lg font-bold text-white mb-4">Configuration</h3>
                 
                 <div class="space-y-4">
+                    <!-- Language Selection -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-slate-400 mb-2">CV Language</label>
+                        <select wire:model.live="locale" class="w-full bg-slate-700/50 border border-slate-600 rounded-lg text-slate-200 text-sm focus:ring-cyan-500 focus:border-cyan-500 p-2.5">
+                            <option value="en">English</option>
+                            <option value="id">Bahasa Indonesia</option>
+                        </select>
+                    </div>
+
                     <!-- Experiences Toggle -->
                     <div 
                         wire:click="$toggle('useDbExperiences')"
@@ -297,7 +355,28 @@
                         </div>
                     </div>
 
-                    <!-- Certifications Toggle -->
+
+
+                    <!-- Languages Toggle -->
+                    <div 
+                        wire:click="$toggle('useDbLanguages')"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbLanguages ? 'bg-green-500/10 border-green-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                    >
+                         <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbLanguages ? 'bg-green-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="languages" class="w-5 h-5 {{ $useDbLanguages ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbLanguages ? 'text-white' : 'text-slate-300' }}">Languages</div>
+                                    <div class="text-xs {{ $useDbLanguages ? 'text-green-200' : 'text-slate-500' }}">From Profile</div>
+                                </div>
+                            </div>
+                             <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbLanguages ? 'border-green-400 bg-green-400' : 'border-slate-600' }}">
+                                @if($useDbLanguages) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
+                            </div>
+                        </div>
+                    </div>
                     <div 
                         wire:click="$toggle('useDbCertifications')"
                         class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbCertifications ? 'bg-yellow-500/10 border-yellow-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
@@ -314,6 +393,27 @@
                             </div>
                              <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbCertifications ? 'border-yellow-400 bg-yellow-400' : 'border-slate-600' }}">
                                 @if($useDbCertifications) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Toggle -->
+                    <div 
+                        wire:click="$toggle('useDbProjects')"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbProjects ? 'bg-blue-500/10 border-blue-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                    >
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg {{ $useDbProjects ? 'bg-blue-500' : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                    <i data-lucide="folder-git-2" class="w-5 h-5 {{ $useDbProjects ? 'text-white' : 'text-slate-400' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold {{ $useDbProjects ? 'text-white' : 'text-slate-300' }}">Projects</div>
+                                    <div class="text-xs {{ $useDbProjects ? 'text-blue-200' : 'text-slate-500' }}">From Manage Projects</div>
+                                </div>
+                            </div>
+                             <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors {{ $useDbProjects ? 'border-blue-400 bg-blue-400' : 'border-slate-600' }}">
+                                @if($useDbProjects) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
                             </div>
                         </div>
                     </div>

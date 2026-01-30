@@ -64,4 +64,7 @@
     
     {{-- Projects Grid --}}
     <livewire:projects-grid />
+
+    {{-- Contact Form --}}
+    <livewire:contact-form />
 </x-layouts.app>

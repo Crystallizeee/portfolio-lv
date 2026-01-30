@@ -27,7 +27,13 @@ class User extends Authenticatable
         'website',
         'summary',
         'avatar',
+        'github',
     ];
+
+    public function languages()
+    {
+        return $this->hasMany(Language::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
