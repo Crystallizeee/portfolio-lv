@@ -65,7 +65,7 @@ Route::get('/debug-proxmox', function () {
 // Admin Routes
 Route::prefix('admin')->group(function () {
     // Guest routes
-    Route::middleware(['guest', 'throttle:5,1'])->group(function () {
+    Route::middleware('guest')->group(function () {
         Route::get('/login', AdminLogin::class)->name('admin.login');
     });
     
