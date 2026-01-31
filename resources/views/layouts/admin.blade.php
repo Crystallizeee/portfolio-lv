@@ -22,18 +22,29 @@
     @livewireStyles
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased min-h-screen">
-    <div class="flex min-h-screen">
+    <div class="flex min-h-screen" x-data="{ sidebarOpen: false }">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition.opacity 
+             class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"></div>
+
         <!-- Sidebar -->
         @auth
-        <aside class="w-64 glass-card border-r border-slate-700/50 flex flex-col z-10">
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 glass-card border-r border-slate-700/50 flex flex-col transition-transform duration-300 md:translate-x-0 md:static md:inset-auto"
+               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             <!-- Logo -->
-            <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
-                <span class="terminal-text font-mono text-lg">~/admin</span>
-                <span class="text-slate-500 cursor-blink ml-1">_</span>
+            <div class="h-16 flex items-center px-6 border-b border-slate-700/50 justify-between">
+                <div class="flex items-center">
+                    <span class="terminal-text font-mono text-lg">~/admin</span>
+                    <span class="text-slate-500 cursor-blink ml-1">_</span>
+                </div>
+                <!-- Mobile Close Button -->
+                <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             
             <!-- Navigation -->
-            <nav class="flex-1 p-4 space-y-2">
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                 <a href="{{ route('admin.dashboard') }}" 
                    class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
                     <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
@@ -108,7 +119,7 @@
                         <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
                             <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
                         </div>
-                        <span class="text-sm text-slate-400">{{ auth()->user()->name }}</span>
+                        <span class="text-sm text-slate-400 truncate w-24">{{ auth()->user()->name }}</span>
                     </div>
                     <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
@@ -122,20 +133,25 @@
         @endauth
         
         <!-- Main Content -->
-        <main class="flex-1 overflow-auto">
+        <main class="flex-1 overflow-auto w-full">
             @auth
             <!-- Top Bar -->
-            <header class="h-16 glass-card border-b border-slate-700/50 flex items-center justify-between px-8">
-                <h1 class="font-mono text-xl text-white">{{ $title ?? 'Dashboard' }}</h1>
+            <header class="h-16 glass-card border-b border-slate-700/50 flex items-center justify-between px-4 md:px-8">
+                <div class="flex items-center">
+                    <button @click="sidebarOpen = true" class="md:hidden mr-4 text-slate-400 hover:text-white">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h1 class="font-mono text-xl text-white">{{ $title ?? 'Dashboard' }}</h1>
+                </div>
                 <a href="{{ url('/') }}" target="_blank" class="flex items-center space-x-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm">
                     <i data-lucide="external-link" class="w-4 h-4"></i>
-                    <span>View Portfolio</span>
+                    <span class="hidden sm:inline">View Portfolio</span>
                 </a>
             </header>
             @endauth
             
             <!-- Page Content -->
-            <div class="p-8">
+            <div class="p-4 md:p-8">
                 {{ $slot }}
             </div>
         </main>
