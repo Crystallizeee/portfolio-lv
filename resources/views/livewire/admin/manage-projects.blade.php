@@ -288,6 +288,35 @@
                             </div>
 
                             <!-- Actions -->
+                            <div class="border-t border-slate-700/50 pt-4 mt-6">
+                                <h4 class="text-sm font-semibold text-slate-300 mb-4 flex items-center space-x-2">
+                                    <i data-lucide="search" class="w-4 h-4 text-cyan-400"></i>
+                                    <span>SEO Settings (Optional)</span>
+                                </h4>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-400 mb-1">SEO Title</label>
+                                        <input wire:model="seo_title" type="text" 
+                                            class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors"
+                                            placeholder="Leave empty to use project title">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-400 mb-1">SEO Description</label>
+                                        <textarea wire:model="seo_description" rows="2" 
+                                            class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors"
+                                            placeholder="Leave empty to use project description"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-slate-400 mb-1">Keywords</label>
+                                        <input wire:model="seo_keywords" type="text" 
+                                            class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-cyan-400 transition-colors"
+                                            placeholder="comma, separated, keywords">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
                             <div class="flex justify-end space-x-3 pt-4 border-t border-slate-700/50">
                                 <button 
                                     type="button"

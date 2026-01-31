@@ -13,7 +13,7 @@
                     <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-input').click()">
                         {{-- Main Avatar Image --}}
                         <div class="w-40 h-40 rounded-full overflow-hidden bg-slate-700 relative ring-4 ring-slate-700 group-hover:ring-cyan-500/50 shadow-lg shadow-black/50 group-hover:shadow-cyan-500/20 transition-all duration-300 mx-auto" style="width: 10rem; height: 10rem;">
-                            @if($newAvatar)
+                            @if($newAvatar && $newAvatar->isPreviewable())
                                 <img src="{{ $newAvatar->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
                             @elseif($avatar)
                                 <img src="{{ Storage::url($avatar) }}" alt="Avatar" class="w-full h-full object-cover">

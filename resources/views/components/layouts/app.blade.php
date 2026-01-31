@@ -3,9 +3,34 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Benidictus Tri Wibowo - Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security">
-    
-    <title>{{ $title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional' }}</title>
+    @php
+        $globalSeo = \App\Models\SeoMetadata::where('model_type', 'global')->first();
+        $seoTitle = $title ?? $globalSeo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional';
+        $seoDescription = $description ?? $globalSeo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security';
+        $seoKeywords = $keywords ?? $globalSeo?->keywords ?? 'cybersecurity, grc, penetration testing, laravel';
+        $seoImage = $og_image ?? $globalSeo?->og_image ?? asset('images/og-default.jpg');
+        $seoCanonical = $canonical_url ?? $globalSeo?->canonical_url ?? url()->current();
+        $seoIndex = $globalSeo?->indexable ?? true;
+    @endphp
+
+    <title>{{ $seoTitle }}</title>
+    <meta name="description" content="{{ $seoDescription }}">
+    <meta name="keywords" content="{{ $seoKeywords }}">
+    <meta name="robots" content="{{ $seoIndex ? 'index, follow' : 'noindex, nofollow' }}">
+    <link rel="canonical" href="{{ $seoCanonical }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDescription }}">
+    <meta name="twitter:image" content="{{ $seoImage }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

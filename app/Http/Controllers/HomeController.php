@@ -16,6 +16,6 @@ class HomeController extends Controller
             Analytics::track($owner->id, 'profile_view');
         }
         
-        return view('welcome');
+        return view('welcome', compact('owner'));
     }
 }

@@ -67,6 +67,10 @@ Route::prefix('admin')->group(function () {
     // Guest routes
     Route::middleware('guest')->group(function () {
         Route::get('/login', AdminLogin::class)->name('admin.login');
+        // Rate limit logging in
+        Route::post('/login', [AdminLogin::class, 'store'])
+            ->middleware('throttle:5,1')
+            ->name('admin.login.store');
     });
     
     // Authenticated routes
@@ -79,6 +83,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
         Route::get('/languages', ManageLanguages::class)->name('admin.languages');
         Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
+        Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
         
         // Backup & Restore
         Route::get('/backup', function () {

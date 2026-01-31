@@ -23,5 +23,13 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
+
+        try {
+            // Share global SEO data with all views
+            $seo = \App\Models\SeoMetadata::where('model_type', 'global')->first();
+            \Illuminate\Support\Facades\View::share('seo', $seo);
+        } catch (\Exception $e) {
+            // Quietly fail if table doesn't exist yet
+        }
     }
 }

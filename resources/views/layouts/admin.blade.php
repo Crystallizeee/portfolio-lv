@@ -82,6 +82,12 @@
                     <span class="font-medium">Activity Log</span>
                 </a>
 
+                <a href="{{ route('admin.seo') }}" 
+                   class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.seo') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                    <span class="font-medium">SEO Manager</span>
+                </a>
+
                 <a href="{{ route('admin.backup') }}" 
                    class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.backup') ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-slate-700/50 hover:text-cyan-400' }}">
                     <i data-lucide="database-backup" class="w-5 h-5"></i>

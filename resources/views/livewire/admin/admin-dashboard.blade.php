@@ -96,6 +96,61 @@
         </div>
     </div>
 
+    <!-- Traffic Analytics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Top Browsers -->
+        <div class="glass-card p-6">
+            <div class="flex items-center space-x-2 mb-4">
+                <i data-lucide="globe" class="w-5 h-5 text-cyan-400"></i>
+                <h2 class="text-lg font-semibold text-white">Top Browsers</h2>
+            </div>
+            <div class="space-y-3">
+                @foreach($topBrowsers as $browser => $count)
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-slate-300">{{ $browser }}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-500" style="width: {{ ($count / (count($topBrowsers) > 0 ? max($topBrowsers) : 1)) * 100 }}%"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 w-8 text-right">{{ $count }}</span>
+                    </div>
+                </div>
+                @endforeach
+                @if(empty($topBrowsers))
+                    <div class="text-center text-slate-500 text-sm">No data yet</div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Top Devices/OS -->
+        <div class="glass-card p-6">
+            <div class="flex items-center space-x-2 mb-4">
+                <i data-lucide="monitor" class="w-5 h-5 text-purple-400"></i>
+                <h2 class="text-lg font-semibold text-white">Top Devices / OS</h2>
+            </div>
+            <div class="space-y-3">
+                @foreach($topDevices as $device => $count)
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-slate-300">{{ $device }}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-500" style="width: {{ ($count / (count($topDevices) > 0 ? max($topDevices) : 1)) * 100 }}%"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 w-8 text-right">{{ $count }}</span>
+                    </div>
+                </div>
+                @endforeach
+                @if(empty($topDevices))
+                    <div class="text-center text-slate-500 text-sm">No data yet</div>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Activity Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- System Status -->
@@ -191,12 +246,12 @@
                         </div>
                         <div>
                             <div class="text-sm font-medium text-white">{{ $visitor->ip_address ?? 'Unknown IP' }}</div>
-                            <div class="text-xs text-slate-500">{{ $visitor->date->format('M d, Y') }}</div>
+                            <div class="text-xs text-slate-500">{{ $visitor->created_at->format('M d, Y H:i') }}</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-sm font-bold text-purple-400">{{ $visitor->count }}</div>
-                        <div class="text-xs text-slate-500">Views</div>
+                        <div class="text-sm font-bold text-purple-400">{{ $visitor->url }}</div>
+                        <div class="text-xs text-slate-500">Visited</div>
                     </div>
                 </div>
                 @empty

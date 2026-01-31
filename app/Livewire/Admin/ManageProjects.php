@@ -19,6 +19,11 @@ class ManageProjects extends Component
     public string $tech_stack = '';
     public string $url = '';
 
+    // SEO Fields
+    public string $seo_title = '';
+    public string $seo_description = '';
+    public string $seo_keywords = '';
+
     protected function rules()
     {
         return [
@@ -28,6 +33,9 @@ class ManageProjects extends Component
             'type' => 'required|string|max:100',
             'tech_stack' => 'required|string',
             'url' => 'nullable|url|max:255',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'seo_keywords' => 'nullable|string|max:255',
         ];
     }
 
@@ -51,6 +59,11 @@ class ManageProjects extends Component
             ? implode(', ', $project->tech_stack) 
             : $project->tech_stack;
         $this->url = $project->url ?? '';
+
+        // Load SEO
+        $this->seo_title = $project->seo->title ?? '';
+        $this->seo_description = $project->seo->description ?? '';
+        $this->seo_keywords = $project->seo->keywords ?? '';
         
         $this->isEditing = true;
         $this->showModal = true;
@@ -78,10 +91,24 @@ class ManageProjects extends Component
         ];
 
         if ($this->isEditing && $this->editingId) {
-            Project::findOrFail($this->editingId)->update($data);
+            $project = Project::findOrFail($this->editingId);
+            $project->update($data);
+            $project->seo()->updateOrCreate(
+                [],
+                [
+                    'title' => $this->seo_title,
+                    'description' => $this->seo_description,
+                    'keywords' => $this->seo_keywords,
+                ]
+            );
             session()->flash('message', 'Project berhasil diupdate!');
         } else {
-            Project::create($data);
+            $project = Project::create($data);
+            $project->seo()->create([
+                'title' => $this->seo_title,
+                'description' => $this->seo_description,
+                'keywords' => $this->seo_keywords,
+            ]);
             session()->flash('message', 'Project berhasil ditambahkan!');
         }
 
@@ -103,6 +130,9 @@ class ManageProjects extends Component
         $this->type = '';
         $this->tech_stack = '';
         $this->url = '';
+        $this->seo_title = '';
+        $this->seo_description = '';
+        $this->seo_keywords = '';
         $this->resetErrorBag();
     }
 

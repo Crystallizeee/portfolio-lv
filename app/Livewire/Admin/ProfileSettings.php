@@ -154,7 +154,7 @@ class ProfileSettings extends Component
     public function updateAvatar()
     {
         $this->validate([
-            'newAvatar' => 'required|image|max:2048',
+            'newAvatar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $user = Auth::user();
@@ -163,7 +163,11 @@ class ProfileSettings extends Component
             Storage::disk('public')->delete($user->avatar);
         }
 
-        $path = $this->newAvatar->store('avatars', 'public');
+        $path = $this->newAvatar->storeAs(
+            'avatars', 
+            $this->newAvatar->hashName(),
+            'public'
+        );
         $user->update(['avatar' => $path]);
         
         $this->avatar = $path;
