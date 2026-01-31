@@ -38,8 +38,8 @@
                     <span class="text-slate-500 cursor-blink ml-1">_</span>
                 </div>
                 <!-- Mobile Close Button -->
-                <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                <button type="button" @click="sidebarOpen = false" class="md:hidden p-2 text-slate-400 hover:text-white transition-colors focus:outline-none">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
             
