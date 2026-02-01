@@ -12,26 +12,27 @@
     /* Font Families */
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    
-    /* Custom Colors - Blue Team Defense Theme */
-    --color-cyber-dark: #0f172a;
-    --color-cyber-darker: #020617;
-    --color-cyber-card: rgba(30, 41, 59, 0.8);
-    --color-cyber-border: rgba(100, 116, 139, 0.3);
+
+    /* Custom Colors - Premium Cyberpunk Theme */
+    --color-cyber-dark: #0a0f1d;
+    --color-cyber-darker: #050811;
+    --color-cyber-card: rgba(10, 15, 29, 0.85);
+    --color-cyber-border: rgba(148, 163, 184, 0.15);
     --color-cyber-cyan: #22d3ee;
-    --color-cyber-cyan-glow: rgba(34, 211, 238, 0.5);
-    --color-cyber-green: #22c55e;
-    --color-cyber-red: #ef4444;
-    --color-cyber-yellow: #eab308;
+    --color-cyber-cyan-glow: rgba(34, 211, 238, 0.3);
+    --color-cyber-purple: #a855f7;
+    --color-cyber-purple-glow: rgba(168, 85, 247, 0.3);
+    --color-cyber-green: #10b981;
+    --color-cyber-red: #f43f5e;
 }
 
 /* Glassmorphism Card Styling */
 .glass-card {
-    background: var(--color-cyber-card);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: linear-gradient(135deg, var(--color-cyber-card), rgba(10, 15, 29, 0.6));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-cyber-border);
-    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
 }
 
 /* Glowing Accent Effect */
@@ -39,17 +40,27 @@
     box-shadow: 0 0 20px var(--color-cyber-cyan-glow);
 }
 
+.glow-purple {
+    box-shadow: 0 0 20px var(--color-cyber-purple-glow);
+}
+
 /* Terminal Style Text */
 .terminal-text {
     font-family: var(--font-mono);
-    color: var(--color-cyber-cyan);
+    background: linear-gradient(to right, var(--color-cyber-cyan), #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
 }
 
 /* Status Dot Animation */
 @keyframes pulse-dot {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
@@ -61,8 +72,15 @@
 
 /* Typewriter cursor */
 @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 .cursor-blink {
@@ -74,6 +92,7 @@
     0% {
         transform: translateY(-100%);
     }
+
     100% {
         transform: translateY(100vh);
     }
