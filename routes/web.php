@@ -80,6 +80,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/experiences', ManageExperiences::class)->name('admin.experiences');
         Route::get('/skills', ManageSkills::class)->name('admin.skills');
         Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
+        Route::get('/ai-cover-letter', \App\Livewire\Admin\AiCoverLetter::class)->name('admin.ai-cover-letter');
         Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
         Route::get('/languages', ManageLanguages::class)->name('admin.languages');
         Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');

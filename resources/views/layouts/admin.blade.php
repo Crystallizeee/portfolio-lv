@@ -78,6 +78,7 @@
                         ['route' => 'admin.experiences', 'icon' => 'briefcase', 'label' => 'Experiences'],
                         ['route' => 'admin.skills', 'icon' => 'cpu', 'label' => 'Skills'],
                         ['route' => 'admin.cv-generator', 'icon' => 'file-text', 'label' => 'CV Generator'],
+                        ['route' => 'admin.ai-cover-letter', 'icon' => 'sparkles', 'label' => 'AI Cover Letter'],
                         ['route' => 'admin.certificates', 'icon' => 'award', 'label' => 'Certificates'],
                         ['route' => 'admin.languages', 'icon' => 'languages', 'label' => 'Languages'],
                         ['route' => 'admin.activity-logs', 'icon' => 'activity', 'label' => 'Activity Logs'],
