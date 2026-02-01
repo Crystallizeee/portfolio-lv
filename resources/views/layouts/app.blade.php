@@ -16,9 +16,22 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- PWA Settings -->
+    <meta name="theme-color" content="#0a0f1d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased scanline-effect">
     <!-- Navigation -->
