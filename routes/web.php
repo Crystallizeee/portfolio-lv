@@ -13,10 +13,14 @@ use App\Livewire\Admin\ActivityLogs;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\BackupController;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+Route::get('/projects/{slug}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
 
-// Debug Proxmox API
-Route::get('/debug-proxmox', function () {
+// Debug Proxmox API (only available in local environment)
+if (app()->environment('local')) {
+    Route::get('/debug-proxmox', function () {
     $host = config('services.proxmox.host');
     $node = config('services.proxmox.node');
     $tokenId = config('services.proxmox.token_id');
@@ -60,7 +64,8 @@ Route::get('/debug-proxmox', function () {
     }
     
     return response()->json($result);
-});
+    });
+}
 
 // Admin Routes
 Route::prefix('admin')->group(function () {
@@ -85,6 +90,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/languages', ManageLanguages::class)->name('admin.languages');
         Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
         Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
+        Route::get('/posts', \App\Livewire\Admin\ManagePosts::class)->name('admin.posts');
         
         // Backup & Restore
         Route::get('/backup', function () {

@@ -54,10 +54,11 @@
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#about" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">About</a>
-                    <a href="#experience" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Experience</a>
-                    <a href="#lab" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Home Lab</a>
-                    <a href="#projects" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Projects</a>
+                    <a href="{{ route('home') }}#about" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">About</a>
+                    <a href="{{ route('home') }}#experience" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Experience</a>
+                    <a href="{{ route('home') }}#lab" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Home Lab</a>
+                    <a href="{{ route('home') }}#projects" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Projects</a>
+                    <a href="{{ route('blog.index') }}" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Blog</a>
                 </div>
                 
                 <div class="flex items-center space-x-4">

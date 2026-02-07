@@ -88,6 +88,7 @@
                     $navItems = [
                         ['route' => 'admin.dashboard', 'icon' => 'layout-dashboard', 'label' => 'Dashboard'],
                         ['route' => 'admin.projects', 'icon' => 'folder-git-2', 'label' => 'Projects'],
+                        ['route' => 'admin.posts', 'icon' => 'file-text', 'label' => 'Blog Posts'],
                         ['route' => 'admin.experiences', 'icon' => 'briefcase', 'label' => 'Experiences'],
                         ['route' => 'admin.skills', 'icon' => 'cpu', 'label' => 'Skills'],
                         ['route' => 'admin.cv-generator', 'icon' => 'file-text', 'label' => 'CV Generator'],

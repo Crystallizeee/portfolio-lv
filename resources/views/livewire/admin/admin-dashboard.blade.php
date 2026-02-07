@@ -63,6 +63,13 @@
                 Fast Access
             </h3>
             <div class="grid grid-cols-1 gap-2">
+                <a href="{{ route('admin.posts') }}" class="group flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/5 hover:border-pink-500/30 hover:bg-pink-500/10 transition-all duration-300">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="pen-tool" class="w-4 h-4 text-pink-400"></i>
+                        <span class="text-xs font-medium text-slate-300 group-hover:text-pink-400">New Post</span>
+                    </div>
+                    <i data-lucide="arrow-right" class="w-3 h-3 text-slate-600 group-hover:text-pink-400 transition-transform group-hover:translate-x-1"></i>
+                </a>
                 <a href="{{ route('admin.projects') }}" class="group flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 border border-white/5 hover:border-cyan-500/30 hover:bg-cyan-500/10 transition-all duration-300">
                     <div class="flex items-center space-x-2">
                         <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i>

@@ -16,7 +16,7 @@
         <!-- Projects Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             @foreach($projects as $project)
-                <div class="glass-card p-6 hover:glow-cyan transition-all duration-300 group relative overflow-hidden">
+                <div class="glass-card p-6 hover:glow-cyan transition-all duration-300 group relative overflow-hidden flex flex-col h-full">
                     <!-- Background Glow Effect -->
                     <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     
@@ -32,7 +32,10 @@
                             </div>
                             <div>
                                 <h3 class="font-mono text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                                    {{ $project->title }}
+                                    <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="focus:outline-none">
+                                        <span class="absolute inset-0"></span>
+                                        {{ $project->title }}
+                                    </a>
                                 </h3>
                                 <span class="text-xs text-slate-500 font-mono">{{ $project->type }}</span>
                             </div>
@@ -52,12 +55,12 @@
                     </div>
                     
                     <!-- Description -->
-                    <p class="relative text-slate-400 text-sm leading-relaxed mb-6">
+                    <p class="relative text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
                         {{ $project->description }}
                     </p>
                     
                     <!-- Tech Stack -->
-                    <div class="relative flex flex-wrap gap-2">
+                    <div class="relative flex flex-wrap gap-2 mb-6">
                         @foreach($project->tech_stack as $tech)
                             <span class="px-2 py-1 text-xs font-mono bg-slate-700/50 text-slate-300 rounded border border-slate-600/50 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors">
                                 {{ $tech }}
@@ -65,15 +68,20 @@
                         @endforeach
                     </div>
                     
-                    <!-- Link (if available) -->
-                    @if($project->url)
-                        <div class="relative mt-6 pt-4 border-t border-slate-700/50">
+                    <!-- Links -->
+                    <div class="relative mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between z-10">
+                        <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors">
+                            <span>Read Case Study</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </a>
+
+                        @if($project->url)
                             <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
                                 <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
-                                View Project
+                                Live Demo
                             </a>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             @endforeach
         </div>
