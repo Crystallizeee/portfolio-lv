@@ -98,45 +98,99 @@
     <!-- Styles for EasyMDE -->
     <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
     <style>
+        /* EasyMDE & CodeMirror Customization */
         .editor-toolbar {
-            background-color: #0f172a !important; /* slate-950 */
-            border-color: #334155 !important;
-            color: #e2e8f0 !important;
-            border-radius: 0.5rem 0.5rem 0 0 !important;
-            padding: 0.5rem !important;
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+            color: #94a3b8 !important;
+            border-radius: 0.75rem 0.75rem 0 0 !important;
+            padding: 0.75rem 1rem !important;
+            opacity: 1 !important;
+            z-index: 50 !important;
         }
         .editor-toolbar i {
             color: #94a3b8 !important;
+            transition: all 0.2s;
         }
-        .editor-toolbar i:hover {
-            color: #22d3ee !important; /* cyan-400 */
+        .editor-toolbar button:hover i {
+            color: #22d3ee !important;
+        }
+        .editor-toolbar button.active, .editor-toolbar button:hover {
             background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+            border-radius: 0.375rem !important;
         }
-        .editor-toolbar a.active, .editor-toolbar a:hover {
-            background-color: #1e293b !important;
-            border-color: #1e293b !important;
-        }
+        
         .CodeMirror {
-            background-color: #020617 !important; /* slate-950 */
-            border-color: #334155 !important;
+            background-color: #020617 !important;
+            border-color: #1e293b !important;
             color: #e2e8f0 !important;
-            border-radius: 0 0 0.5rem 0.5rem !important;
-            padding: 1rem !important;
+            border-radius: 0 0 0.75rem 0.75rem !important;
+            padding: 1.5rem !important;
             font-family: 'JetBrains Mono', monospace !important;
-            font-size: 1rem !important;
-            line-height: 1.6 !important;
+            font-size: 0.95rem !important;
+            line-height: 1.7 !important;
+            min-height: 400px !important;
+            z-index: 0 !important;
+        }
+        .CodeMirror-selected {
+            background-color: #1e293b !important;
         }
         .CodeMirror-cursor {
-            border-left: 2px solid #a855f7 !important; /* purple-500 */
+            border-left: 2px solid #a855f7 !important;
         }
+        
+        /* Preview Styling */
         .editor-preview {
             background-color: #0f172a !important;
             color: #cbd5e1 !important;
             padding: 2rem !important;
+            line-height: 1.8 !important;
         }
+        .editor-preview h1, .editor-preview h2, .editor-preview h3 {
+            color: #fff !important;
+            font-weight: 700 !important;
+            margin-top: 1.5em !important;
+            margin-bottom: 0.5em !important;
+            border-bottom: 1px solid #1e293b !important;
+            padding-bottom: 0.5em !important;
+        }
+        .editor-preview h1 { font-size: 2em !important; }
+        .editor-preview h2 { font-size: 1.5em !important; color: #e2e8f0 !important; }
+        .editor-preview h3 { font-size: 1.25em !important; }
+        
+        .editor-preview a {
+            color: #22d3ee !important;
+            text-decoration: none !important;
+        }
+        .editor-preview pre {
+            background-color: #1e293b !important;
+            padding: 1rem !important;
+            border-radius: 0.5rem !important;
+            border: 1px solid #334155 !important;
+        }
+        .editor-preview code {
+            background-color: #1e293b !important;
+            padding: 0.2rem 0.4rem !important;
+            border-radius: 0.25rem !important;
+            color: #e2e8f0 !important;
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+        .editor-preview blockquote {
+            border-left: 4px solid #a855f7 !important;
+            padding-left: 1rem !important;
+            margin-left: 0 !important;
+            color: #94a3b8 !important;
+            background-color: #1e293b33 !important; /* low opacity bg */
+            padding: 1rem !important;
+            border-radius: 0 0.5rem 0.5rem 0 !important;
+        }
+        
         .editor-statusbar {
-            color: #64748b !important;
-            padding: 8px !important;
+            display: none !important;
+        }
+        .EasyMDEContainer {
+            z-index: 1 !important;
         }
     </style>
 
@@ -260,96 +314,70 @@
                                 @error('excerpt') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Content -->
-                            <div class="space-y-2" wire:ignore>
-                                <label class="text-sm font-medium text-slate-300">Content (Markdown)</label>
-                                <textarea id="markdown-editor" wire:model="content"></textarea>
+                            <!-- Content Editor Section -->
+                            <div class="space-y-4" x-data="{ mode: 'write' }">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-slate-300">Content</label>
+                                    
+                                    <!-- Editor Mode Toggle -->
+                                    <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-700/50">
+                                        <button 
+                                            type="button"
+                                            @click="mode = 'write'"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
+                                            :class="mode === 'write' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'"
+                                        >
+                                            <div class="flex items-center space-x-1.5">
+                                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                                <span>Write</span>
+                                            </div>
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            @click="mode = 'preview'"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
+                                            :class="mode === 'preview' ? 'bg-cyan-900/30 text-cyan-400 shadow-sm' : 'text-slate-400 hover:text-slate-300'"
+                                        >
+                                            <div class="flex items-center space-x-1.5">
+                                                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                                <span>Preview</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Write Mode -->
+                                <div x-show="mode === 'write'" class="relative group">
+                                    <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
+                                    <textarea 
+                                        wire:model="content"
+                                        rows="20"
+                                        class="relative w-full px-5 py-4 bg-slate-950/80 backdrop-blur-sm border border-slate-700 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-slate-600 focus:bg-slate-950 transition-all font-mono text-sm leading-relaxed"
+                                        placeholder="Write your masterpiece here... (Markdown supported)"
+                                    ></textarea>
+                                    
+                                    <!-- Helper Hint -->
+                                    <div class="absolute bottom-4 right-4 text-xs text-slate-500 font-mono flex items-center space-x-2 pointer-events-none">
+                                        <span>Markdown Supported</span>
+                                        <i data-lucide="markdown" class="w-4 h-4 opacity-50"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Preview Mode -->
+                                <div x-show="mode === 'preview'" class="relative min-h-[500px] border border-slate-700/50 rounded-xl bg-slate-950 p-8 overflow-y-auto max-h-[600px]">
+                                    @if($content)
+                                        <div class="prose prose-invert prose-lg max-w-none break-all prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
+                                            {!! Str::markdown($content) !!}
+                                        </div>
+                                    @else
+                                        <div class="flex flex-col items-center justify-center h-full text-slate-500">
+                                            <i data-lucide="eye-off" class="w-12 h-12 mb-3 opacity-20"></i>
+                                            <p>Nothing to preview yet.</p>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                             @error('content') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <!-- Status -->
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium text-slate-300">Status</label>
-                                    <select 
-                                        wire:model="status"
-                                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-all"
-                                    >
-                                        <option value="draft">Draft</option>
-                                        <option value="published">Published</option>
-                                    </select>
-                                    @error('status') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <!-- Published At -->
-                                <div class="space-y-2">
-                                    <label class="text-sm font-medium text-slate-300">Published Date</label>
-                                    <input 
-                                        wire:model="published_at"
-                                        type="datetime-local" 
-                                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-all"
-                                    >
-                                    @error('published_at') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-
-                            <!-- Footer Actions -->
-                            <div class="flex justify-end space-x-3 pt-6 border-t border-slate-800">
-                                <button 
-                                    type="button"
-                                    wire:click="closeModal"
-                                    class="px-5 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    type="submit"
-                                    class="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium transition-all shadow-lg shadow-purple-600/20"
-                                    wire:loading.attr="disabled"
-                                >
-                                    <span wire:loading.remove>{{ $isEditing ? 'Update Post' : 'Create Post' }}</span>
-                                    <span wire:loading>Saving...</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EasyMDE Script -->
-            <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
-            <script>
-                document.addEventListener('livewire:initialized', () => {
-                    const editorElement = document.getElementById('markdown-editor');
-                    
-                    if (editorElement) {
-                        const easyMDE = new EasyMDE({
-                            element: editorElement,
-                            initialValue: @this.content,
-                            spellChecker: false,
-                            status: false,
-                            toolbar: ["bold", "italic", "heading", "|", "quote", "code", "unordered-list", "ordered-list", "|", "link", "image", "|", "preview", "side-by-side", "fullscreen"],
-                        });
-
-                        easyMDE.codemirror.on('change', () => {
-                            @this.set('content', easyMDE.value());
-                        });
-
-                        Livewire.on('refresh-markdown', ({ content }) => {
-                            // Only update if value is different to prevent cursor jumps if we were typing, 
-                            // though in this case it's mostly for modal open/reset
-                            if (easyMDE.value() !== content) {
-                                easyMDE.value(content);
-                            }
-                            // Refresh layout to fix any rendering issues in modal
-                            setTimeout(() => {
-                                easyMDE.codemirror.refresh();
-                            }, 100);
-                        });
-                    }
-                });
-            </script>
-        </div>
     @endif
 
     <!-- Delete Modal -->
