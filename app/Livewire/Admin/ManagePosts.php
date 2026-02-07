@@ -36,7 +36,12 @@ class ManagePosts extends Component
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:posts,slug,' . $this->editingId,
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('posts', 'slug')->ignore($this->editingId),
+            ],
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'status' => 'required|in:draft,published',
@@ -96,7 +101,7 @@ class ManagePosts extends Component
             'excerpt' => $this->excerpt,
             'content' => $this->content,
             'status' => $this->status,
-            'published_at' => $this->published_at ?: null,
+            'published_at' => $this->published_at ?: ($this->status === 'published' ? now() : null),
         ];
 
         // Handle Image Upload

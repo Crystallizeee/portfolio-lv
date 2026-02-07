@@ -35,7 +35,7 @@
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased scanline-effect">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-700/50">
+    <nav x-data="{ mobileMenuOpen: false }" class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-700/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-2">
@@ -43,15 +43,73 @@
                     <span class="text-slate-500 cursor-blink">_</span>
                 </div>
                 
+                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#about" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">About</a>
-                    <a href="#experience" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Experience</a>
-                    <a href="#lab" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Home Lab</a>
-                    <a href="#projects" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Projects</a>
-                    <a href="#contact" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Contact</a>
+                    <a href="{{ route('home') }}#about" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">About</a>
+                    <a href="{{ route('home') }}#experience" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Experience</a>
+                    <a href="{{ route('home') }}#lab" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Home Lab</a>
+                    <a href="{{ route('home') }}#projects" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Projects</a>
+                    <a href="{{ route('blog.index') }}" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Blog</a>
+                    <a href="{{ route('home') }}#contact" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Contact</a>
                 </div>
                 
+                <!-- Mobile Menu Button & Command Palette -->
+                <div class="flex items-center space-x-4">
+                    <button 
+                        @click="$dispatch('toggle-command-palette')"
+                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                    >
+                        <kbd class="font-mono">Ctrl</kbd>
+                        <span>+</span>
+                        <kbd class="font-mono">K</kbd>
+                    </button>
 
+                    <!-- Mobile Menu Button -->
+                    <button 
+                        @click="mobileMenuOpen = !mobileMenuOpen" 
+                        class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                    >
+                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
+                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div 
+            x-show="mobileMenuOpen" 
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            @click.away="mobileMenuOpen = false"
+            class="md:hidden border-t border-slate-700/50 bg-[var(--color-cyber-dark)]/95 backdrop-blur-md"
+            x-cloak
+        >
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="{{ route('home') }}#about" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">About</a>
+                <a href="{{ route('home') }}#experience" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">Experience</a>
+                <a href="{{ route('home') }}#lab" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">Home Lab</a>
+                <a href="{{ route('home') }}#projects" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">Projects</a>
+                <a href="{{ route('blog.index') }}" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">Blog</a>
+                <a href="{{ route('home') }}#contact" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all">Contact</a>
+                
+                <div class="pt-4 border-t border-slate-700/50 mt-4">
+                    <button 
+                        @click="$dispatch('toggle-command-palette'); mobileMenuOpen = false"
+                        class="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                    >
+                        <span>Command Palette</span>
+                        <div class="flex items-center space-x-1 text-xs text-slate-500">
+                             <kbd class="font-mono border border-slate-600 rounded px-1">Ctrl</kbd>
+                             <span>+</span>
+                             <kbd class="font-mono border border-slate-600 rounded px-1">K</kbd>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -79,6 +137,65 @@
     </footer>
 
 
+
+    <!-- Command Palette Modal -->
+    <div 
+        x-data="commandPalette()" 
+        x-show="open" 
+        x-cloak
+        @toggle-command-palette.window="toggle()"
+        @keydown.escape.window="open = false"
+        class="fixed inset-0 z-[100] overflow-y-auto"
+    >
+        <!-- Backdrop -->
+        <div 
+            class="fixed inset-0 bg-black/70 backdrop-blur-sm" 
+            @click="open = false"
+        ></div>
+        
+        <!-- Modal -->
+        <div class="fixed inset-x-4 top-24 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-xl">
+            <div class="glass-card glow-cyan overflow-hidden">
+                <!-- Terminal Header -->
+                <div class="flex items-center space-x-2 px-4 py-3 border-b border-slate-700/50">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-4 font-mono text-sm text-slate-400">terminal</span>
+                </div>
+                
+                <!-- Input -->
+                <div class="p-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="terminal-text font-mono text-sm">user@portfolio:~$</span>
+                        <input 
+                            x-ref="commandInput"
+                            x-model="command"
+                            @keydown.enter="handleEnter()"
+                            type="text" 
+                            placeholder="Type a command..."
+                            class="flex-1 bg-transparent border-none outline-none text-slate-200 font-mono text-sm placeholder-slate-500"
+                        >
+                    </div>
+                </div>
+                
+                <!-- Suggestions -->
+                <div class="border-t border-slate-700/50 max-h-64 overflow-y-auto">
+                    <template x-for="suggestion in suggestions" :key="suggestion.name">
+                        <button 
+                            @click="execute(suggestion.name)"
+                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-700/50 transition-colors"
+                        >
+                            <div class="flex items-center space-x-3">
+                                <span class="terminal-text font-mono text-sm" x-text="suggestion.name"></span>
+                            </div>
+                            <span class="text-slate-500 text-sm" x-text="suggestion.label"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @livewireScripts
     

@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <div class="pt-24 pb-16">
+    <div class="pt-40 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="max-w-2xl mx-auto text-center mb-16">

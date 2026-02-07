@@ -99,38 +99,51 @@
     <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
     <style>
         .editor-toolbar {
-            background-color: #1e293b !important;
+            background-color: #0f172a !important; /* slate-950 */
             border-color: #334155 !important;
-            color: #fff !important;
+            color: #e2e8f0 !important;
+            border-radius: 0.5rem 0.5rem 0 0 !important;
+            padding: 0.5rem !important;
         }
         .editor-toolbar i {
             color: #94a3b8 !important;
         }
         .editor-toolbar i:hover {
-            color: #fff !important;
-            background-color: #334155 !important;
+            color: #22d3ee !important; /* cyan-400 */
+            background-color: #1e293b !important;
+        }
+        .editor-toolbar a.active, .editor-toolbar a:hover {
+            background-color: #1e293b !important;
+            border-color: #1e293b !important;
         }
         .CodeMirror {
-            background-color: #0f172a !important;
+            background-color: #020617 !important; /* slate-950 */
             border-color: #334155 !important;
             color: #e2e8f0 !important;
+            border-radius: 0 0 0.5rem 0.5rem !important;
+            padding: 1rem !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
         }
         .CodeMirror-cursor {
-            border-left: 1px solid #a855f7 !important;
+            border-left: 2px solid #a855f7 !important; /* purple-500 */
         }
         .editor-preview {
             background-color: #0f172a !important;
             color: #cbd5e1 !important;
+            padding: 2rem !important;
         }
         .editor-statusbar {
             color: #64748b !important;
+            padding: 8px !important;
         }
     </style>
 
     <!-- Modal -->
     @if ($showModal)
         <div 
-            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            class="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-24"
             x-data="{ show: false }"
             x-init="setTimeout(() => show = true, 10)"
             x-show="show"
@@ -150,7 +163,7 @@
             
             <!-- Modal Content -->
             <div 
-                class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+                class="relative w-full max-w-7xl max-h-[90vh] overflow-y-auto"
                 x-show="show"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95 translate-y-4"

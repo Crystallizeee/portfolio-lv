@@ -32,7 +32,7 @@
             </header>
 
             <!-- Content -->
-            <div class="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-slate-400 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
+            <div class="prose prose-invert prose-lg max-w-none break-words prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
                 {!! Str::markdown($post->content) !!}
             </div>
 
