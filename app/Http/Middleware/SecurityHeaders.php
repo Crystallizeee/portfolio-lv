@@ -21,6 +21,11 @@ class SecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+        
+        // HSTS (Force HTTPS) - 1 year
+        if (app()->environment('production')) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+        }
 
         // Content Security Policy
         // Allowing 'unsafe-inline' and 'unsafe-eval' for Livewire/Alpine compliance for now.

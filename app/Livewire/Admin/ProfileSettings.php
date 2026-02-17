@@ -159,8 +159,12 @@ class ProfileSettings extends Component
 
         $user = Auth::user();
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        // Delete old avatar
+        if ($user->avatar) {
+            $oldPath = str_replace('/storage/', '', $user->avatar);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         $path = $this->newAvatar->storeAs(
@@ -168,9 +172,9 @@ class ProfileSettings extends Component
             $this->newAvatar->hashName(),
             'public'
         );
-        $user->update(['avatar' => $path]);
+        $user->update(['avatar' => Storage::url($path)]);
         
-        $this->avatar = $path;
+        $this->avatar = Storage::url($path);
         $this->newAvatar = null;
 
         session()->flash('avatar_success', 'Avatar updated successfully!');
@@ -180,8 +184,11 @@ class ProfileSettings extends Component
     {
         $user = Auth::user();
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar) {
+            $oldPath = str_replace('/storage/', '', $user->avatar);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         $user->update(['avatar' => null]);

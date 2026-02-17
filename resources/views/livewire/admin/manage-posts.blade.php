@@ -95,102 +95,139 @@
         </div>
     </div>
 
-    <!-- Styles for EasyMDE -->
-    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <!-- Custom WYSIWYG Editor Styles -->
     <style>
-        /* EasyMDE & CodeMirror Customization */
-        .editor-toolbar {
-            background-color: #0f172a !important;
-            border-color: #1e293b !important;
-            color: #94a3b8 !important;
-            border-radius: 0.75rem 0.75rem 0 0 !important;
-            padding: 0.75rem 1rem !important;
-            opacity: 1 !important;
-            z-index: 50 !important;
+        /* Editor Container */
+        .wysiwyg-wrapper {
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background: #020617;
         }
-        .editor-toolbar i {
-            color: #94a3b8 !important;
-            transition: all 0.2s;
+        .wysiwyg-wrapper:focus-within {
+            border-color: #a855f7;
         }
-        .editor-toolbar button:hover i {
-            color: #22d3ee !important;
+
+        /* Toolbar */
+        .wysiwyg-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            padding: 0.5rem 0.75rem;
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            align-items: center;
         }
-        .editor-toolbar button.active, .editor-toolbar button:hover {
-            background-color: #1e293b !important;
-            border: 1px solid #334155 !important;
-            border-radius: 0.375rem !important;
+        .wysiwyg-toolbar .tb-sep {
+            width: 1px;
+            height: 24px;
+            background: #334155;
+            margin: 0 6px;
         }
-        
-        .CodeMirror {
-            background-color: #020617 !important;
-            border-color: #1e293b !important;
-            color: #e2e8f0 !important;
-            border-radius: 0 0 0.75rem 0.75rem !important;
-            padding: 1.5rem !important;
-            font-family: 'JetBrains Mono', monospace !important;
-            font-size: 0.95rem !important;
-            line-height: 1.7 !important;
-            min-height: 400px !important;
-            z-index: 0 !important;
+        .wysiwyg-toolbar button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s;
         }
-        .CodeMirror-selected {
-            background-color: #1e293b !important;
+        .wysiwyg-toolbar button:hover {
+            background: #1e293b;
+            color: #22d3ee;
         }
-        .CodeMirror-cursor {
-            border-left: 2px solid #a855f7 !important;
+        .wysiwyg-toolbar button.active {
+            background: #1e293b;
+            color: #22d3ee;
         }
-        
-        /* Preview Styling */
-        .editor-preview {
-            background-color: #0f172a !important;
-            color: #cbd5e1 !important;
-            padding: 2rem !important;
-            line-height: 1.8 !important;
+        .wysiwyg-toolbar select {
+            background: #0f172a;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            padding: 4px 8px;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+            height: 32px;
         }
-        .editor-preview h1, .editor-preview h2, .editor-preview h3 {
-            color: #fff !important;
-            font-weight: 700 !important;
-            margin-top: 1.5em !important;
-            margin-bottom: 0.5em !important;
-            border-bottom: 1px solid #1e293b !important;
-            padding-bottom: 0.5em !important;
+        .wysiwyg-toolbar select:hover {
+            border-color: #22d3ee;
+            color: #22d3ee;
         }
-        .editor-preview h1 { font-size: 2em !important; }
-        .editor-preview h2 { font-size: 1.5em !important; color: #e2e8f0 !important; }
-        .editor-preview h3 { font-size: 1.25em !important; }
-        
-        .editor-preview a {
-            color: #22d3ee !important;
-            text-decoration: none !important;
+
+        /* Editable Area */
+        .wysiwyg-editable {
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            outline: none;
         }
-        .editor-preview pre {
-            background-color: #1e293b !important;
-            padding: 1rem !important;
-            border-radius: 0.5rem !important;
-            border: 1px solid #334155 !important;
+        .wysiwyg-editable:empty::before {
+            content: attr(data-placeholder);
+            color: #475569;
+            pointer-events: none;
         }
-        .editor-preview code {
-            background-color: #1e293b !important;
-            padding: 0.2rem 0.4rem !important;
-            border-radius: 0.25rem !important;
-            color: #e2e8f0 !important;
-            font-family: 'JetBrains Mono', monospace !important;
+
+        /* Content Styling inside Editor */
+        .wysiwyg-editable h2 { font-size: 1.5em; font-weight: 700; color: #fff; margin: 1em 0 0.5em; }
+        .wysiwyg-editable h3 { font-size: 1.25em; font-weight: 600; color: #e2e8f0; margin: 0.8em 0 0.4em; }
+        .wysiwyg-editable p { margin: 0.5em 0; }
+        .wysiwyg-editable a { color: #22d3ee; text-decoration: underline; }
+        .wysiwyg-editable b, .wysiwyg-editable strong { color: #f1f5f9; }
+        .wysiwyg-editable blockquote {
+            border-left: 4px solid #a855f7;
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 0 0.5rem 0.5rem 0;
+            color: #94a3b8;
+            font-style: italic;
         }
-        .editor-preview blockquote {
-            border-left: 4px solid #a855f7 !important;
-            padding-left: 1rem !important;
-            margin-left: 0 !important;
-            color: #94a3b8 !important;
-            background-color: #1e293b33 !important; /* low opacity bg */
-            padding: 1rem !important;
-            border-radius: 0 0.5rem 0.5rem 0 !important;
+        .wysiwyg-editable pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 0.75rem 0;
+            border: 1px solid #334155;
         }
-        
-        .editor-statusbar {
-            display: none !important;
+        .wysiwyg-editable code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 0.15em 0.4em;
+            border-radius: 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875em;
         }
-        .EasyMDEContainer {
-            z-index: 1 !important;
+        .wysiwyg-editable ul, .wysiwyg-editable ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        .wysiwyg-editable li { margin: 0.25rem 0; }
+        .wysiwyg-editable img {
+            max-width: 100%;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .wysiwyg-editable hr {
+            border: none;
+            border-top: 1px solid #334155;
+            margin: 1.5rem 0;
         }
     </style>
 
@@ -207,7 +244,7 @@
         >
             <!-- Backdrop -->
             <div 
-                class="fixed inset-0 bg-black/95 backdrop-blur-sm"
+                class="fixed inset-0 bg-black/50 backdrop-blur-md"
                 x-show="show"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -270,6 +307,33 @@
                                 </div>
                             </div>
 
+                            <!-- Status & Date -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Status -->
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-300">Status</label>
+                                    <select 
+                                        wire:model="status" 
+                                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-all appearance-none"
+                                    >
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                    </select>
+                                    @error('status') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                <!-- Published At -->
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-300">Published At <span class="text-slate-500 text-xs">(Optional)</span></label>
+                                    <input 
+                                        wire:model="published_at"
+                                        type="datetime-local" 
+                                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-all scheme-dark"
+                                    >
+                                    @error('published_at') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+
                             <!-- Image Upload -->
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-300">Featured Image</label>
@@ -314,70 +378,165 @@
                                 @error('excerpt') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Content Editor Section -->
-                            <div class="space-y-4" x-data="{ mode: 'write' }">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-sm font-medium text-slate-300">Content</label>
+                            <!-- Custom WYSIWYG Editor -->
+                            <div class="space-y-2" wire:ignore>
+                                <label class="text-sm font-medium text-slate-300">Content</label>
+                                <div x-data="{
+                                    exec(cmd, val = null) {
+                                        document.execCommand(cmd, false, val);
+                                        this.$refs.editable.focus();
+                                        this.sync();
+                                    },
+                                    formatBlock(tag) {
+                                        document.execCommand('formatBlock', false, tag);
+                                        this.$refs.editable.focus();
+                                        this.sync();
+                                    },
+                                    insertLink() {
+                                        const url = prompt('Enter URL:', 'https://');
+                                        if (url) {
+                                            document.execCommand('createLink', false, url);
+                                            this.$refs.editable.focus();
+                                            this.sync();
+                                        }
+                                    },
+                                    insertCode() {
+                                        const sel = window.getSelection();
+                                        if (sel.rangeCount) {
+                                            const range = sel.getRangeAt(0);
+                                            const code = document.createElement('code');
+                                            range.surroundContents(code);
+                                            sel.removeAllRanges();
+                                            this.sync();
+                                        }
+                                    },
+                                    insertCodeBlock() {
+                                        const code = prompt('Enter code:');
+                                        if (code) {
+                                            document.execCommand('insertHTML', false, '<pre><code>' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre><p><br></p>');
+                                            this.sync();
+                                        }
+                                    },
+                                    insertHR() {
+                                        document.execCommand('insertHorizontalRule');
+                                        this.$refs.editable.focus();
+                                        this.sync();
+                                    },
+                                    sync() {
+                                        @this.set('content', this.$refs.editable.innerHTML);
+                                    },
+                                    init() {
+                                        this.$refs.editable.innerHTML = this.$refs.payload.value;
+                                    }
+                                }">
+                                    <!-- Hidden payload for safe content transfer -->
+                                    <textarea x-ref="payload" style="display:none">{{ $content }}</textarea>
                                     
-                                    <!-- Editor Mode Toggle -->
-                                    <div class="flex bg-slate-950 p-1 rounded-lg border border-slate-700/50">
-                                        <button 
-                                            type="button"
-                                            @click="mode = 'write'"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
-                                            :class="mode === 'write' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'"
-                                        >
-                                            <div class="flex items-center space-x-1.5">
-                                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                                                <span>Write</span>
-                                            </div>
-                                        </button>
-                                        <button 
-                                            type="button"
-                                            @click="mode = 'preview'"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
-                                            :class="mode === 'preview' ? 'bg-cyan-900/30 text-cyan-400 shadow-sm' : 'text-slate-400 hover:text-slate-300'"
-                                        >
-                                            <div class="flex items-center space-x-1.5">
-                                                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                                <span>Preview</span>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
+                                    <div class="wysiwyg-wrapper">
+                                        <!-- Toolbar -->
+                                        <div class="wysiwyg-toolbar">
+                                            <!-- Heading Dropdown -->
+                                            <select @change="formatBlock($event.target.value); $event.target.value='';">
+                                                <option value="">Heading</option>
+                                                <option value="p">Paragraph</option>
+                                                <option value="h2">Heading 2</option>
+                                                <option value="h3">Heading 3</option>
+                                            </select>
+                                            <div class="tb-sep"></div>
 
-                                <!-- Write Mode -->
-                                <div x-show="mode === 'write'" class="relative group">
-                                    <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition duration-500"></div>
-                                    <textarea 
-                                        wire:model="content"
-                                        rows="20"
-                                        class="relative w-full px-5 py-4 bg-slate-950/80 backdrop-blur-sm border border-slate-700 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-slate-600 focus:bg-slate-950 transition-all font-mono text-sm leading-relaxed"
-                                        placeholder="Write your masterpiece here... (Markdown supported)"
-                                    ></textarea>
-                                    
-                                    <!-- Helper Hint -->
-                                    <div class="absolute bottom-4 right-4 text-xs text-slate-500 font-mono flex items-center space-x-2 pointer-events-none">
-                                        <span>Markdown Supported</span>
-                                        <i data-lucide="markdown" class="w-4 h-4 opacity-50"></i>
-                                    </div>
-                                </div>
+                                            <!-- Text Formatting -->
+                                            <button type="button" @click="exec('bold')" title="Bold"><b>B</b></button>
+                                            <button type="button" @click="exec('italic')" title="Italic"><i>I</i></button>
+                                            <button type="button" @click="exec('underline')" title="Underline"><u>U</u></button>
+                                            <button type="button" @click="exec('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                                            <div class="tb-sep"></div>
 
-                                <!-- Preview Mode -->
-                                <div x-show="mode === 'preview'" class="relative min-h-[500px] border border-slate-700/50 rounded-xl bg-slate-950 p-8 overflow-y-auto max-h-[600px]">
-                                    @if($content)
-                                        <div class="prose prose-invert prose-lg max-w-none break-all prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
-                                            {!! Str::markdown($content) !!}
+                                            <!-- Lists -->
+                                            <button type="button" @click="exec('insertUnorderedList')" title="Bullet List">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                                            </button>
+                                            <button type="button" @click="exec('insertOrderedList')" title="Numbered List">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                                            </button>
+                                            <div class="tb-sep"></div>
+
+                                            <!-- Block Elements -->
+                                            <button type="button" @click="formatBlock('blockquote')" title="Quote">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/></svg>
+                                            </button>
+                                            <button type="button" @click="insertCode()" title="Inline Code">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                            </button>
+                                            <button type="button" @click="insertCodeBlock()" title="Code Block">{ }</button>
+                                            <div class="tb-sep"></div>
+
+                                            <!-- Insert -->
+                                            <button type="button" @click="insertLink()" title="Insert Link">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                            </button>
+                                            <button type="button" @click="insertHR()" title="Horizontal Rule">―</button>
+                                            <div class="tb-sep"></div>
+
+                                            <!-- Undo/Redo -->
+                                            <button type="button" @click="exec('undo')" title="Undo">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                            </button>
+                                            <button type="button" @click="exec('redo')" title="Redo">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                                            </button>
                                         </div>
-                                    @else
-                                        <div class="flex flex-col items-center justify-center h-full text-slate-500">
-                                            <i data-lucide="eye-off" class="w-12 h-12 mb-3 opacity-20"></i>
-                                            <p>Nothing to preview yet.</p>
-                                        </div>
-                                    @endif
+
+                                        <!-- Editable Content Area -->
+                                        <div 
+                                            x-ref="editable"
+                                            contenteditable="true"
+                                            class="wysiwyg-editable"
+                                            data-placeholder="Write your content here..."
+                                            @input="sync()"
+                                            @paste.prevent="
+                                                const text = $event.clipboardData.getData('text/html') || $event.clipboardData.getData('text/plain');
+                                                document.execCommand('insertHTML', false, text);
+                                                sync();
+                                            "
+                                        ></div>
+                                    </div>
                                 </div>
                             </div>
                             @error('content') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
+
+                            <!-- Actions -->
+                            <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800 mt-6">
+                                <button 
+                                    type="button"
+                                    wire:click="closeModal"
+                                    class="px-5 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all duration-200"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit"
+                                    class="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-white font-medium hover:from-purple-400 hover:to-pink-400 transition-all duration-200 shadow-lg shadow-purple-500/25 flex items-center space-x-2"
+                                    wire:loading.attr="disabled"
+                                    wire:loading.class="opacity-50 cursor-wait"
+                                >
+                                    <span wire:loading.remove class="flex items-center space-x-2">
+                                        <i data-lucide="{{ $isEditing ? 'check' : 'send' }}" class="w-4 h-4"></i>
+                                        <span>{{ $isEditing ? 'Update Post' : 'Publish Post' }}</span>
+                                    </span>
+                                    <span wire:loading class="flex items-center space-x-2">
+                                        <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span>Saving...</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
 
     <!-- Delete Modal -->
@@ -386,7 +545,7 @@
         x-cloak
         class="fixed inset-0 z-[100] flex items-center justify-center"
     >
-        <div class="fixed inset-0 bg-black/80" @click="showDeleteModal = false"></div>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-md" @click="showDeleteModal = false"></div>
         <div class="relative bg-slate-800 rounded-lg p-6 border border-red-500/30 shadow-2xl max-w-sm w-full mx-4">
             <h3 class="text-lg font-bold text-white mb-2">Delete Post?</h3>
             <p class="text-slate-400 text-sm mb-6">Are you sure you want to delete this post? This action cannot be undone.</p>

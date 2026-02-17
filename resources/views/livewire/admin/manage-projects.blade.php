@@ -116,7 +116,7 @@
         >
             <!-- Backdrop -->
             <div 
-                class="fixed inset-0 bg-black/95 backdrop-blur-sm"
+                class="fixed inset-0 bg-black/50 backdrop-blur-md"
                 x-show="show"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -469,7 +469,7 @@
         x-cloak
         class="fixed inset-0 z-[100] flex items-center justify-center"
     >
-        <div class="fixed inset-0 bg-black/80" @click="showDeleteModal = false"></div>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showDeleteModal = false"></div>
         <div class="relative bg-slate-900 rounded-lg p-6 border border-red-500/30 shadow-2xl w-[320px]" >
             <h3 class="text-xl font-bold text-white mb-2 text-center text-red-500">Hapus Project?</h3>
             <p class="text-slate-400 text-sm mb-6 text-center">Tindakan ini tidak dapat dibatalkan. Project akan dihapus permanen.</p>

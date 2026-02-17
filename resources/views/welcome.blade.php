@@ -1,4 +1,6 @@
 <x-layouts.app>
+    @include('partials.jsonld-person', ['owner' => $owner])
+
     {{-- Hero Section --}}
     <livewire:hero-section />
     

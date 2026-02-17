@@ -16,7 +16,7 @@
                             @if($newAvatar && $newAvatar->isPreviewable())
                                 <img src="{{ $newAvatar->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
                             @elseif($avatar)
-                                <img src="{{ Storage::url($avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                                <img src="{{ $avatar }}" alt="Avatar" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-slate-800">
                                     <i data-lucide="user" class="w-16 h-16 text-slate-500 group-hover:text-slate-400 transition-colors"></i>

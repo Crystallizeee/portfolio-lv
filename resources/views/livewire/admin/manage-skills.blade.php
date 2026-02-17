@@ -107,7 +107,7 @@
         >
             <!-- Backdrop -->
             <div 
-                class="fixed inset-0 bg-black/95 backdrop-blur-sm"
+                class="fixed inset-0 bg-black/50 backdrop-blur-md"
                 x-show="show"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -292,7 +292,7 @@
         x-cloak
         class="fixed inset-0 z-[100] flex items-center justify-center"
     >
-        <div class="fixed inset-0 bg-black/80" @click="showDeleteModal = false"></div>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-md" @click="showDeleteModal = false"></div>
         <div class="relative bg-slate-800 rounded-lg p-4 border border-red-500/30 shadow-2xl" style="width: 280px;">
             <p class="text-white text-sm mb-4 text-center">Hapus item ini?</p>
             <div class="flex justify-center space-x-2">

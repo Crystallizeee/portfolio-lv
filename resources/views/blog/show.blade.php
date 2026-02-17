@@ -1,8 +1,11 @@
 <x-layouts.app 
     :title="$post->title" 
     :description="$post->excerpt ?? Str::limit(strip_tags(Str::markdown($post->content)), 160)"
-    :og_image="$post->featured_image"
+    :og_image="$post->featured_image ? $post->featured_image : route('og-image', ['type' => 'post', 'slug' => $post->slug])"
+    og_type="article"
 >
+    @include('partials.jsonld-blogposting', ['post' => $post])
+
     <!-- Progress Bar -->
     <div x-data="{ width: '0%' }" x-on:scroll.window="width = ((window.scrollY) / (document.body.scrollHeight - window.innerHeight) * 100) + '%'" class="fixed top-0 left-0 h-1 bg-cyan-500 z-[60]" :style="`width: ${width}`"></div>
 
@@ -26,14 +29,14 @@
                 
                 @if ($post->featured_image)
                     <div class="rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl shadow-cyan-500/10 mb-12">
-                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-auto">
+                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="w-full h-auto" loading="lazy" decoding="async">
                     </div>
                 @endif
             </header>
 
             <!-- Content -->
             <div class="prose prose-invert prose-lg max-w-none break-all prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
-                {!! Str::markdown($post->content) !!}
+                {!! Purifier::clean(Str::markdown($post->content)) !!}
             </div>
 
             <!-- Footer -->

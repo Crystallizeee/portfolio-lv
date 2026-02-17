@@ -70,7 +70,7 @@
     {{-- Modal --}}
     @if($showModal)
     <div class="fixed inset-0 z-50 overflow-y-auto">
-        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" wire:click="closeModal"></div>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-md" wire:click="closeModal"></div>
         
         <div class="fixed inset-x-4 top-20 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-lg">
             <div class="glass-card p-6">

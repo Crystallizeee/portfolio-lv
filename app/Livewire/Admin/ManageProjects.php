@@ -213,7 +213,7 @@ class ManageProjects extends Component
         $this->status = 'online';
         $this->type = '';
         $this->tech_stack = '';
-        $this->gallery = '';
+        $this->gallery = [];
         $this->url = '';
         $this->seo_title = '';
         $this->seo_description = '';

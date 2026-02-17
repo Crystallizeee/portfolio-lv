@@ -24,18 +24,14 @@ class ServerStatus extends Component
             $this->getNextcloudStatus(),
             $this->getPortfolioStatus(),
             $this->getFinanceBotStatus(),
+            $this->getYtDownloaderStatus(),
             $this->getWazuhStatus(),
-            [
-                'name' => 'Tailscale VPN',
-                'node' => 'Secure Mesh',
-                'status' => 'connected',
-                'cpu' => '-',
-                'memory' => '-',
-                'uptime' => 'Always On',
-                'icon' => 'lock',
-                'color' => 'green',
-            ],
         ];
+    }
+
+    protected function getYtDownloaderStatus(): array
+    {
+        return $this->getLxcStatus(113, 'YT Downloader', 'Media-Worker-01', 'download-cloud');
     }
 
     protected function getWazuhStatus(): array
@@ -110,7 +106,7 @@ class ServerStatus extends Component
 
     protected function getPortfolioStatus(): array
     {
-        return $this->getLxcStatus(104, 'Portfolio', 'App-Worker-01', 'globe');
+        return $this->getLxcStatus(112, 'Portfolio', 'App-Worker-01', 'globe');
     }
 
     protected function getFinanceBotStatus(): array

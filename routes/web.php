@@ -18,6 +18,18 @@ Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->nam
 Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 Route::get('/projects/{slug}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
 
+// Sitemap
+Route::get('/sitemap.xml', function () {
+    $path = public_path('sitemap.xml');
+    if (!file_exists($path)) {
+        \Illuminate\Support\Facades\Artisan::call('sitemap:generate');
+    }
+    return response()->file($path, ['Content-Type' => 'application/xml']);
+})->name('sitemap');
+
+// OG Image Generation
+Route::get('/og-image/{type}/{slug}', [\App\Http\Controllers\OgImageController::class, 'generate'])->name('og-image');
+
 // Debug Proxmox API (only available in local environment)
 if (app()->environment('local')) {
     Route::get('/debug-proxmox', function () {
@@ -91,6 +103,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
         Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
         Route::get('/posts', \App\Livewire\Admin\ManagePosts::class)->name('admin.posts');
+        Route::get('/job-tracker', \App\Livewire\Admin\JobTracker::class)->name('admin.job-tracker');
         
         // Backup & Restore
         Route::get('/backup', function () {
@@ -100,6 +113,13 @@ Route::prefix('admin')->group(function () {
         Route::post('/backup/import', [BackupController::class, 'import'])->name('admin.backup.import');
         
         Route::get('/profile', ProfileSettings::class)->name('admin.profile');
+        
+        // Cache Clearance
+        Route::get('/clear-cache', function () {
+            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+            return back()->with('message', 'System cache cleared successfully!');
+        })->name('admin.clear-cache');
+
         Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
     });
 });

@@ -3,11 +3,24 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ $seo->description ?? 'Benidictus Tri Wibowo - Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security' }}">
-    <meta name="keywords" content="{{ $seo->keywords ?? 'Cybersecurity, GRC, ISO 27001, Penetration Testing, Laravel, Portfolio' }}">
-    <meta property="og:image" content="{{ $seo->og_image ?? '' }}">
+    <meta name="description" content="{{ $description ?? ($seo?->description ?? 'Benidictus Tri Wibowo - Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security') }}">
+    <meta name="keywords" content="{{ $seo?->keywords ?? 'Cybersecurity, GRC, ISO 27001, Penetration Testing, Laravel, Portfolio' }}">
     
-    <title>{{ $title ?? ($seo->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional') }}</title>
+    <!-- Open Graph -->
+    <meta property="og:type" content="{{ $og_type ?? 'website' }}">
+    <meta property="og:title" content="{{ $title ?? ($seo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional') }}">
+    <meta property="og:description" content="{{ $description ?? ($seo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security') }}">
+    <meta property="og:image" content="{{ $og_image ?? ($seo?->og_image ?? '') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="Benidictus Tri Wibowo">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $title ?? ($seo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional') }}">
+    <meta name="twitter:description" content="{{ $description ?? ($seo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security') }}">
+    <meta name="twitter:image" content="{{ $og_image ?? ($seo?->og_image ?? '') }}">
+    
+    <title>{{ $title ?? ($seo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -24,6 +37,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
+
+    <!-- Structured Data -->
+    @include('partials.jsonld-website')
+    @stack('structured-data')
 
     <script>
         if ('serviceWorker' in navigator) {

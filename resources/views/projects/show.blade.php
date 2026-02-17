@@ -67,7 +67,7 @@
                                         The Challenge
                                     </h3>
                                     <div class="prose prose-invert text-slate-400">
-                                        {!! Str::markdown($project->challenge) !!}
+                                        {!! Purifier::clean(Str::markdown($project->challenge)) !!}
                                     </div>
                                 </div>
                             @endif
@@ -79,7 +79,7 @@
                                         The Solution
                                     </h3>
                                     <div class="prose prose-invert text-slate-400">
-                                        {!! Str::markdown($project->solution) !!}
+                                        {!! Purifier::clean(Str::markdown($project->solution)) !!}
                                     </div>
                                 </div>
                             @endif
@@ -91,7 +91,7 @@
                                         The Results
                                     </h3>
                                     <div class="prose prose-invert text-slate-400">
-                                        {!! Str::markdown($project->results) !!}
+                                        {!! Purifier::clean(Str::markdown($project->results)) !!}
                                     </div>
                                 </div>
                             @endif
