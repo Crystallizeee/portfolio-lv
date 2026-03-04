@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         
         $middleware->web(append: [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':60,1',
             \App\Http\Middleware\TrackPageVisits::class,
             \App\Http\Middleware\SecurityHeaders::class,
         ]);
