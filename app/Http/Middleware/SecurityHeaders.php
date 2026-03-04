@@ -8,51 +8,52 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
 
-        // Prevent clickjacking
+        // === Clickjacking Protection ===
         $response->headers->set('X-Frame-Options', 'DENY');
 
-        // Prevent MIME-type sniffing
+        // === MIME-type Sniffing Prevention ===
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        // XSS protection for legacy browsers
+        // === XSS Protection (legacy browsers) ===
         $response->headers->set('X-XSS-Protection', '1; mode=block');
 
-        // Control referrer information leakage
+        // === Referrer Policy ===
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-        // Restrict browser feature access
-        $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+        // === Permissions Policy ===
+        $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()');
 
-        // Prevent Adobe cross-domain requests
+        // === Cross-Domain Policies ===
         $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
 
-        // HSTS (Force HTTPS) - 1 year
+        // === HSTS - Force HTTPS (1 year) ===
         $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
 
-        // Hide server version (best-effort, Apache config is more effective)
+        // === Cross-Origin Policies ===
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Embedder-Policy', 'unsafe-none'); // 'require-corp' breaks external fonts/scripts
+
+        // === Hide Server Info ===
         $response->headers->remove('Server');
         $response->headers->remove('X-Powered-By');
 
-        // Content Security Policy
-        $csp = "default-src 'self'; " .
-               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net; " .
-               "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://unpkg.com; " .
-               "font-src 'self' https://fonts.bunny.net data:; " .
-               "img-src 'self' data: https:; " .
-               "connect-src 'self' https://fonts.bunny.net; " .
-               "frame-ancestors 'none'; " .
-               "base-uri 'self'; " .
-               "form-action 'self';";
-
+        // === Content Security Policy ===
+        $csp = implode(' ', [
+            "default-src 'self';",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net;",
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://unpkg.com;",
+            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:;",
+            "img-src 'self' data: https:;",
+            "connect-src 'self' https://fonts.bunny.net;",
+            "frame-ancestors 'none';",
+            "base-uri 'self';",
+            "form-action 'self';",
+        ]);
         $response->headers->set('Content-Security-Policy', $csp);
 
         return $response;

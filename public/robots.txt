@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /livewire
-Disallow: /storage
-Disallow: /nova-api
+Disallow: /admin*
+Disallow: /livewire*
+Disallow: /storage*
 
-Sitemap: /sitemap.xml
+Sitemap: https://great-x-attach.xyz/sitemap.xml
