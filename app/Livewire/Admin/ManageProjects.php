@@ -44,7 +44,7 @@ class ManageProjects extends Component
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:projects,slug,' . $this->editingId,
+            'slug' => 'required|string|max:255|unique:projects,slug' . ($this->editingId ? ',' . $this->editingId : ''),
             'description' => 'required|string',
             'challenge' => 'nullable|string',
             'solution' => 'nullable|string',
