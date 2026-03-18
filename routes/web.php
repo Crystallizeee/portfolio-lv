@@ -104,6 +104,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
         Route::get('/posts', \App\Livewire\Admin\ManagePosts::class)->name('admin.posts');
         Route::get('/job-tracker', \App\Livewire\Admin\JobTracker::class)->name('admin.job-tracker');
+        Route::get('/proxmox', \App\Livewire\Admin\ManageProxmox::class)->name('admin.proxmox');
         
         // Backup & Restore
         Route::get('/backup', function () {

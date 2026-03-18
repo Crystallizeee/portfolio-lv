@@ -399,6 +399,26 @@
                                 @error('url') <span class="text-red-400 text-sm mt-1.5 block">{{ $message }}</span> @enderror
                             </div>
 
+                            <!-- Show on Landing Page Toggle -->
+                            <div class="flex items-center justify-between p-4 bg-slate-950/50 rounded-xl border border-slate-700">
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center space-x-2">
+                                        <i data-lucide="eye" class="w-4 h-4 text-cyan-400"></i>
+                                        <span>Show on Landing Page</span>
+                                    </label>
+                                    <p class="text-xs text-slate-500 mt-1">Toggle to display this project on the homepage</p>
+                                </div>
+                                <button 
+                                    type="button"
+                                    wire:click="$toggle('show_on_landing')"
+                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                                        {{ $show_on_landing ? 'bg-cyan-500' : 'bg-slate-700' }}"
+                                >
+                                    <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                                        {{ $show_on_landing ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                                </button>
+                            </div>
+
                             <!-- Actions -->
                             <div class="border-t border-slate-800 pt-4 mt-6">
                                 <h4 class="text-sm font-semibold text-slate-300 mb-4 flex items-center space-x-2">

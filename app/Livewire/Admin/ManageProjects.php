@@ -31,6 +31,7 @@ class ManageProjects extends Component
     public string $tech_stack = ''; 
     public array $gallery = []; // Array of image URLs
     public string $url = '';
+    public bool $show_on_landing = true;
     
     // Uploads
     public $new_gallery_images = [];
@@ -95,6 +96,7 @@ class ManageProjects extends Component
             ? $project->gallery
             : ($project->gallery ? explode(',', $project->gallery) : []);
         $this->url = $project->url ?? '';
+        $this->show_on_landing = $project->show_on_landing ?? true;
 
         // Load SEO
         $this->seo_title = $project->seo->title ?? '';
@@ -156,6 +158,7 @@ class ManageProjects extends Component
             'tech_stack' => $techStackArray,
             'gallery' => $this->gallery, // Save array directly (casted in Model)
             'url' => $this->url ?: null,
+            'show_on_landing' => $this->show_on_landing,
         ];
 
         if ($this->isEditing && $this->editingId) {
@@ -215,6 +218,7 @@ class ManageProjects extends Component
         $this->tech_stack = '';
         $this->gallery = [];
         $this->url = '';
+        $this->show_on_landing = true;
         $this->seo_title = '';
         $this->seo_description = '';
         $this->seo_keywords = '';

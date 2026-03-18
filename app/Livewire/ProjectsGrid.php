@@ -9,7 +9,7 @@ class ProjectsGrid extends Component
 {
     public function render()
     {
-        $projects = Project::all();
+        $projects = Project::where('show_on_landing', true)->get();
         
         return view('livewire.projects-grid', [
             'projects' => $projects,

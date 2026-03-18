@@ -23,11 +23,14 @@ class Project extends Model implements Sitemapable
         'tech_stack',
         'gallery',
         'url',
+        'show_on_landing',
+        'proxmox_vmid',
     ];
 
     protected $casts = [
         'tech_stack' => 'array',
         'gallery' => 'array',
+        'show_on_landing' => 'boolean',
     ];
     public function toSitemapTag(): \Spatie\Sitemap\Tags\Url | string | array
     {

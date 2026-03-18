@@ -98,6 +98,7 @@
                         ['route' => 'admin.activity-logs', 'icon' => 'activity', 'label' => 'Activity Logs'],
                         ['route' => 'admin.job-tracker', 'icon' => 'briefcase', 'label' => 'Job Tracker'],
                         ['route' => 'admin.seo', 'icon' => 'search', 'label' => 'SEO Manager'],
+                        ['route' => 'admin.proxmox', 'icon' => 'server', 'label' => 'Proxmox'],
                         ['route' => 'admin.backup', 'icon' => 'database-backup', 'label' => 'Backup & Restore'],
                     ];
                 @endphp
