@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Polling;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use App\Models\HomelabService;
 
 class ServerStatus extends Component
 {
@@ -19,79 +20,55 @@ class ServerStatus extends Component
     #[Polling('30s')]
     public function refreshStatus()
     {
-        $this->servers = [
-            $this->getProxmoxStatus(),
-            $this->getNextcloudStatus(),
-            $this->getPortfolioStatus(),
-            $this->getFinanceBotStatus(),
-            $this->getYtDownloaderStatus(),
-            $this->getWazuhStatus(),
-        ];
+        $services = HomelabService::visible()->get();
+
+        if ($services->isEmpty()) {
+            $this->servers = [];
+            return;
+        }
+
+        $this->servers = $services->map(function ($service) {
+            if ($service->type === 'node') {
+                return $this->getNodeStatus($service);
+            } elseif ($service->type === 'qemu') {
+                return $this->getVmStatus($service);
+            } else {
+                return $this->getLxcStatus($service);
+            }
+        })->toArray();
     }
 
-    protected function getYtDownloaderStatus(): array
+    protected function getNodeStatus(HomelabService $service): array
     {
-        return $this->getLxcStatus(113, 'YT Downloader', 'Media-Worker-01', 'download-cloud');
-    }
+        $default = $this->defaultStatus($service);
 
-    protected function getWazuhStatus(): array
-    {
-        // Wazuh is a VM (ID 110), not an LXC container.
-        return $this->getVmStatus(110, 'Wazuh Security', 'Sec-Worker-01', 'shield');
-    }
-
-    protected function getProxmoxStatus(): array
-    {
-        $default = [
-            'name' => 'Infrastructure',
-            'node' => 'Hypervisor-01',
-            'status' => 'offline',
-            'cpu' => 'N/A',
-            'memory' => 'N/A',
-            'uptime' => 'N/A',
-            'icon' => 'server',
-            'color' => 'red',
-        ];
-
-        return Cache::remember('proxmox_status', 30, function () use ($default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) {
-                    return $default;
-                }
+                if (!$host || !$tokenId || !$tokenSecret) return $default;
 
                 $response = Http::withoutVerifying()
-                    ->withHeaders([
-                        'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
-                    ])
+                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
                     ->timeout(5)
                     ->get("https://{$host}:8006/api2/json/nodes/{$node}/status");
 
                 if ($response->successful()) {
                     $data = $response->json()['data'];
-                    
-                    $cpuUsage = round($data['cpu'] * 100, 1);
-                    $memUsed = $data['memory']['used'] ?? 0;
-                    $memTotal = $data['memory']['total'] ?? 1;
-                    $memPercent = round(($memUsed / $memTotal) * 100, 1);
-                    $uptime = $this->formatUptime($data['uptime'] ?? 0);
-                    
                     return [
-                        'name' => 'Infrastructure',
-                        'node' => 'Hypervisor-01',
+                        'name' => $service->name,
+                        'node' => $service->node_label,
                         'status' => 'online',
-                        'cpu' => $cpuUsage . '%',
-                        'memory' => $memPercent . '%',
-                        'uptime' => $uptime,
-                        'icon' => 'server',
+                        'cpu' => round($data['cpu'] * 100, 1) . '%',
+                        'memory' => round(($data['memory']['used'] / ($data['memory']['total'] ?: 1)) * 100, 1) . '%',
+                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                        'icon' => $service->icon,
                         'color' => 'green',
                     ];
                 }
-
                 return $default;
             } catch (\Exception $e) {
                 return $default;
@@ -99,75 +76,40 @@ class ServerStatus extends Component
         });
     }
 
-    protected function getNextcloudStatus(): array
+    protected function getVmStatus(HomelabService $service): array
     {
-        return $this->getVmStatus(106, 'Nextcloud', 'Storage-Node', 'cloud');
-    }
+        $default = $this->defaultStatus($service);
 
-    protected function getPortfolioStatus(): array
-    {
-        return $this->getLxcStatus(112, 'Portfolio', 'App-Worker-01', 'globe');
-    }
-
-    protected function getFinanceBotStatus(): array
-    {
-        return $this->getLxcStatus(102, 'Finance Bot', 'Auto-Worker-01', 'bot');
-    }
-
-    protected function getVmStatus(int $vmid, string $name, string $nodeLabel, string $icon): array
-    {
-        $default = [
-            'name' => $name,
-            'node' => $nodeLabel,
-            'status' => 'offline',
-            'cpu' => 'N/A',
-            'memory' => 'N/A',
-            'uptime' => 'N/A',
-            'icon' => $icon,
-            'color' => 'red',
-        ];
-
-        return Cache::remember("{$name}_status", 30, function () use ($vmid, $name, $nodeLabel, $icon, $default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) {
-                    return $default;
-                }
+                if (!$host || !$tokenId || !$tokenSecret) return $default;
 
                 $response = Http::withoutVerifying()
-                    ->withHeaders([
-                        'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
-                    ])
+                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
                     ->timeout(5)
-                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/qemu/{$vmid}/status/current");
+                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/qemu/{$service->vmid}/status/current");
 
                 if ($response->successful()) {
                     $data = $response->json()['data'];
                     $status = $data['status'] ?? 'unknown';
                     $isRunning = $status === 'running';
-                    
-                    $cpuUsage = round(($data['cpu'] ?? 0) * 100, 1);
-                    $memUsed = $data['mem'] ?? 0;
-                    $memMax = $data['maxmem'] ?? 1;
-                    $memPercent = round(($memUsed / $memMax) * 100, 1);
-                    $uptime = $this->formatUptime($data['uptime'] ?? 0);
-                    
+
                     return [
-                        'name' => $name,
-                        'node' => $nodeLabel,
+                        'name' => $service->name,
+                        'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
-                        'cpu' => $cpuUsage . '%',
-                        'memory' => $memPercent . '%',
-                        'uptime' => $uptime,
-                        'icon' => $icon,
+                        'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
+                        'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
+                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                        'icon' => $service->icon,
                         'color' => $isRunning ? 'green' : 'red',
                     ];
                 }
-
                 return $default;
             } catch (\Exception $e) {
                 return $default;
@@ -175,76 +117,70 @@ class ServerStatus extends Component
         });
     }
 
-    protected function getLxcStatus(int $ctid, string $name, string $nodeLabel, string $icon): array
+    protected function getLxcStatus(HomelabService $service): array
     {
-        $default = [
-            'name' => $name,
-            'node' => $nodeLabel,
-            'status' => 'offline',
-            'cpu' => 'N/A',
-            'memory' => 'N/A',
-            'uptime' => 'N/A',
-            'icon' => $icon,
-            'color' => 'red',
-        ];
+        $default = $this->defaultStatus($service);
 
-        return Cache::remember("{$name}_status", 30, function () use ($ctid, $name, $nodeLabel, $icon, $default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) {
-                    return $default;
-                }
+                if (!$host || !$tokenId || !$tokenSecret) return $default;
 
                 $response = Http::withoutVerifying()
-                    ->withHeaders([
-                        'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
-                    ])
+                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
                     ->timeout(5)
-                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/lxc/{$ctid}/status/current");
+                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/lxc/{$service->vmid}/status/current");
 
                 if ($response->successful()) {
                     $data = $response->json()['data'];
                     $status = $data['status'] ?? 'unknown';
                     $isRunning = $status === 'running';
-                    
-                    $cpuUsage = round(($data['cpu'] ?? 0) * 100, 1);
-                    $memUsed = $data['mem'] ?? 0;
-                    $memMax = $data['maxmem'] ?? 1;
-                    $memPercent = round(($memUsed / $memMax) * 100, 1);
-                    $uptime = $this->formatUptime($data['uptime'] ?? 0);
-                    
+
                     return [
-                        'name' => $name,
-                        'node' => $nodeLabel,
+                        'name' => $service->name,
+                        'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
-                        'cpu' => $cpuUsage . '%',
-                        'memory' => $memPercent . '%',
-                        'uptime' => $uptime,
-                        'icon' => $icon,
+                        'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
+                        'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
+                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                        'icon' => $service->icon,
                         'color' => $isRunning ? 'green' : 'red',
                     ];
                 }
-
                 return $default;
             } catch (\Exception $e) {
                 return $default;
             }
         });
+    }
+
+    protected function defaultStatus(HomelabService $service): array
+    {
+        return [
+            'name' => $service->name,
+            'node' => $service->node_label,
+            'status' => 'offline',
+            'cpu' => 'N/A',
+            'memory' => 'N/A',
+            'uptime' => 'N/A',
+            'icon' => $service->icon,
+            'color' => 'red',
+        ];
     }
 
     protected function formatUptime(int $seconds): string
     {
+        if ($seconds <= 0) return 'N/A';
+
         $days = floor($seconds / 86400);
         $hours = floor(($seconds % 86400) / 3600);
-        
-        if ($days > 0) {
-            return "{$days}d {$hours}h";
-        }
-        
+
+        if ($days > 0) return "{$days}d {$hours}h";
+
         $minutes = floor(($seconds % 3600) / 60);
         return "{$hours}h {$minutes}m";
     }

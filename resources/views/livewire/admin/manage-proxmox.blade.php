@@ -82,7 +82,8 @@
                             <th class="text-left p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">CPU</th>
                             <th class="text-left p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Memory</th>
                             <th class="text-left p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Uptime</th>
-                            <th class="text-center p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Landing Page</th>
+                            <th class="text-center p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Home Lab</th>
+                            <th class="text-center p-4 text-xs font-mono text-slate-500 uppercase tracking-wider">Projects</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,7 +148,25 @@
                                     <span class="text-xs font-mono text-slate-400">{{ $resource['uptime'] }}</span>
                                 </td>
 
-                                <!-- Toggle -->
+                                <!-- Home Lab Toggle -->
+                                <td class="p-4 text-center">
+                                    <button 
+                                        wire:click="toggleHomelab({{ $resource['vmid'] }}, '{{ addslashes($resource['name']) }}', '{{ $resource['type_label'] }}')"
+                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                                            {{ $this->isOnHomelab($resource['vmid']) 
+                                                ? 'bg-emerald-500' 
+                                                : 'bg-slate-700' 
+                                            }}"
+                                    >
+                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                                            {{ $this->isOnHomelab($resource['vmid']) 
+                                                ? 'translate-x-6' 
+                                                : 'translate-x-1' 
+                                            }}"></span>
+                                    </button>
+                                </td>
+
+                                <!-- Projects Toggle -->
                                 <td class="p-4 text-center">
                                     <button 
                                         wire:click="toggleLanding({{ $resource['vmid'] }}, '{{ addslashes($resource['name']) }}', '{{ $resource['type_label'] }}')"
@@ -174,12 +193,12 @@
         <!-- Legend -->
         <div class="mt-6 flex items-center space-x-6 text-xs text-slate-500">
             <div class="flex items-center space-x-2">
-                <div class="w-3 h-3 rounded-full bg-cyan-500"></div>
-                <span>Toggle ON = Shown on landing page as a Project</span>
+                <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                <span>Home Lab = Shown in "Home Lab Infrastructure" section</span>
             </div>
             <div class="flex items-center space-x-2">
-                <div class="w-3 h-3 rounded-full bg-slate-700"></div>
-                <span>Toggle OFF = Hidden from landing page</span>
+                <div class="w-3 h-3 rounded-full bg-cyan-500"></div>
+                <span>Projects = Shown in "Projects & Labs" section</span>
             </div>
         </div>
     @endif

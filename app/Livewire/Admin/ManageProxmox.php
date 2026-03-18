@@ -5,12 +5,14 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Services\ProxmoxService;
 use App\Models\Project;
+use App\Models\HomelabService;
 use Illuminate\Support\Str;
 
 class ManageProxmox extends Component
 {
     public array $resources = [];
     public array $linkedVmids = [];
+    public array $homelabVmids = [];
     public bool $loading = false;
 
     public function mount()
@@ -32,17 +34,19 @@ class ManageProxmox extends Component
 
         $this->resources = $service->listAll();
 
-        // Load which vmids are already linked to projects
+        // Load which vmids are linked to projects (Landing Page)
         $this->linkedVmids = Project::whereNotNull('proxmox_vmid')
             ->pluck('show_on_landing', 'proxmox_vmid')
             ->toArray();
+
+        // Load which vmids are in homelab_services (Home Lab section)
+        $this->homelabVmids = HomelabService::pluck('is_visible', 'vmid')->toArray();
 
         $this->loading = false;
     }
 
     public function refreshList()
     {
-        // Clear Proxmox cache to force fresh fetch
         \Illuminate\Support\Facades\Cache::forget('proxmox_vms_list');
         \Illuminate\Support\Facades\Cache::forget('proxmox_lxc_list');
         $this->loadResources();
@@ -54,13 +58,10 @@ class ManageProxmox extends Component
         $project = Project::where('proxmox_vmid', $vmid)->first();
 
         if ($project) {
-            // Toggle existing project visibility
             $project->update(['show_on_landing' => !$project->show_on_landing]);
             $this->linkedVmids[$vmid] = $project->show_on_landing;
         } else {
-            // Create a new project linked to this Proxmox resource
             $resource = collect($this->resources)->firstWhere('vmid', $vmid);
-
             $project = Project::create([
                 'title' => $name,
                 'slug' => Str::slug($name),
@@ -71,26 +72,44 @@ class ManageProxmox extends Component
                 'show_on_landing' => true,
                 'proxmox_vmid' => $vmid,
             ]);
-
             $project->seo()->create([
                 'title' => $name,
                 'description' => "Proxmox {$typeLabel} resource",
                 'keywords' => 'proxmox, homelab',
             ]);
-
             $this->linkedVmids[$vmid] = true;
         }
-
-        session()->flash('message', "Landing page visibility updated for {$name}!");
     }
 
-    public function unlinkProject(int $vmid)
+    public function toggleHomelab(int $vmid, string $name, string $typeLabel)
     {
-        $project = Project::where('proxmox_vmid', $vmid)->first();
-        if ($project) {
-            $project->update(['show_on_landing' => false]);
-            $this->linkedVmids[$vmid] = false;
-            session()->flash('message', "'{$project->title}' hidden from landing page.");
+        $service = HomelabService::where('vmid', $vmid)->first();
+
+        if ($service) {
+            $service->update(['is_visible' => !$service->is_visible]);
+            $this->homelabVmids[$vmid] = $service->is_visible;
+
+            // Clear cache for this service
+            \Illuminate\Support\Facades\Cache::forget("homelab_{$vmid}_status");
+        } else {
+            // Determine icon based on type
+            $icons = [
+                'qemu' => 'monitor',
+                'lxc' => 'container',
+            ];
+
+            $maxOrder = HomelabService::max('sort_order') ?? 0;
+
+            HomelabService::create([
+                'vmid' => $vmid,
+                'name' => $name,
+                'node_label' => 'Worker',
+                'icon' => $icons[$typeLabel === 'VM' ? 'qemu' : 'lxc'] ?? 'server',
+                'type' => $typeLabel === 'VM' ? 'qemu' : 'lxc',
+                'is_visible' => true,
+                'sort_order' => $maxOrder + 1,
+            ]);
+            $this->homelabVmids[$vmid] = true;
         }
     }
 
@@ -99,9 +118,9 @@ class ManageProxmox extends Component
         return isset($this->linkedVmids[$vmid]) && $this->linkedVmids[$vmid];
     }
 
-    public function hasProject(int $vmid): bool
+    public function isOnHomelab(int $vmid): bool
     {
-        return array_key_exists($vmid, $this->linkedVmids);
+        return isset($this->homelabVmids[$vmid]) && $this->homelabVmids[$vmid];
     }
 
     public function render()
