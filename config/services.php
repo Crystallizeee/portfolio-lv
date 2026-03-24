@@ -42,4 +42,8 @@ return [
         'token_secret' => env('PROXMOX_TOKEN_SECRET'),
     ],
 
+    'cv_api' => [
+        'token' => env('CV_API_TOKEN'),
+    ],
+
 ];
