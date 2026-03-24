@@ -46,4 +46,8 @@ return [
         'token' => env('CV_API_TOKEN'),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+    ],
+
 ];
