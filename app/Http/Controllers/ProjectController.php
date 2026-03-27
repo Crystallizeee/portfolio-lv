@@ -10,7 +10,7 @@ class ProjectController extends Controller
     public function show($slug)
     {
         $project = Project::where('slug', $slug)
-            ->orWhere('id', $slug)
+            ->when(is_numeric($slug), fn ($query) => $query->orWhere('id', $slug))
             ->firstOrFail();
 
         // Check content visibility
