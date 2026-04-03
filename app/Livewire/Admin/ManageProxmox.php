@@ -96,7 +96,15 @@ class ManageProxmox extends Component
             $icons = [
                 'qemu' => 'monitor',
                 'lxc' => 'container',
+                'node' => 'server',
             ];
+
+            $type = match($typeLabel) {
+                'VM' => 'qemu',
+                'LXC' => 'lxc',
+                'Node' => 'node',
+                default => 'qemu'
+            };
 
             $maxOrder = HomelabService::max('sort_order') ?? 0;
 
@@ -104,8 +112,8 @@ class ManageProxmox extends Component
                 'vmid' => $vmid,
                 'name' => $name,
                 'node_label' => 'Worker',
-                'icon' => $icons[$typeLabel === 'VM' ? 'qemu' : 'lxc'] ?? 'server',
-                'type' => $typeLabel === 'VM' ? 'qemu' : 'lxc',
+                'icon' => $icons[$type] ?? 'server',
+                'type' => $type,
                 'is_visible' => true,
                 'sort_order' => $maxOrder + 1,
             ]);

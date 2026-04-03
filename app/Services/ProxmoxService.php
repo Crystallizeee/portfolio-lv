@@ -78,17 +78,56 @@ class ProxmoxService
     }
 
     /**
-     * Get all resources (VMs + Containers) combined.
+     * Get all resources (VMs + Containers + Node) combined.
      */
     public function listAll(): array
     {
         $vms = $this->listVMs();
         $containers = $this->listContainers();
+        $node = $this->getNode();
 
-        return collect(array_merge($vms, $containers))
+        $all = array_merge($vms, $containers);
+        if ($node) {
+            array_unshift($all, $node);
+        }
+
+        return collect($all)
             ->sortBy('vmid')
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Get Node/Host status and normalize it as a resource.
+     */
+    public function getNode(): ?array
+    {
+        return Cache::remember('proxmox_node_status', 30, function () {
+            if (!$this->configured) return null;
+
+            try {
+                $response = $this->apiGet("/nodes/{$this->node}/status");
+                if ($response->successful()) {
+                    $data = $response->json()['data'] ?? [];
+                    return [
+                        'vmid' => 0, // Pseudo VMID for Host
+                        'name' => $this->node,
+                        'type' => 'node',
+                        'type_label' => 'Node',
+                        'status' => 'online',
+                        'is_running' => true,
+                        'cpu' => round(($data['cpu'] ?? 0) * 100, 1),
+                        'memory' => $data['memory'] ? round((($data['memory']['used'] ?? 0) / ($data['memory']['total'] ?: 1)) * 100, 1) : 0,
+                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                        'disk_used' => $data['rootfs']['used'] ?? 0,
+                        'disk_max' => $data['rootfs']['total'] ?? 0,
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Silently fail
+            }
+            return null;
+        });
     }
 
     /**
