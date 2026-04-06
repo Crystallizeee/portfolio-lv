@@ -28,6 +28,10 @@ class User extends Authenticatable
         'summary',
         'avatar',
         'github',
+        'contact_title',
+        'contact_subtitle',
+        'about_grc_list',
+        'about_tech_list',
     ];
 
     public function languages()
@@ -55,6 +59,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'about_grc_list' => 'array',
+            'about_tech_list' => 'array',
         ];
     }
 }

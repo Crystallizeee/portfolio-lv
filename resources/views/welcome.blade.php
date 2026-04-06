@@ -29,10 +29,16 @@
                                 <h3 class="font-mono text-lg font-semibold text-white">GRC Expertise</h3>
                             </div>
                             <ul class="text-slate-400 text-sm space-y-2">
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>ISO 27001 Implementation</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>ICT Risk Assessment</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Security Policy Development</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Vendor Risk Management</li>
+                                @if($owner->about_grc_list)
+                                    @foreach($owner->about_grc_list as $item)
+                                        <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>{{ $item }}</li>
+                                    @endforeach
+                                @else
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>ISO 27001 Implementation</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>ICT Risk Assessment</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Security Policy Development</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Vendor Risk Management</li>
+                                @endif
                             </ul>
                         </div>
                         
@@ -42,10 +48,16 @@
                                 <h3 class="font-mono text-lg font-semibold text-white">Technical Skills</h3>
                             </div>
                             <ul class="text-slate-400 text-sm space-y-2">
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Penetration Testing</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>SIEM Implementation</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Infrastructure Automation</li>
-                                <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Container Security</li>
+                                @if($owner->about_tech_list)
+                                    @foreach($owner->about_tech_list as $item)
+                                        <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>{{ $item }}</li>
+                                    @endforeach
+                                @else
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Penetration Testing</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>SIEM Implementation</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Infrastructure Automation</li>
+                                    <li class="flex items-center"><i data-lucide="check" class="w-4 h-4 mr-2 text-green-400"></i>Container Security</li>
+                                @endif
                             </ul>
                         </div>
                     </div>

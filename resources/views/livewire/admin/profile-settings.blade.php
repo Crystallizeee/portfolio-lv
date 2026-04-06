@@ -183,6 +183,59 @@
                         @error('summary') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
 
+                    {{-- Homepage Customization --}}
+                    <div class="pt-6 border-t border-slate-700/50 space-y-4">
+                        <h4 class="text-sm font-mono text-cyan-400 font-semibold uppercase tracking-wider">Homepage Customization</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {{-- Contact Title --}}
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Contact Section Title</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="contact_title"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                                >
+                                @error('contact_title') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Contact Subtitle --}}
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Contact Section Subtitle</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="contact_subtitle"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                                >
+                                @error('contact_subtitle') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {{-- GRC Skills List --}}
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">GRC Expertise List (One per line)</label>
+                                <textarea 
+                                    wire:model="about_grc_list"
+                                    rows="4"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors resize-none font-mono text-xs"
+                                ></textarea>
+                                @error('about_grc_list') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Tech Skills List --}}
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Technical Skills List (One per line)</label>
+                                <textarea 
+                                    wire:model="about_tech_list"
+                                    rows="4"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors resize-none font-mono text-xs"
+                                ></textarea>
+                                @error('about_tech_list') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-between pt-4">
                         @if(session('profile_success'))
                             <span class="text-sm text-green-400">{{ session('profile_success') }}</span>

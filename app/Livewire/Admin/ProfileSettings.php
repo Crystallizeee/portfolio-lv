@@ -23,6 +23,10 @@ class ProfileSettings extends Component
     public $github;
     public $website;
     public $summary;
+    public $contact_title;
+    public $contact_subtitle;
+    public $about_grc_list;
+    public $about_tech_list;
     
     // Avatar
     public $avatar;
@@ -55,6 +59,10 @@ class ProfileSettings extends Component
         $this->website = $user->website;
         $this->summary = $user->summary;
         $this->avatar = $user->avatar;
+        $this->contact_title = $user->contact_title ?? 'Get In Touch';
+        $this->contact_subtitle = $user->contact_subtitle;
+        $this->about_grc_list = is_array($user->about_grc_list) ? implode("\n", $user->about_grc_list) : '';
+        $this->about_tech_list = is_array($user->about_tech_list) ? implode("\n", $user->about_tech_list) : '';
         $this->loadEducations();
     }
 
@@ -134,6 +142,10 @@ class ProfileSettings extends Component
             'github' => 'nullable|url|max:255',
             'website' => 'nullable|url|max:255',
             'summary' => 'nullable|string|max:2000',
+            'contact_title' => 'required|string|max:255',
+            'contact_subtitle' => 'nullable|string|max:1000',
+            'about_grc_list' => 'nullable|string',
+            'about_tech_list' => 'nullable|string',
         ]);
 
         $user = Auth::user();
@@ -146,7 +158,13 @@ class ProfileSettings extends Component
             'github' => $this->github,
             'website' => $this->website,
             'summary' => $this->summary,
+            'contact_title' => $this->contact_title,
+            'contact_subtitle' => $this->contact_subtitle,
+            'about_grc_list' => array_filter(array_map('trim', explode("\n", $this->about_grc_list))),
+            'about_tech_list' => array_filter(array_map('trim', explode("\n", $this->about_tech_list))),
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('portfolio_owner');
 
         session()->flash('profile_success', 'Profile updated successfully!');
     }
@@ -174,6 +192,8 @@ class ProfileSettings extends Component
         );
         $user->update(['avatar' => Storage::url($path)]);
         
+        \Illuminate\Support\Facades\Cache::forget('portfolio_owner');
+
         $this->avatar = Storage::url($path);
         $this->newAvatar = null;
 
@@ -193,6 +213,8 @@ class ProfileSettings extends Component
 
         $user->update(['avatar' => null]);
         $this->avatar = null;
+
+        \Illuminate\Support\Facades\Cache::forget('portfolio_owner');
 
         session()->flash('avatar_success', 'Avatar removed successfully!');
     }

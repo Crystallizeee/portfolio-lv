@@ -218,7 +218,23 @@
     
     <script>
         // Initialize Lucide icons
-        lucide.createIcons();
+        const initLucide = () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        };
+
+        // Initial load
+        initLucide();
+
+        // Re-initialize after Livewire navigation or updates
+        document.addEventListener('livewire:navigated', initLucide);
+        document.addEventListener('livewire:load', initLucide);
+        
+        // Polling as a fallback for dynamic content re-renders
+        Livewire.hook('message.processed', (message, component) => {
+            initLucide();
+        });
 
         // Preloader
         window.addEventListener('load', function() {
