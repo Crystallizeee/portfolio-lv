@@ -214,12 +214,17 @@
     <div class="header">
         <table width="100%">
             <tr>
-                <td width="60%" style="vertical-align: top;">
+                <td width="55%" style="vertical-align: top;">
                     <div class="name">{{ $personal['name'] }}</div>
                     <div class="professional-title">{{ $personal['professional_title'] }}</div>
-                    <div style="font-size: 9px; color: #64748b; margin-top: 5px;">{{ $personal['address'] }}</div>
                 </td>
-                <td width="40%" style="vertical-align: top; text-align: right;">
+                <td width="45%" style="vertical-align: top; text-align: right;">
+                    @if($personal['address'])
+                        <div class="contact-item">
+                            {{ $personal['address'] }}
+                            <svg class="contact-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </div>
+                    @endif
                     @if($personal['phone'])
                         <div class="contact-item">
                             {{ $personal['phone'] }}
