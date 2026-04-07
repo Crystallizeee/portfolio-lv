@@ -27,6 +27,9 @@ class ProfileSettings extends Component
     public $contact_subtitle;
     public $about_grc_list;
     public $about_tech_list;
+    public $professional_title;
+    public $titleOptions = [];
+    public $isCustomTitle = false;
     
     // Avatar
     public $avatar;
@@ -63,6 +66,14 @@ class ProfileSettings extends Component
         $this->contact_subtitle = $user->contact_subtitle;
         $this->about_grc_list = is_array($user->about_grc_list) ? implode("\n", $user->about_grc_list) : '';
         $this->about_tech_list = is_array($user->about_tech_list) ? implode("\n", $user->about_tech_list) : '';
+        $this->professional_title = $user->professional_title;
+        $this->titleOptions = \App\Models\User::PROFESSIONAL_TITLES;
+        
+        // Check if current title is in predefined list
+        if ($this->professional_title && !in_array($this->professional_title, $this->titleOptions)) {
+            $this->isCustomTitle = true;
+        }
+
         $this->loadEducations();
     }
 
@@ -131,6 +142,22 @@ class ProfileSettings extends Component
         $this->educationForm = ['school' => '', 'degree' => '', 'year' => '', 'thesis' => ''];
     }
 
+    public function updatedProfessionalTitle($value)
+    {
+        if ($value === 'custom') {
+            $this->isCustomTitle = true;
+            $this->professional_title = '';
+        } else {
+            $this->isCustomTitle = false;
+        }
+    }
+
+    public function switchToDropdown()
+    {
+        $this->isCustomTitle = false;
+        $this->professional_title = $this->titleOptions[0];
+    }
+
     public function updateProfile()
     {
         $this->validate([
@@ -146,6 +173,7 @@ class ProfileSettings extends Component
             'contact_subtitle' => 'nullable|string|max:1000',
             'about_grc_list' => 'nullable|string',
             'about_tech_list' => 'nullable|string',
+            'professional_title' => 'nullable|string|max:255',
         ]);
 
         $user = Auth::user();
@@ -162,6 +190,7 @@ class ProfileSettings extends Component
             'contact_subtitle' => $this->contact_subtitle,
             'about_grc_list' => array_filter(array_map('trim', explode("\n", $this->about_grc_list))),
             'about_tech_list' => array_filter(array_map('trim', explode("\n", $this->about_tech_list))),
+            'professional_title' => $this->professional_title,
         ]);
 
         \Illuminate\Support\Facades\Cache::forget('portfolio_owner');

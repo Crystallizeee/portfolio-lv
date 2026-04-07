@@ -25,6 +25,7 @@ class CvGenerator extends Component
     public $github; // Added
     public $website;
     public $summary;
+    public $professional_title;
 
     // Toggles
     public $useDbExperiences = true;
@@ -52,6 +53,7 @@ class CvGenerator extends Component
         $this->github = $user ? $user->github : ''; // Added
         $this->website = $user ? $user->website : ''; // Corrected from edit
         $this->summary = $user ? $user->summary : ''; // Corrected from edit
+        $this->professional_title = $user ? $user->professional_title : 'ICT Security Professional & Software Engineer';
         
         // Initialize with one empty item for manual input
         $this->educations = [
@@ -141,6 +143,7 @@ class CvGenerator extends Component
                 'github' => $this->github, // Added
                 'website' => $this->website,
                 'summary' => $this->summary,
+                'professional_title' => $this->professional_title,
             ],
             'educations' => $this->useDbEducations 
                 ? Education::where('user_id', $userId)->orderBy('sort_order')->get()->toArray() 

@@ -58,6 +58,7 @@ class CvDownloadController extends Controller
                 'github'   => $user->github ?? '',
                 'website'  => $user->website ?? '',
                 'summary'  => $user->summary ?? '',
+                'professional_title' => $user->professional_title ?? 'ICT Security Professional & Software Engineer',
             ],
             'educations'     => Education::where('user_id', $user->id)->orderBy('sort_order')->get()->toArray(),
             'certifications' => Certificate::where('user_id', $user->id)->orderBy('sort_order')->get()->toArray(),

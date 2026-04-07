@@ -12,6 +12,14 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    const PROFESSIONAL_TITLES = [
+        'ICT Security Professional & Software Engineer',
+        'Hybrid GRC & Technical Security Practitioner',
+        'Cyber Security Engineer & Developer',
+        'Information Security Specialist',
+        'Software Engineer',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -32,6 +40,7 @@ class User extends Authenticatable
         'contact_subtitle',
         'about_grc_list',
         'about_tech_list',
+        'professional_title',
     ];
 
     public function languages()

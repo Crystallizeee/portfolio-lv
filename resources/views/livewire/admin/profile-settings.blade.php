@@ -130,11 +130,48 @@
                             <input 
                                 type="url" 
                                 wire:model="website"
-                                placeholder="https://"
                                 class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
                             >
                             @error('website') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                         </div>
+                    </div>
+
+                    {{-- Professional Title (for CV) --}}
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Professional Title (for CV)</label>
+                        
+                        @if(!$isCustomTitle)
+                            <div class="flex space-x-2">
+                                <select 
+                                    wire:model.live="professional_title"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                                >
+                                    <option value="">Select a title...</option>
+                                    @foreach($titleOptions as $option)
+                                        <option value="{{ $option }}">{{ $option }}</option>
+                                    @endforeach
+                                    <option value="custom">-- Custom Title --</option>
+                                </select>
+                            </div>
+                        @else
+                            <div class="space-y-2">
+                                <input 
+                                    type="text" 
+                                    wire:model="professional_title"
+                                    placeholder="Enter custom professional title"
+                                    class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
+                                >
+                                <button 
+                                    type="button" 
+                                    wire:click="switchToDropdown"
+                                    class="text-xs text-cyan-400 hover:text-cyan-300 transition-colors flex items-center"
+                                >
+                                    <i data-lucide="list" class="w-3 h-3 mr-1"></i>
+                                    Switch back to predefined titles
+                                </button>
+                            </div>
+                        @endif
+                        @error('professional_title') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- LinkedIn --}}

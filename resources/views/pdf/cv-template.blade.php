@@ -209,7 +209,7 @@
             <tr>
                 <td width="55%" style="vertical-align: bottom;">
                     <div class="name">{{ $personal['name'] }}</div>
-                    <div class="title-line">ICT Security Professional &amp; Software Engineer</div>
+                    <div class="title-line">{{ $personal['professional_title'] }}</div>
                 </td>
                 <td width="45%" style="vertical-align: bottom;">
                     @if($personal['phone'])
