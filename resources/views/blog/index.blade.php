@@ -14,9 +14,30 @@
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
                     Thoughts & <span class="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Tutorials</span>
                 </h1>
-                <p class="text-slate-400 text-lg leading-relaxed">
+                <p class="text-slate-400 text-lg leading-relaxed mb-10">
                     Sharing my journey in Cybersecurity, Laravel, and everything in between.
                 </p>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <a 
+                        href="{{ route('blog.index') }}" 
+                        class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 {{ !$category ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25' : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 border border-slate-700/50' }}"
+                    >
+                        All Topics
+                    </a>
+                    @php 
+                        $allCategories = ['Tech', 'Tutorial', 'Insight', 'Life', 'Personal', 'Other'];
+                    @endphp
+                    @foreach($allCategories as $cat)
+                        <a 
+                            href="{{ route('blog.index', ['category' => $cat]) }}" 
+                            class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 {{ $category === $cat ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25' : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 border border-slate-700/50' }}"
+                        >
+                            {{ $cat }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
 
             <!-- Featured Post (First Post) -->
@@ -39,10 +60,13 @@
                                         </div>
                                     </div>
                                 @endif
-                                <!-- Featured Badge -->
-                                <div class="absolute top-4 left-4">
-                                    <span class="px-3 py-1 rounded-full bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-xs font-semibold tracking-wide uppercase">
+                                <!-- Featured Badge & Category -->
+                                <div class="absolute top-4 left-4 flex flex-col space-y-2">
+                                    <span class="px-3 py-1 rounded-full bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-[10px] font-bold tracking-widest uppercase">
                                         Featured
+                                    </span>
+                                    <span class="px-3 py-1 rounded-full {{ $featured->category === 'Tech' ? 'bg-cyan-500 text-white' : 'bg-purple-500 text-white' }} text-[10px] font-bold tracking-widest uppercase shadow-lg">
+                                        {{ $featured->category }}
                                     </span>
                                 </div>
                             </div>
@@ -108,8 +132,13 @@
 
                                     <!-- Content -->
                                     <div class="p-5 flex-1 flex flex-col justify-center">
-                                        <div class="flex items-center space-x-2 text-xs font-mono text-slate-500 mb-2.5">
-                                            <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Draft' }}</span>
+                                        <div class="flex items-center justify-between mb-2.5">
+                                            <div class="flex items-center space-x-2 text-xs font-mono text-slate-500">
+                                                <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Draft' }}</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ $post->category === 'Tech' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700' }}">
+                                                {{ $post->category }}
+                                            </span>
                                         </div>
 
                                         <h3 class="text-base font-bold text-white mb-2 leading-snug group-hover:text-cyan-400 transition-colors duration-300 line-clamp-2">

@@ -17,11 +17,23 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header -->
             <header class="mb-12 text-center">
-                <div class="flex items-center justify-center space-x-2 text-sm font-mono text-cyan-400 mb-6">
-                    <a href="{{ route('blog.index') }}" class="hover:underline">~/blog</a>
-                    <span class="text-slate-600">/</span>
-                    <span class="text-slate-400">{{ $post->published_at ? $post->published_at->format('Y-m-d') : 'Draft' }}</span>
-                </div>
+                    <div class="flex flex-wrap items-center gap-4 text-sm font-mono text-slate-400 mb-8 border-b border-slate-700/50 pb-8">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="calendar" class="w-4 h-4 text-cyan-500"></i>
+                            <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Draft' }}</span>
+                        </div>
+                        <span class="text-slate-700">•</span>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="user" class="w-4 h-4 text-cyan-500"></i>
+                            <span>{{ $post->user->name ?? 'Admin' }}</span>
+                        </div>
+                        <span class="text-slate-700">•</span>
+                        <div class="flex items-center">
+                            <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider {{ $post->category === 'Tech' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700' }}">
+                                {{ $post->category }}
+                            </span>
+                        </div>
+                    </div>              
                 
                 <h1 class="text-3xl md:text-5xl font-bold text-white leading-tight mb-8">
                     {{ $post->title }}

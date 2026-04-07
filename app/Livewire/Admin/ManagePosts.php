@@ -25,8 +25,12 @@ class ManagePosts extends Component
     public $slug = '';
     public $excerpt = '';
     public $content = '';
+    public $category = 'Tech';
     public $status = 'draft';
     public $published_at = '';
+    
+    // Supported Categories
+    public $categories = ['Tech', 'Tutorial', 'Insight', 'Life', 'Personal', 'Other'];
     
     // Image Upload
     public $featured_image = ''; // Existing image URL/Path
@@ -44,6 +48,7 @@ class ManagePosts extends Component
             ],
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
+            'category' => 'required|string|max:50',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
             'new_featured_image' => 'nullable|image|max:2048', // 2MB Max
@@ -73,6 +78,7 @@ class ManagePosts extends Component
         $this->slug = $post->slug;
         $this->excerpt = $post->excerpt;
         $this->content = $post->content;
+        $this->category = $post->category ?? 'Tech';
         $this->status = $post->status;
         $this->published_at = $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : '';
         $this->featured_image = $post->featured_image;
@@ -100,6 +106,7 @@ class ManagePosts extends Component
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'content' => $this->content,
+            'category' => $this->category,
             'status' => $this->status,
             'published_at' => $this->published_at ?: ($this->status === 'published' ? now() : null),
         ];
@@ -152,6 +159,7 @@ class ManagePosts extends Component
         $this->slug = '';
         $this->excerpt = '';
         $this->content = '';
+        $this->category = 'Tech';
         $this->status = 'draft';
         $this->published_at = '';
         $this->featured_image = '';

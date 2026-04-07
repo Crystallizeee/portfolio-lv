@@ -18,6 +18,7 @@ class Post extends Model implements Sitemapable
         'excerpt',
         'content',
         'featured_image',
+        'category',
         'status',
         'published_at',
     ];

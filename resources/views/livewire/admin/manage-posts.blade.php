@@ -31,7 +31,7 @@
         <table class="w-full">
             <thead class="bg-gradient-to-r from-slate-800/80 to-slate-700/80">
                 <tr>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Title</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Title / Category</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Published At</th>
                     <th class="px-6 py-4 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">Actions</th>
@@ -41,8 +41,17 @@
                 @forelse ($posts as $post)
                     <tr class="hover:bg-slate-700/30 transition-all duration-200 group">
                         <td class="px-6 py-5">
-                            <div class="text-white font-semibold group-hover:text-purple-400 transition-colors">{{ $post->title }}</div>
-                            <div class="text-slate-500 text-sm mt-1 truncate max-w-xs">/{{ $post->slug }}</div>
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="text-white font-semibold group-hover:text-purple-400 transition-colors">{{ $post->title }}</div>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono leading-none border {{ $post->category === 'Tech' ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' : 'bg-slate-700/50 border-slate-600/50 text-slate-400' }}">
+                                            {{ strtoupper($post->category) }}
+                                        </span>
+                                        <span class="text-slate-600 text-xs font-mono">/{{ $post->slug }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-6 py-5">
                             @if ($post->status === 'published')
@@ -307,8 +316,8 @@
                                 </div>
                             </div>
 
-                            <!-- Status & Date -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Status, Category & Date -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <!-- Status -->
                                 <div class="space-y-2">
                                     <label class="text-sm font-medium text-slate-300">Status</label>
@@ -320,6 +329,20 @@
                                         <option value="published">Published</option>
                                     </select>
                                     @error('status') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                <!-- Category -->
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-300">Category</label>
+                                    <select 
+                                        wire:model="category" 
+                                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-all appearance-none"
+                                    >
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat }}">{{ $cat }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('category') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <!-- Published At -->
