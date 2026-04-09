@@ -59,6 +59,7 @@
                 </a>
                 
                 <div class="flex items-center space-x-4">
+                    @livewire('post-like-button', ['post' => $post])
                     <button class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-twitter hover:text-white transition-colors" title="Share on Twitter">
                         <i data-lucide="twitter" class="w-4 h-4"></i>
                     </button>
@@ -67,6 +68,9 @@
                     </button>
                 </div>
             </footer>
+
+            <!-- Comments Section -->
+            @livewire('post-comments', ['post' => $post])
         </div>
     </article>
 </x-layouts.app>
