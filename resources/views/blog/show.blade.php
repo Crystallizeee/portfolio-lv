@@ -60,12 +60,21 @@
                 
                 <div class="flex items-center space-x-4">
                     @livewire('post-like-button', ['post' => $post])
-                    <button class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-twitter hover:text-white transition-colors" title="Share on Twitter">
-                        <i data-lucide="twitter" class="w-4 h-4"></i>
-                    </button>
-                    <button class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-linkedin hover:text-white transition-colors" title="Share on LinkedIn">
-                        <i data-lucide="linkedin" class="w-4 h-4"></i>
-                    </button>
+                    
+                    <div x-data="{ copied: false }">
+                        <button 
+                            @click="
+                                navigator.clipboard.writeText(window.location.href);
+                                copied = true;
+                                setTimeout(() => copied = false, 2000);
+                            "
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-colors" 
+                            title="Salin Tautan">
+                            
+                            <div x-show="!copied"><i data-lucide="link" class="w-4 h-4"></i></div>
+                            <div x-cloak x-show="copied"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div>
+                        </button>
+                    </div>
                 </div>
             </footer>
 
