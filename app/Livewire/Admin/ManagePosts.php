@@ -20,6 +20,12 @@ class ManagePosts extends Component
     public $deleteId = null;
     public $showDeleteModal = false;
 
+    // Comments Modal
+    public $showCommentsModal = false;
+    public $currentPostIdForComments = null;
+    public $currentPostTitle = '';
+    public $postComments = [];
+
     // Form fields
     public $title = '';
     public $slug = '';
@@ -152,6 +158,34 @@ class ManagePosts extends Component
         session()->flash('message', 'Post deleted successfully!');
     }
 
+    // --- Comments Management ---
+    public function openCommentsModal($postId)
+    {
+        $post = Post::with('comments')->findOrFail($postId);
+        $this->currentPostIdForComments = $post->id;
+        $this->currentPostTitle = $post->title;
+        $this->postComments = $post->comments()->latest()->get();
+        $this->showCommentsModal = true;
+    }
+
+    public function closeCommentsModal()
+    {
+        $this->showCommentsModal = false;
+        $this->currentPostIdForComments = null;
+        $this->currentPostTitle = '';
+        $this->postComments = [];
+    }
+
+    public function deleteComment($commentId)
+    {
+        \App\Models\Comment::findOrFail($commentId)->delete();
+        // Refresh comments list
+        if ($this->currentPostIdForComments) {
+            $this->postComments = \App\Models\Comment::where('post_id', $this->currentPostIdForComments)->latest()->get();
+        }
+        session()->flash('message', 'Komentar berhasil dihapus!');
+    }
+
     public function resetForm()
     {
         $this->editingId = null;
@@ -173,7 +207,7 @@ class ManagePosts extends Component
     public function render()
     {
         return view('livewire.admin.manage-posts', [
-            'posts' => Post::orderBy('created_at', 'desc')->paginate(10),
+            'posts' => Post::withCount('comments')->orderBy('created_at', 'desc')->paginate(10),
         ])->layout('layouts.admin', ['title' => 'Manage Posts']);
     }
 }

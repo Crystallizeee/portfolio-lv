@@ -30,14 +30,21 @@
     <div class="space-y-6">
         @forelse ($comments as $comment)
             <div class="p-6 bg-slate-800/30 rounded-2xl border border-slate-700/50">
-                <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
-                        {{ strtoupper(substr($comment->name, 0, 1)) }}
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                            {{ strtoupper(substr($comment->name, 0, 1)) }}
+                        </div>
+                        <div>
+                            <h4 class="text-white font-medium">{{ $comment->name }}</h4>
+                            <p class="text-xs text-slate-400 font-mono">{{ $comment->created_at->diffForHumans() }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="text-white font-medium">{{ $comment->name }}</h4>
-                        <p class="text-xs text-slate-400 font-mono">{{ $comment->created_at->diffForHumans() }}</p>
-                    </div>
+                    @auth
+                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    @endauth
                 </div>
                 <p class="text-slate-300 leading-relaxed text-sm lg:text-base">
                     {{ $comment->content }}

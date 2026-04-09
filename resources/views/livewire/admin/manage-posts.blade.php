@@ -33,6 +33,7 @@
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Title / Category</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Comments</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Published At</th>
                     <th class="px-6 py-4 text-right text-xs font-semibold text-slate-300 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -65,6 +66,12 @@
                                     Draft
                                 </span>
                             @endif
+                        </td>
+                        <td class="px-6 py-5 text-slate-300 text-sm w-32">
+                            <button wire:click="openCommentsModal({{ $post->id }})" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-700/50 transition-colors {{ $post->comments_count > 0 ? 'text-cyan-400 font-medium' : 'text-slate-500' }}">
+                                <i data-lucide="message-square" class="w-4 h-4"></i>
+                                <span>{{ $post->comments_count }}</span>
+                            </button>
                         </td>
                         <td class="px-6 py-5 text-slate-400 text-sm">
                             {{ $post->published_at ? $post->published_at->format('d M Y, H:i') : '-' }}
@@ -603,4 +610,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Comments Management Modal -->
+    @if ($showCommentsModal)
+        <div 
+            class="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-24"
+            x-data="{ show: false }"
+            x-init="setTimeout(() => show = true, 10)"
+            x-show="show"
+        >
+            <div 
+                class="fixed inset-0 bg-black/50 backdrop-blur-md"
+                wire:click="closeCommentsModal"
+            ></div>
+            
+            <div class="relative w-full max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-10 flex flex-col">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 border-b border-slate-700 flex justify-between items-center sticky top-0 z-20">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i data-lucide="message-square" class="w-5 h-5 text-cyan-500"></i>
+                        <span>Comments on: <span class="text-cyan-400">{{ $currentPostTitle }}</span></span>
+                    </h3>
+                    <button wire:click="closeCommentsModal" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6 overflow-y-auto" style="max-height: 60vh;">
+                    @if(count($postComments) > 0)
+                        <div class="space-y-4">
+                            @foreach ($postComments as $comment)
+                                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-5">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-cyan-400 font-bold">
+                                                {{ strtoupper(substr($comment->name, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <h4 class="text-white font-medium text-sm">{{ $comment->name }}</h4>
+                                                <p class="text-xs text-slate-400">{{ $comment->created_at->format('d M Y, H:i') }}</p>
+                                            </div>
+                                        </div>
+                                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Are you sure you want to permanently delete this comment?" class="text-slate-500 hover:text-red-400 p-1.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors" title="Delete Comment">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                    <div class="text-slate-300 text-sm mt-3 pl-11">
+                                        {{ $comment->content }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="py-12 flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center">
+                                <i data-lucide="message-square-off" class="w-8 h-8 text-slate-500"></i>
+                            </div>
+                            <p class="text-slate-400">No comments yet for this post.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

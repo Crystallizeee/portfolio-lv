@@ -36,6 +36,14 @@ class PostComments extends Component
         session()->flash('message', 'Komentar berhasil ditambahkan.');
     }
 
+    public function deleteComment($commentId)
+    {
+        if (auth()->check()) {
+            \App\Models\Comment::findOrFail($commentId)->delete();
+            session()->flash('message', 'Komentar berhasil dihapus.');
+        }
+    }
+
     public function render()
     {
         return view('livewire.post-comments', [
