@@ -150,20 +150,32 @@
 
                                 <!-- Home Lab Toggle -->
                                 <td class="p-4 text-center">
-                                    <button 
-                                        wire:click="toggleHomelab({{ $resource['vmid'] }}, '{{ addslashes($resource['name']) }}', '{{ $resource['type_label'] }}')"
-                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900
-                                            {{ $this->isOnHomelab($resource['vmid']) 
-                                                ? 'bg-emerald-500' 
-                                                : 'bg-slate-700' 
-                                            }}"
-                                    >
-                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-                                            {{ $this->isOnHomelab($resource['vmid']) 
-                                                ? 'translate-x-6' 
-                                                : 'translate-x-1' 
-                                            }}"></span>
-                                    </button>
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <button 
+                                            wire:click="toggleHomelab({{ $resource['vmid'] }}, '{{ addslashes($resource['name']) }}', '{{ $resource['type_label'] }}')"
+                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                                                {{ $this->isOnHomelab($resource['vmid']) 
+                                                    ? 'bg-emerald-500' 
+                                                    : 'bg-slate-700' 
+                                                }}"
+                                        >
+                                            <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                                                {{ $this->isOnHomelab($resource['vmid']) 
+                                                    ? 'translate-x-6' 
+                                                    : 'translate-x-1' 
+                                                }}"></span>
+                                        </button>
+
+                                        @if($this->isOnHomelab($resource['vmid']))
+                                            <button 
+                                                wire:click="startEditAlias({{ $resource['vmid'] }})"
+                                                class="p-1 text-slate-500 hover:text-emerald-400 transition-colors"
+                                                title="Edit Alias"
+                                            >
+                                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 <!-- Projects Toggle -->
@@ -199,6 +211,59 @@
             <div class="flex items-center space-x-2">
                 <div class="w-3 h-3 rounded-full bg-cyan-500"></div>
                 <span>Projects = Shown in "Projects & Labs" section</span>
+            </div>
+        </div>
+    @endif
+
+    <!-- Edit Alias Modal -->
+    @if($editingVmid)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+            <div class="glass-card w-full max-w-md p-6 border-cyan-500/30">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-mono font-bold text-white">Edit Display Name</h3>
+                    <button wire:click="cancelEdit" class="text-slate-500 hover:text-white transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Original Name</label>
+                        <div class="p-3 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-400 font-mono">
+                            {{ collect($resources)->firstWhere('vmid', $editingVmid)['name'] ?? 'N/A' }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="newAlias" class="block text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Alias (Display Name)</label>
+                        <input 
+                            type="text" 
+                            id="newAlias" 
+                            wire:model="newAlias"
+                            placeholder="Enter display name..."
+                            class="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all font-mono"
+                            wire:keydown.enter="saveAlias"
+                        >
+                        <p class="mt-2 text-[10px] text-slate-500 font-mono">
+                            Leave empty to use original name. This name will appear on the landing page.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center space-x-3 mt-8">
+                        <button 
+                            wire:click="saveAlias"
+                            class="flex-1 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-mono font-bold transition-all"
+                        >
+                            Save Alias
+                        </button>
+                        <button 
+                            wire:click="cancelEdit"
+                            class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-mono transition-all"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     @endif

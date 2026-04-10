@@ -9,6 +9,7 @@ class HomelabService extends Model
     protected $fillable = [
         'vmid',
         'name',
+        'alias',
         'node_label',
         'icon',
         'type',

@@ -59,7 +59,7 @@ class ServerStatus extends Component
                 if ($response->successful()) {
                     $data = $response->json()['data'];
                     return [
-                        'name' => $service->name,
+                        'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => 'online',
                         'cpu' => round($data['cpu'] * 100, 1) . '%',
@@ -100,7 +100,7 @@ class ServerStatus extends Component
                     $isRunning = $status === 'running';
 
                     return [
-                        'name' => $service->name,
+                        'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
                         'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
@@ -141,7 +141,7 @@ class ServerStatus extends Component
                     $isRunning = $status === 'running';
 
                     return [
-                        'name' => $service->name,
+                        'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
                         'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
@@ -161,7 +161,7 @@ class ServerStatus extends Component
     protected function defaultStatus(HomelabService $service): array
     {
         return [
-            'name' => $service->name,
+            'name' => $service->alias ?? $service->name,
             'node' => $service->node_label,
             'status' => 'offline',
             'cpu' => 'N/A',

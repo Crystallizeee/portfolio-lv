@@ -13,7 +13,10 @@ class ManageProxmox extends Component
     public array $resources = [];
     public array $linkedVmids = [];
     public array $homelabVmids = [];
+    public array $homelabAliases = [];
     public bool $loading = false;
+    public ?int $editingVmid = null;
+    public string $newAlias = '';
 
     public function mount()
     {
@@ -41,6 +44,7 @@ class ManageProxmox extends Component
 
         // Load which vmids are in homelab_services (Home Lab section)
         $this->homelabVmids = HomelabService::pluck('is_visible', 'vmid')->toArray();
+        $this->homelabAliases = HomelabService::pluck('alias', 'vmid')->toArray();
 
         $this->loading = false;
     }
@@ -119,6 +123,33 @@ class ManageProxmox extends Component
             ]);
             $this->homelabVmids[$vmid] = true;
         }
+    }
+
+    public function startEditAlias(int $vmid)
+    {
+        $this->editingVmid = $vmid;
+        $this->newAlias = $this->homelabAliases[$vmid] ?? '';
+    }
+
+    public function saveAlias()
+    {
+        $service = HomelabService::where('vmid', $this->editingVmid)->first();
+        if ($service) {
+            $service->update(['alias' => $this->newAlias]);
+            $this->homelabAliases[$this->editingVmid] = $this->newAlias;
+            
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget("homelab_{$this->editingVmid}_status");
+        }
+        
+        $this->cancelEdit();
+        session()->flash('message', 'Alias updated successfully!');
+    }
+
+    public function cancelEdit()
+    {
+        $this->editingVmid = null;
+        $this->newAlias = '';
     }
 
     public function isLinked(int $vmid): bool
