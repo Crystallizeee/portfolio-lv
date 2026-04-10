@@ -29,6 +29,5 @@ Homestead.json
 .phpactor.json
 auth.json
 
-# Deployment scripts (contain credentials)
-/scripts/
-*.py
+# Ignore server configuration with sensitive data
+scripts/config.py
