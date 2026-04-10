@@ -27,12 +27,12 @@ def deploy():
     ssh.exec_command(f'cd {REMOTE_DIR} && git config core.filemode false')
     
     # Fetch latest changes from remote
-    print("-> Fetching latest changes (git fetch origin)...")
-    ssh.exec_command(f'cd {REMOTE_DIR} && git fetch origin')
+    print("-> Fetching latest changes (git fetch origin main)...")
+    ssh.exec_command(f'cd {REMOTE_DIR} && git fetch origin main')
 
     # Reset local changes
-    print("-> Resetting local changes (git reset --hard origin/main)...")
-    stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_DIR} && git reset --hard origin/main')
+    print("-> Resetting local changes (git reset --hard FETCH_HEAD)...")
+    stdin, stdout, stderr = ssh.exec_command(f'cd {REMOTE_DIR} && git reset --hard FETCH_HEAD')
     reset_out = stdout.read().decode().strip()
     reset_err = stderr.read().decode().strip()
     if reset_out: print(f"  {reset_out}")
