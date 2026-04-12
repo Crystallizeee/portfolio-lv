@@ -31,3 +31,7 @@ auth.json
 
 # Ignore server configuration with sensitive data
 scripts/config.py
+
+# Python bytecode cache (may contain compiled secrets)
+__pycache__/
+*.pyc

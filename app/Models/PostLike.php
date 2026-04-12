@@ -9,7 +9,7 @@ class PostLike extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['post_id', 'ip_address'];
+    protected $fillable = ['post_id', 'ip_hash'];
 
     public function post()
     {

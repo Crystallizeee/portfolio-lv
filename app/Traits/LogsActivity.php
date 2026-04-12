@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\ActivityLog;
+use App\Services\IpAnonymizer;
 use Illuminate\Support\Facades\Auth;
 
 trait LogsActivity
@@ -37,13 +38,24 @@ trait LogsActivity
             $description .= ": {$model->company}";
         }
 
+        // Capture old values for update actions (forensic: WHAT was changed)
+        $oldValues = null;
+        if ($action === 'update') {
+            $dirty = $model->getDirty();
+            $oldValues = array_intersect_key($model->getOriginal(), $dirty);
+        }
+
         ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => $action,
             'description' => $description,
             'model_type' => get_class($model),
             'model_id' => $model->id,
-            'properties' => $model->getDirty(), // Log changed attributes
+            'properties' => $model->getDirty(), // New/changed values
+            'old_values' => $oldValues,          // Previous values (WHO changed WHAT from WHAT)
+            'ip_hash' => IpAnonymizer::hashRequest(),    // WHO (location)
+            'user_agent' => request()->userAgent(),       // WHERE (device)
+            'url' => substr(request()->fullUrl(), 0, 500), // WHERE (page context)
         ]);
     }
 }

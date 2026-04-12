@@ -7,7 +7,7 @@
     <meta name="keywords" content="{{ $seo?->keywords ?? 'Cybersecurity, GRC, ISO 27001, Penetration Testing, Laravel, Portfolio' }}">
     
     <!-- Open Graph -->
-    <meta property="og:type" content="{{ $og_type ?? 'website' }}">
+    <meta property="og:type" content="{{ $og_type ?? ($seo?->og_type ?? 'website') }}">
     <meta property="og:title" content="{{ $title ?? ($seo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional') }}">
     <meta property="og:description" content="{{ $description ?? ($seo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security') }}">
     <meta property="og:image" content="{{ $og_image ?? ($seo?->og_image ?? '') }}">

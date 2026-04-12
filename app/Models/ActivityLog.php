@@ -14,10 +14,15 @@ class ActivityLog extends Model
         'model_type',
         'model_id',
         'properties',
+        'ip_hash',
+        'user_agent',
+        'url',
+        'old_values',
     ];
 
     protected $casts = [
         'properties' => 'array',
+        'old_values' => 'array',
     ];
 
     public function user(): BelongsTo

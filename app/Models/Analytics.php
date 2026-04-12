@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Services\IpAnonymizer;
 
 class Analytics extends Model
 {
@@ -12,7 +13,7 @@ class Analytics extends Model
         'type',
         'count',
         'date',
-        'ip_address', // Added
+        'ip_hash',
     ];
 
     protected $casts = [
@@ -25,19 +26,20 @@ class Analytics extends Model
     }
 
     /**
-     * Increment a specific analytics type for today
+     * Increment a specific analytics type for today.
+     * IP is hashed for privacy compliance (UU PDP).
      */
     public static function track(int $userId, string $type): void
     {
         $today = now()->toDateString();
-        $ip = request()->ip(); // Capture IP
+        $ipHash = IpAnonymizer::hashRequest();
         
         $record = self::firstOrCreate(
             [
                 'user_id' => $userId, 
                 'type' => $type, 
                 'date' => $today,
-                'ip_address' => $ip
+                'ip_hash' => $ipHash
             ],
             ['count' => 0]
         );

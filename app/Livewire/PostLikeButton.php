@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Services\IpAnonymizer;
 
 class PostLikeButton extends Component
 {
@@ -18,9 +19,9 @@ class PostLikeButton extends Component
 
     public function toggleLike()
     {
-        $ip = request()->ip();
+        $ipHash = IpAnonymizer::hashRequest();
         $like = \App\Models\PostLike::where('post_id', $this->post->id)
-                                    ->where('ip_address', $ip)
+                                    ->where('ip_hash', $ipHash)
                                     ->first();
 
         if ($like) {
@@ -28,7 +29,7 @@ class PostLikeButton extends Component
         } else {
             \App\Models\PostLike::create([
                 'post_id' => $this->post->id,
-                'ip_address' => $ip,
+                'ip_hash' => $ipHash,
             ]);
         }
 
@@ -38,7 +39,7 @@ class PostLikeButton extends Component
     private function updateLikeStatus()
     {
         $this->likesCount = $this->post->likes()->count();
-        $this->hasLiked = $this->post->likes()->where('ip_address', request()->ip())->exists();
+        $this->hasLiked = $this->post->likes()->where('ip_hash', IpAnonymizer::hashRequest())->exists();
     }
 
     public function render()

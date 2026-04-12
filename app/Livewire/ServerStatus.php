@@ -40,16 +40,14 @@ class ServerStatus extends Component
 
     protected function getNodeStatus(HomelabService $service): array
     {
-        $default = $this->defaultStatus($service);
-
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) return $default;
+                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
 
                 $response = Http::withoutVerifying()
                     ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
@@ -58,7 +56,7 @@ class ServerStatus extends Component
 
                 if ($response->successful()) {
                     $data = $response->json()['data'];
-                    return [
+                    $result = [
                         'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => 'online',
@@ -68,26 +66,29 @@ class ServerStatus extends Component
                         'icon' => $service->icon,
                         'color' => 'green',
                     ];
+
+                    // Persist to DB for fallback
+                    $service->updateCachedStatus($result);
+
+                    return $result;
                 }
-                return $default;
+                return $this->fallbackStatus($service);
             } catch (\Exception $e) {
-                return $default;
+                return $this->fallbackStatus($service);
             }
         });
     }
 
     protected function getVmStatus(HomelabService $service): array
     {
-        $default = $this->defaultStatus($service);
-
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) return $default;
+                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
 
                 $response = Http::withoutVerifying()
                     ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
@@ -99,7 +100,7 @@ class ServerStatus extends Component
                     $status = $data['status'] ?? 'unknown';
                     $isRunning = $status === 'running';
 
-                    return [
+                    $result = [
                         'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
@@ -109,26 +110,29 @@ class ServerStatus extends Component
                         'icon' => $service->icon,
                         'color' => $isRunning ? 'green' : 'red',
                     ];
+
+                    // Persist to DB for fallback
+                    $service->updateCachedStatus($result);
+
+                    return $result;
                 }
-                return $default;
+                return $this->fallbackStatus($service);
             } catch (\Exception $e) {
-                return $default;
+                return $this->fallbackStatus($service);
             }
         });
     }
 
     protected function getLxcStatus(HomelabService $service): array
     {
-        $default = $this->defaultStatus($service);
-
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service, $default) {
+        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
             try {
                 $host = config('services.proxmox.host');
                 $node = config('services.proxmox.node');
                 $tokenId = config('services.proxmox.token_id');
                 $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) return $default;
+                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
 
                 $response = Http::withoutVerifying()
                     ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
@@ -140,7 +144,7 @@ class ServerStatus extends Component
                     $status = $data['status'] ?? 'unknown';
                     $isRunning = $status === 'running';
 
-                    return [
+                    $result = [
                         'name' => $service->alias ?? $service->name,
                         'node' => $service->node_label,
                         'status' => $isRunning ? 'running' : $status,
@@ -150,12 +154,33 @@ class ServerStatus extends Component
                         'icon' => $service->icon,
                         'color' => $isRunning ? 'green' : 'red',
                     ];
+
+                    // Persist to DB for fallback
+                    $service->updateCachedStatus($result);
+
+                    return $result;
                 }
-                return $default;
+                return $this->fallbackStatus($service);
             } catch (\Exception $e) {
-                return $default;
+                return $this->fallbackStatus($service);
             }
         });
+    }
+
+    /**
+     * Graceful degradation: DB cached status → default offline.
+     * If Proxmox API is down, return last known DB status (yellow indicator).
+     * If no DB cache exists, return hardcoded offline (red indicator).
+     */
+    protected function fallbackStatus(HomelabService $service): array
+    {
+        // Try DB cached status first
+        if ($service->last_status_check !== null) {
+            return $service->getCachedStatusArray();
+        }
+
+        // Ultimate fallback: no data at all
+        return $this->defaultStatus($service);
     }
 
     protected function defaultStatus(HomelabService $service): array

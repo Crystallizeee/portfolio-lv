@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\SiteVisit;
+use App\Services\IpAnonymizer;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
@@ -38,7 +39,7 @@ class TrackPageVisits
 
         try {
             SiteVisit::create([
-                'ip_address' => $request->ip(),
+                'ip_hash' => IpAnonymizer::hash($request->ip()),
                 'url' => $request->fullUrl(),
                 'user_agent' => substr($userAgent, 0, 255),
                 'referer' => substr($request->header('referer'), 0, 255),

@@ -3,6 +3,8 @@
     :description="$project->seo?->description ?? $project->description"
     :keywords="$project->seo?->keywords"
 >
+    @include('partials.jsonld-project', ['project' => $project])
+
     <div class="pt-32 pb-24 relative overflow-hidden">
         <!-- Background Elements -->
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
