@@ -16,6 +16,32 @@ use Illuminate\Support\Facades\App;
 class CvGenerator extends Component
 {
     public $locale = 'en'; // Added locale
+    public $template = 'professional'; // Template selection
+
+    /**
+     * Available CV templates with metadata.
+     */
+    public const TEMPLATES = [
+        'professional' => [
+            'label' => 'Professional',
+            'description' => 'Classic two-column layout with sidebar. Formal & clean.',
+            'icon' => 'layout-grid',
+            'color' => 'blue',
+        ],
+        'minimal' => [
+            'label' => 'Minimal',
+            'description' => 'Single-column, modern typography. Clean & elegant.',
+            'icon' => 'minus',
+            'color' => 'emerald',
+        ],
+        'executive' => [
+            'label' => 'Executive',
+            'description' => 'Bold navy & gold header. Senior & authoritative.',
+            'icon' => 'crown',
+            'color' => 'amber',
+        ],
+    ];
+
     // Personal Info
     public $name;
     public $email;
@@ -124,6 +150,17 @@ class CvGenerator extends Component
         $this->manualSkills = array_values($this->manualSkills);
     }
 
+    /**
+     * Resolve the Blade view name for the selected template.
+     */
+    protected function resolveTemplateView(): string
+    {
+        $allowed = array_keys(self::TEMPLATES);
+        $template = in_array($this->template, $allowed) ? $this->template : 'professional';
+
+        return "pdf.cv-{$template}";
+    }
+
     public function generatePdf()
     {
         $this->validate([
@@ -167,7 +204,8 @@ class CvGenerator extends Component
 
         App::setLocale($this->locale);
 
-        $html = view('pdf.cv-template', $data)->render();
+        $viewName = $this->resolveTemplateView();
+        $html = view($viewName, $data)->render();
         $pdf = Pdf::loadHtml($html);
         
         // Track download
@@ -180,7 +218,9 @@ class CvGenerator extends Component
 
     public function render()
     {
-        return view('livewire.admin.cv-generator')
+        return view('livewire.admin.cv-generator', [
+            'templates' => self::TEMPLATES,
+        ])
             ->layout('layouts.admin', ['title' => 'CV Generator']);
     }
 }

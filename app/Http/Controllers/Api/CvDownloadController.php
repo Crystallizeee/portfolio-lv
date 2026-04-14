@@ -11,6 +11,7 @@ use App\Models\Certificate;
 use App\Models\Project;
 use App\Models\Language;
 use App\Models\Analytics;
+use App\Livewire\Admin\CvGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -23,6 +24,7 @@ class CvDownloadController extends Controller
      * Usage: GET /api/cv/download
      * Auth:  Authorization: Bearer <CV_API_TOKEN>
      * Params: ?locale=en|id (default: en)
+     *         ?template=professional|minimal|executive (default: professional)
      */
     public function download(Request $request)
     {
@@ -47,6 +49,13 @@ class CvDownloadController extends Controller
             App::setLocale($locale);
         }
 
+        // Resolve template (whitelist from CvGenerator::TEMPLATES)
+        $template = $request->query('template', 'professional');
+        $allowed = array_keys(CvGenerator::TEMPLATES);
+        if (!in_array($template, $allowed)) {
+            $template = 'professional';
+        }
+
         // Build CV data (same logic as CvGenerator)
         $data = [
             'personal' => [
@@ -68,8 +77,8 @@ class CvDownloadController extends Controller
             'projects'       => Project::where('status', 'online')->orderBy('created_at', 'desc')->get()->toArray(),
         ];
 
-        // Generate PDF
-        $html = view('pdf.cv-template', $data)->render();
+        // Generate PDF with selected template
+        $html = view("pdf.cv-{$template}", $data)->render();
         $pdf = Pdf::loadHtml($html);
 
         // Track download

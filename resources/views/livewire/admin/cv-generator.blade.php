@@ -283,6 +283,70 @@
                 <h3 class="text-lg font-bold text-white mb-4">Configuration</h3>
                 
                 <div class="space-y-4">
+                    <!-- Template Selection -->
+                    <div class="mb-2">
+                        <label class="block text-sm font-medium text-slate-400 mb-3">
+                            <i data-lucide="palette" class="w-4 h-4 inline-block mr-1 -mt-0.5"></i>
+                            CV Template
+                        </label>
+                        <div class="space-y-2">
+                            @php
+                                $templateColors = [
+                                    'blue' => [
+                                        'active_bg' => 'bg-blue-500/15',
+                                        'active_border' => 'border-blue-500/60',
+                                        'icon_bg' => 'bg-blue-500',
+                                        'icon_text' => 'text-white',
+                                        'label' => 'text-white',
+                                        'desc' => 'text-blue-200/70',
+                                        'ring' => 'border-blue-400 bg-blue-400',
+                                    ],
+                                    'emerald' => [
+                                        'active_bg' => 'bg-emerald-500/15',
+                                        'active_border' => 'border-emerald-500/60',
+                                        'icon_bg' => 'bg-emerald-500',
+                                        'icon_text' => 'text-white',
+                                        'label' => 'text-white',
+                                        'desc' => 'text-emerald-200/70',
+                                        'ring' => 'border-emerald-400 bg-emerald-400',
+                                    ],
+                                    'amber' => [
+                                        'active_bg' => 'bg-amber-500/15',
+                                        'active_border' => 'border-amber-500/60',
+                                        'icon_bg' => 'bg-amber-500',
+                                        'icon_text' => 'text-white',
+                                        'label' => 'text-white',
+                                        'desc' => 'text-amber-200/70',
+                                        'ring' => 'border-amber-400 bg-amber-400',
+                                    ],
+                                ];
+                            @endphp
+
+                            @foreach($templates as $key => $tmpl)
+                                @php $colors = $templateColors[$tmpl['color']] ?? $templateColors['blue']; @endphp
+                                <div 
+                                    wire:click="$set('template', '{{ $key }}')"
+                                    class="p-3.5 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $template === $key ? $colors['active_bg'] . ' ' . $colors['active_border'] : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                                >
+                                    <div class="flex items-center justify-between relative z-10">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-9 h-9 rounded-lg {{ $template === $key ? $colors['icon_bg'] : 'bg-slate-700 group-hover:bg-slate-600' }} flex items-center justify-center transition-colors">
+                                                <i data-lucide="{{ $tmpl['icon'] }}" class="w-4 h-4 {{ $template === $key ? $colors['icon_text'] : 'text-slate-400' }}"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-bold text-sm {{ $template === $key ? $colors['label'] : 'text-slate-300' }}">{{ $tmpl['label'] }}</div>
+                                                <div class="text-[10px] leading-tight {{ $template === $key ? $colors['desc'] : 'text-slate-500' }}">{{ $tmpl['description'] }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0 {{ $template === $key ? $colors['ring'] : 'border-slate-600' }}">
+                                            @if($template === $key) <i data-lucide="check" class="w-3 h-3 text-slate-900 font-bold"></i> @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <!-- Language Selection -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-slate-400 mb-2">CV Language</label>
