@@ -216,7 +216,7 @@
     @endif
 
     <!-- Edit Alias Modal -->
-    @if($editingVmid)
+    @if($editingVmid !== null)
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
             <div class="glass-card w-full max-w-md p-6 border-cyan-500/30">
                 <div class="flex items-center justify-between mb-6">
