@@ -27,7 +27,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700|jetbrains-mono:400,500,600,700" rel="stylesheet" />
 
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
 
     <!-- PWA Settings -->
     <meta name="theme-color" content="#0a0f1d">
@@ -230,11 +230,16 @@
 
         // Re-initialize after Livewire navigation or updates
         document.addEventListener('livewire:navigated', initLucide);
-        document.addEventListener('livewire:load', initLucide);
+        document.addEventListener('livewire:init', initLucide);
         
-        // Polling as a fallback for dynamic content re-renders
-        Livewire.hook('message.processed', (message, component) => {
+        // Re-init icons after every Livewire DOM update (v3 hooks)
+        Livewire.hook('morph.updated', ({ el, component }) => {
             initLucide();
+        });
+        Livewire.hook('commit', ({ succeed }) => {
+            succeed(({ effects, snapshot }) => {
+                queueMicrotask(initLucide);
+            });
         });
 
         // Preloader

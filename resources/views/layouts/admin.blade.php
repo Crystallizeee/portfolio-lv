@@ -12,7 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700|jetbrains-mono:400,500,600,700" rel="stylesheet" />
 
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -231,14 +231,11 @@
                 lucide.createIcons();
             });
             
-            Livewire.hook('element.updated', (el, component) => {
-                lucide.createIcons();
+            Livewire.hook('commit', ({ succeed }) => {
+                succeed(({ effects, snapshot }) => {
+                    queueMicrotask(() => lucide.createIcons());
+                });
             });
-        });
-        
-        // Also reinitialize on any DOM change
-        document.addEventListener('livewire:load', () => {
-            lucide.createIcons();
         });
     </script>
 </body>
