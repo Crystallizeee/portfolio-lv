@@ -74,6 +74,9 @@
     
     {{-- Skills Section --}}
     <livewire:skills-section />
+
+    {{-- GitHub Contributions --}}
+    <livewire:github-contributions />
     
     {{-- Projects Grid --}}
     <livewire:projects-grid />
