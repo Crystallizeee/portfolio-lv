@@ -95,24 +95,34 @@
                                     @foreach($week['contributionDays'] as $day)
                                         @php
                                             $level = $this->getLevel($day['contributionCount']);
-                                            $colors = [
-                                                0 => 'bg-slate-800/60 border-slate-700/30',
-                                                1 => 'bg-cyan-900/60 border-cyan-800/40',
-                                                2 => 'bg-cyan-700/60 border-cyan-600/40',
-                                                3 => 'bg-cyan-500/70 border-cyan-400/50',
-                                                4 => 'bg-cyan-400 border-cyan-300/60',
+                                            
+                                            $bgColors = [
+                                                0 => '#1e293b99',
+                                                1 => '#164e6399',
+                                                2 => '#0e749099',
+                                                3 => '#06b6d4b3',
+                                                4 => '#22d3ee',
                                             ];
-                                            $glowClasses = [
-                                                0 => '',
-                                                1 => '',
-                                                2 => '',
-                                                3 => 'shadow-[0_0_4px_rgba(34,211,238,0.15)]',
-                                                4 => 'shadow-[0_0_6px_rgba(34,211,238,0.3)]',
+                                            
+                                            $borderColors = [
+                                                0 => '#3341554d',
+                                                1 => '#155e7566',
+                                                2 => '#0891b266',
+                                                3 => '#22d3ee80',
+                                                4 => '#67e8f999',
+                                            ];
+
+                                            $glows = [
+                                                0 => 'none',
+                                                1 => 'none',
+                                                2 => 'none',
+                                                3 => '0 0 4px rgba(34,211,238,0.15)',
+                                                4 => '0 0 8px rgba(34,211,238,0.4)',
                                             ];
                                         @endphp
                                         <div
-                                            class="rounded-[2px] border {{ $colors[$level] }} {{ $glowClasses[$level] }} transition-all duration-200 hover:scale-150 hover:z-10 relative group/cell cursor-pointer"
-                                            style="width: 10px; height: 10px;"
+                                            class="rounded-[2px] border transition-all duration-200 hover:scale-150 hover:z-10 relative group/cell cursor-pointer"
+                                            style="width: 10px; height: 10px; background-color: {{ $bgColors[$level] }}; border-color: {{ $borderColors[$level] }}; box-shadow: {{ $glows[$level] }};"
                                             title="{{ $day['date'] }}: {{ $day['contributionCount'] }} contribution{{ $day['contributionCount'] !== 1 ? 's' : '' }}"
                                         >
                                             <!-- Tooltip -->
@@ -138,11 +148,11 @@
                         <div class="flex items-center space-x-2">
                             <span class="text-[10px] font-mono text-slate-500">Less</span>
                             <div class="flex" style="gap: 3px;">
-                                <div class="rounded-[2px] bg-slate-800/60 border border-slate-700/30" style="width: 10px; height: 10px;"></div>
-                                <div class="rounded-[2px] bg-cyan-900/60 border border-cyan-800/40" style="width: 10px; height: 10px;"></div>
-                                <div class="rounded-[2px] bg-cyan-700/60 border border-cyan-600/40" style="width: 10px; height: 10px;"></div>
-                                <div class="rounded-[2px] bg-cyan-500/70 border border-cyan-400/50" style="width: 10px; height: 10px;"></div>
-                                <div class="rounded-[2px] bg-cyan-400 border border-cyan-300/60" style="width: 10px; height: 10px;"></div>
+                                <div class="rounded-[2px] border border-[#3341554d]" style="width: 10px; height: 10px; background-color: #1e293b99;"></div>
+                                <div class="rounded-[2px] border border-[#155e7566]" style="width: 10px; height: 10px; background-color: #164e6399;"></div>
+                                <div class="rounded-[2px] border border-[#0891b266]" style="width: 10px; height: 10px; background-color: #0e749099;"></div>
+                                <div class="rounded-[2px] border border-[#22d3ee80]" style="width: 10px; height: 10px; background-color: #06b6d4b3;"></div>
+                                <div class="rounded-[2px] border border-[#67e8f999]" style="width: 10px; height: 10px; background-color: #22d3ee;"></div>
                             </div>
                             <span class="text-[10px] font-mono text-slate-500">More</span>
                         </div>
