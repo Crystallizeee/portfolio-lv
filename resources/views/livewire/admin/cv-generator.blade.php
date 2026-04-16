@@ -27,11 +27,30 @@
                     <i data-lucide="user" class="w-5 h-5 text-purple-400"></i>
                     <span>Personal Information</span>
                 </h3>
+
+                @if(count($availableProfiles) > 0)
+                <div class="mb-6 pb-6 border-b border-slate-700/50">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Load From Profile Variant</label>
+                    <select wire:model.live="selectedProfileId" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-cyan-400 focus:outline-none focus:bg-slate-800 transition-colors">
+                        <option value="">-- Manual Entry / Base Profile --</option>
+                        @foreach($availableProfiles as $profile)
+                            <option value="{{ $profile->id }}">{{ $profile->name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-slate-500 mt-2">Selecting a profile will automatically update your Professional Title and Summary below.</p>
+                </div>
+                @endif
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
                         <input wire:model="name" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-purple-400 focus:outline-none focus:bg-slate-800 transition-colors">
                         @error('name') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Professional Title</label>
+                        <input wire:model="professional_title" type="text" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-purple-400 focus:outline-none focus:bg-slate-800 transition-colors">
+                        @error('professional_title') <span class="text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>

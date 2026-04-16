@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->hasMany(Language::class);
     }
 
+    public function jobProfiles()
+    {
+        return $this->hasMany(JobProfile::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

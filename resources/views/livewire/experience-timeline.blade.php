@@ -1,5 +1,5 @@
 <div id="experience" class="py-20 bg-slate-900/50">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Section Header -->
         <div class="text-center mb-16">
             <span class="terminal-text font-mono text-sm mb-4 block">
@@ -46,9 +46,16 @@
                             </div>
                             
                             <!-- Description -->
-                            <p class="text-slate-400 text-sm leading-relaxed">
-                                {{ $experience->description }}
-                            </p>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                @foreach(explode("\n", str_replace("\r", "", $experience->description)) as $point)
+                                    @if(trim($point))
+                                        <li class="flex items-start">
+                                            <i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-cyan-500/70 mt-0.5 shrink-0"></i>
+                                            <span>{{ trim($point) }}</span>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>

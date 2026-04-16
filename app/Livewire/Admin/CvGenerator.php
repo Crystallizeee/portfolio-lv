@@ -8,6 +8,7 @@ use App\Models\Skill;
 use App\Models\Education;
 use App\Models\Certificate;
 use App\Models\Project;
+use App\Models\JobProfile;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Analytics;
@@ -17,6 +18,8 @@ class CvGenerator extends Component
 {
     public $locale = 'en'; // Added locale
     public $template = 'professional'; // Template selection
+    public $selectedProfileId = null;
+    public $availableProfiles = [];
 
     /**
      * Available CV templates with metadata.
@@ -71,14 +74,17 @@ class CvGenerator extends Component
     public function mount()
     {
         $user = Auth::user();
+        
+        $this->availableProfiles = JobProfile::where('user_id', $user->id ?? 0)->get();
+
         $this->name = $user ? $user->name : 'Developer Name';
         $this->email = $user ? $user->email : 'email@example.com';
         $this->phone = $user ? $user->phone : '';
         $this->address = $user ? $user->address : '';
-        $this->linkedin = $user ? $user->linkedin : ''; // Corrected from edit
-        $this->github = $user ? $user->github : ''; // Added
-        $this->website = $user ? $user->website : ''; // Corrected from edit
-        $this->summary = $user ? $user->summary : ''; // Corrected from edit
+        $this->linkedin = $user ? $user->linkedin : ''; 
+        $this->github = $user ? $user->github : ''; 
+        $this->website = $user ? $user->website : ''; 
+        $this->summary = $user ? $user->summary : ''; 
         $this->professional_title = $user ? $user->professional_title : 'ICT Security Professional & Software Engineer';
         
         // Initialize with one empty item for manual input
@@ -93,6 +99,18 @@ class CvGenerator extends Component
         $this->manualLanguages = [
             ['name' => '', 'level' => '']
         ];
+    }
+
+    public function updatedSelectedProfileId($value)
+    {
+        if ($value) {
+            $profile = JobProfile::find($value);
+            if ($profile) {
+                $this->professional_title = $profile->professional_title;
+                $this->summary = $profile->summary;
+                // Note: about lists are generally for the homepage, but we could add them to the CV if a template needs it.
+            }
+        }
     }
 
     public function addEducation()

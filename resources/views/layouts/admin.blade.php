@@ -101,6 +101,7 @@
                         ['route' => 'admin.seo', 'icon' => 'search', 'label' => 'SEO Manager'],
                         ['route' => 'admin.proxmox', 'icon' => 'server', 'label' => 'Proxmox'],
                         ['route' => 'admin.backup', 'icon' => 'database-backup', 'label' => 'Backup & Restore'],
+                        ['route' => 'admin.profiles', 'icon' => 'users', 'label' => 'Manage Profiles'],
                     ];
                 @endphp
 

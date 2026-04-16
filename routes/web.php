@@ -14,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\BackupController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/p/{slug}', [HomeController::class, 'profile'])->name('profile.show');
 Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 Route::get('/projects/{slug}', [\App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
@@ -114,6 +115,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/backup/import', [BackupController::class, 'import'])->name('admin.backup.import');
         
         Route::get('/profile', ProfileSettings::class)->name('admin.profile');
+        Route::get('/profiles', \App\Livewire\Admin\ManageProfiles::class)->name('admin.profiles');
         
         // Cache Clearance
         Route::get('/clear-cache', function () {
