@@ -100,6 +100,7 @@
                         ['route' => 'admin.job-tracker', 'icon' => 'briefcase', 'label' => 'Job Tracker'],
                         ['route' => 'admin.seo', 'icon' => 'search', 'label' => 'SEO Manager'],
                         ['route' => 'admin.proxmox', 'icon' => 'server', 'label' => 'Proxmox'],
+                        ['route' => 'admin.cybersec', 'icon' => 'shield-check', 'label' => 'Cybersec Profiles'],
                         ['route' => 'admin.backup', 'icon' => 'database-backup', 'label' => 'Backup & Restore'],
                         ['route' => 'admin.profiles', 'icon' => 'users', 'label' => 'Manage Profiles'],
                     ];

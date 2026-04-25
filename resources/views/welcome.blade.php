@@ -75,6 +75,9 @@
     {{-- Skills Section --}}
     <livewire:skills-section />
 
+    {{-- Cybersecurity Training Badges --}}
+    <livewire:cybersec-badges />
+
     {{-- GitHub Contributions --}}
     <livewire:github-contributions />
     
