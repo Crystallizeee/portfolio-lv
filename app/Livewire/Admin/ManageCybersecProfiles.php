@@ -153,6 +153,13 @@ class ManageCybersecProfiles extends Component
         ];
     }
 
+    public function syncNow()
+    {
+        \Illuminate\Support\Facades\Artisan::call('cybersec:sync');
+        $this->loadProfiles();
+        session()->flash('success', 'Sync completed! Badge images refreshed. Stats still require manual update (no public API available).');
+    }
+
     public function render()
     {
         return view('livewire.admin.manage-cybersec-profiles')

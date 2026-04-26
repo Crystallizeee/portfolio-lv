@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Auto-purge site_visits older than 90 days daily at 03:00 AM
 Schedule::command('analytics:purge-visits')->dailyAt('03:00');
+
+// Auto-sync cybersec profiles (TryHackMe & LetsDefend) daily at 04:00 AM
+Schedule::command('cybersec:sync')->dailyAt('04:00');

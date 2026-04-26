@@ -16,6 +16,43 @@
             </h2>
             <p class="text-sm text-slate-500 mt-1">Manage your TryHackMe & LetsDefend profiles displayed on the portfolio.</p>
         </div>
+        <div class="flex items-center space-x-3">
+            {{-- Last synced indicator --}}
+            @php
+                $lastSync = null;
+                foreach($profiles as $p) {
+                    $cs = $p['custom_stats'] ?? null;
+                    if ($cs && isset($cs['last_synced_at'])) {
+                        $t = \Carbon\Carbon::parse($cs['last_synced_at']);
+                        if (!$lastSync || $t->gt($lastSync)) $lastSync = $t;
+                    }
+                }
+            @endphp
+            @if($lastSync)
+                <span class="text-xs text-slate-600 font-mono hidden sm:inline">
+                    Last sync: {{ $lastSync->diffForHumans() }}
+                </span>
+            @endif
+
+            {{-- Sync Now Button --}}
+            <button wire:click="syncNow" 
+                    wire:loading.attr="disabled"
+                    wire:loading.class="opacity-50 cursor-wait"
+                    class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 hover:scale-105">
+                <i data-lucide="refresh-cw" class="w-4 h-4" wire:loading.class="animate-spin"></i>
+                <span wire:loading.remove>Sync Now</span>
+                <span wire:loading>Syncing...</span>
+            </button>
+        </div>
+    </div>
+
+    {{-- Auto-sync info banner --}}
+    <div class="mb-6 p-3 bg-slate-800/30 border border-slate-700/30 rounded-xl flex items-start space-x-3">
+        <i data-lucide="clock" class="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0"></i>
+        <div class="text-xs text-slate-500">
+            <strong class="text-slate-400">Auto-sync active:</strong> Badge images are verified daily at 04:00 AM. 
+            Stats (rank, rooms, points) require manual update — TryHackMe & LetsDefend don't provide public APIs.
+        </div>
     </div>
 
     {{-- Quick Add Buttons --}}

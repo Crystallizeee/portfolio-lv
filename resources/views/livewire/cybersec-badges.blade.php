@@ -79,9 +79,13 @@
 
                         {{-- TryHackMe Badge Image --}}
                         @if($isTHM && $profile->badge_image_url)
+                        @php
+                            // Use cache-busted URL from daily sync, or append update timestamp
+                            $badgeSrc = $profile->custom_stats['badge_url'] ?? ($profile->badge_image_url . '?t=' . $profile->updated_at->timestamp);
+                        @endphp
                         <div class="mb-6 rounded-xl overflow-hidden bg-slate-800/50 border border-slate-700/30 p-3">
                             <img 
-                                src="{{ $profile->badge_image_url }}" 
+                                src="{{ $badgeSrc }}" 
                                 alt="TryHackMe Badge for {{ $profile->username }}"
                                 class="w-full h-auto rounded-lg"
                                 loading="lazy"
