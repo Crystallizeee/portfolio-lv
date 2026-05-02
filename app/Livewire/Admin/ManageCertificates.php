@@ -3,14 +3,19 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\Auth;
 
 class ManageCertificates extends Component
 {
+    use WithFileUploads;
+
     public $certificates = [];
     public $showModal = false;
     public $editingId = null;
+    public $image;
+    public $existingImage;
 
     public $form = [
         'name' => '',
@@ -49,6 +54,8 @@ class ManageCertificates extends Component
     public function resetForm()
     {
         $this->editingId = null;
+        $this->image = null;
+        $this->existingImage = null;
         $this->form = [
             'name' => '',
             'issuer' => '',
@@ -63,6 +70,7 @@ class ManageCertificates extends Component
     {
         $cert = Certificate::find($id);
         $this->editingId = $id;
+        $this->existingImage = $cert->image;
         $this->form = [
             'name' => $cert->name,
             'issuer' => $cert->issuer,
@@ -83,7 +91,16 @@ class ManageCertificates extends Component
             'form.credential_id' => 'nullable|string|max:255',
             'form.credential_url' => 'nullable|url|max:500',
             'form.description' => 'nullable|string|max:2000',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        $imagePath = $this->existingImage;
+        if ($this->image) {
+            if ($this->existingImage && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->existingImage)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($this->existingImage);
+            }
+            $imagePath = $this->image->store('certificates', 'public');
+        }
 
         if ($this->editingId) {
             Certificate::find($this->editingId)->update([
@@ -93,6 +110,7 @@ class ManageCertificates extends Component
                 'credential_id' => $this->form['credential_id'],
                 'credential_url' => $this->form['credential_url'],
                 'description' => $this->form['description'],
+                'image' => $imagePath,
             ]);
             session()->flash('success', 'Certificate updated successfully!');
         } else {
@@ -104,6 +122,7 @@ class ManageCertificates extends Component
                 'credential_id' => $this->form['credential_id'],
                 'credential_url' => $this->form['credential_url'],
                 'description' => $this->form['description'],
+                'image' => $imagePath,
                 'sort_order' => count($this->certificates),
             ]);
             session()->flash('success', 'Certificate added successfully!');
@@ -115,7 +134,11 @@ class ManageCertificates extends Component
 
     public function delete($id)
     {
-        Certificate::find($id)->delete();
+        $cert = Certificate::find($id);
+        if ($cert->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($cert->image)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($cert->image);
+        }
+        $cert->delete();
         $this->loadCertificates();
         session()->flash('success', 'Certificate deleted successfully!');
     }

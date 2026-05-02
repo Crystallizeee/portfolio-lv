@@ -27,8 +27,12 @@
         @forelse($certificates as $cert)
             <div class="glass-card p-6 group hover:border-yellow-500/30 transition-all duration-300">
                 <div class="flex items-start justify-between mb-3">
-                    <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-                        <i data-lucide="award" class="w-5 h-5 text-yellow-400"></i>
+                    <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center overflow-hidden">
+                        @if($cert['image'] ?? false)
+                            <img src="{{ Storage::url($cert['image']) }}" alt="{{ $cert['name'] }}" class="w-full h-full object-cover">
+                        @else
+                            <i data-lucide="award" class="w-5 h-5 text-yellow-400"></i>
+                        @endif
                     </div>
                     <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
@@ -173,6 +177,27 @@
                             class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-yellow-400 focus:outline-none transition-colors"
                         >
                         @error('form.credential_url') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-1">Certificate Image (Optional)</label>
+                        <input 
+                            type="file" 
+                            wire:model="image"
+                            accept="image/*"
+                            class="w-full px-4 py-2 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:border-yellow-400 focus:outline-none transition-colors"
+                        >
+                        <div wire:loading wire:target="image" class="mt-2 text-sm text-yellow-400">Uploading...</div>
+                        @if ($image)
+                            <div class="mt-2 relative w-32 aspect-video rounded-lg overflow-hidden border border-slate-700">
+                                <img src="{{ $image->temporaryUrl() }}" class="w-full h-full object-cover">
+                            </div>
+                        @elseif($existingImage)
+                            <div class="mt-2 relative w-32 aspect-video rounded-lg overflow-hidden border border-slate-700">
+                                <img src="{{ Storage::url($existingImage) }}" class="w-full h-full object-cover">
+                            </div>
+                        @endif
+                        @error('image') <span class="text-sm text-red-400">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="flex items-center justify-end space-x-3 pt-4">

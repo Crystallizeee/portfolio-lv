@@ -15,6 +15,7 @@ class Certificate extends Model
         'issuer',
         'year',
         'description',
+        'image',
         'credential_id',
         'credential_url',
         'sort_order',
