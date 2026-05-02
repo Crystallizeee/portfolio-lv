@@ -100,8 +100,8 @@
     <div class="fixed inset-0 z-50 overflow-y-auto">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-md" wire:click="closeModal"></div>
         
-        <div class="fixed inset-x-4 top-20 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-lg">
-            <div class="glass-card p-6">
+        <div class="flex min-h-full items-center justify-center p-4 py-10">
+            <div class="relative w-full max-w-lg glass-card p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-white font-mono">
                         {{ $editingId ? 'Edit Certificate' : 'Add Certificate' }}
