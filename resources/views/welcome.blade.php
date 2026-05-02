@@ -78,6 +78,9 @@
     {{-- Cybersecurity Training Badges --}}
     <livewire:cybersec-badges />
 
+    {{-- Professional Certifications --}}
+    <livewire:certificates-section />
+
     {{-- GitHub Contributions --}}
     <livewire:github-contributions />
     
