@@ -22,6 +22,20 @@ class AdminLogin extends Component
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             session()->regenerate();
+
+            $user = Auth::user();
+
+            // If user has 2FA enabled, redirect to the TOTP challenge page
+            if ($user->hasTwoFactorEnabled()) {
+                // Clear any stale 2FA verification from previous sessions
+                session()->forget('two_factor_verified');
+
+                // Store the intended destination so we can redirect after 2FA
+                session()->put('two_factor_intended', route('admin.dashboard'));
+
+                return redirect()->route('admin.two-factor');
+            }
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -33,7 +47,7 @@ class AdminLogin extends Component
         Auth::logout();
         session()->invalidate();
         session()->regenerateToken();
-        
+
         return redirect()->route('admin.login');
     }
 

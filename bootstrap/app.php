@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
+
+        $middleware->alias([
+            'two-factor' => \App\Http\Middleware\EnsureTwoFactorAuthenticated::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

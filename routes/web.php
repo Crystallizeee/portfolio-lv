@@ -93,40 +93,47 @@ Route::prefix('admin')->group(function () {
     
     // Authenticated routes
     Route::middleware('auth')->group(function () {
-        Route::get('/', AdminDashboard::class)->name('admin.dashboard');
-        Route::get('/projects', ManageProjects::class)->name('admin.projects');
-        Route::get('/experiences', ManageExperiences::class)->name('admin.experiences');
-        Route::get('/skills', ManageSkills::class)->name('admin.skills');
-        Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
-        Route::get('/ai-cover-letter', \App\Livewire\Admin\AiCoverLetter::class)->name('admin.ai-cover-letter');
-        Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
-        Route::get('/languages', ManageLanguages::class)->name('admin.languages');
-        Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
-        Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
-        Route::get('/posts', \App\Livewire\Admin\ManagePosts::class)->name('admin.posts');
-        Route::get('/job-tracker', \App\Livewire\Admin\JobTracker::class)->name('admin.job-tracker');
-        Route::get('/proxmox', \App\Livewire\Admin\ManageProxmox::class)->name('admin.proxmox');
-        Route::get('/cybersec', \App\Livewire\Admin\ManageCybersecProfiles::class)->name('admin.cybersec');
-        
-        // Post attachments
-        Route::post('/posts/upload-image', [\App\Http\Controllers\Admin\PostAttachmentController::class, 'upload'])->name('admin.posts.upload-image');
-        
-        // Backup & Restore
-        Route::get('/backup', function () {
-            return view('admin.backup');
-        })->name('admin.backup');
-        Route::get('/backup/export', [BackupController::class, 'export'])->name('admin.backup.export');
-        Route::post('/backup/import', [BackupController::class, 'import'])->name('admin.backup.import');
-        
-        Route::get('/profile', ProfileSettings::class)->name('admin.profile');
-        Route::get('/profiles', \App\Livewire\Admin\ManageProfiles::class)->name('admin.profiles');
-        
-        // Cache Clearance
-        Route::get('/clear-cache', function () {
-            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
-            return back()->with('message', 'System cache cleared successfully!');
-        })->name('admin.clear-cache');
+        // Two-factor authentication challenge — must be accessible WITHOUT 2fa middleware
+        // so the user can reach this page after password login but before 2FA is verified
+        Route::get('/two-factor', \App\Livewire\Admin\TwoFactorChallenge::class)->name('admin.two-factor');
 
-        Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
+        // All other admin routes are protected by both auth + two-factor middleware
+        Route::middleware('two-factor')->group(function () {
+            Route::get('/', AdminDashboard::class)->name('admin.dashboard');
+            Route::get('/projects', ManageProjects::class)->name('admin.projects');
+            Route::get('/experiences', ManageExperiences::class)->name('admin.experiences');
+            Route::get('/skills', ManageSkills::class)->name('admin.skills');
+            Route::get('/cv-generator', \App\Livewire\Admin\CvGenerator::class)->name('admin.cv-generator');
+            Route::get('/ai-cover-letter', \App\Livewire\Admin\AiCoverLetter::class)->name('admin.ai-cover-letter');
+            Route::get('/certificates', ManageCertificates::class)->name('admin.certificates');
+            Route::get('/languages', ManageLanguages::class)->name('admin.languages');
+            Route::get('/activity-logs', ActivityLogs::class)->name('admin.activity-logs');
+            Route::get('/seo', \App\Livewire\Admin\SeoManager::class)->name('admin.seo');
+            Route::get('/posts', \App\Livewire\Admin\ManagePosts::class)->name('admin.posts');
+            Route::get('/job-tracker', \App\Livewire\Admin\JobTracker::class)->name('admin.job-tracker');
+            Route::get('/proxmox', \App\Livewire\Admin\ManageProxmox::class)->name('admin.proxmox');
+            Route::get('/cybersec', \App\Livewire\Admin\ManageCybersecProfiles::class)->name('admin.cybersec');
+
+            // Post attachments
+            Route::post('/posts/upload-image', [\App\Http\Controllers\Admin\PostAttachmentController::class, 'upload'])->name('admin.posts.upload-image');
+
+            // Backup & Restore
+            Route::get('/backup', function () {
+                return view('admin.backup');
+            })->name('admin.backup');
+            Route::get('/backup/export', [BackupController::class, 'export'])->name('admin.backup.export');
+            Route::post('/backup/import', [BackupController::class, 'import'])->name('admin.backup.import');
+
+            Route::get('/profile', ProfileSettings::class)->name('admin.profile');
+            Route::get('/profiles', \App\Livewire\Admin\ManageProfiles::class)->name('admin.profiles');
+
+            // Cache Clearance
+            Route::get('/clear-cache', function () {
+                \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+                return back()->with('message', 'System cache cleared successfully!');
+            })->name('admin.clear-cache');
+
+            Route::post('/logout', [AdminLogin::class, 'logout'])->name('admin.logout');
+        });
     });
 });

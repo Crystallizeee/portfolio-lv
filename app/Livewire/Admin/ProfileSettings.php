@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use App\Models\Education;
+use PragmaRX\Google2FA\Google2FA;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 class ProfileSettings extends Component
 {
@@ -39,6 +44,14 @@ class ProfileSettings extends Component
     public $current_password;
     public $new_password;
     public $new_password_confirmation;
+
+    // Two-Factor Authentication
+    public bool $showTwoFactorSetup = false;
+    public string $twoFactorQrCode = '';
+    public string $twoFactorSetupKey = '';
+    public string $twoFactorConfirmCode = '';
+    public bool $twoFactorEnabled = false;
+    public array $recoveryCodes = [];
 
     // Education
     public $educations = [];
@@ -75,6 +88,9 @@ class ProfileSettings extends Component
         }
 
         $this->loadEducations();
+
+        // Load 2FA state
+        $this->twoFactorEnabled = $user->hasTwoFactorEnabled();
     }
 
     public function loadEducations()
@@ -269,6 +285,138 @@ class ProfileSettings extends Component
         $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
 
         session()->flash('password_success', 'Password updated successfully!');
+    }
+
+    // ─────────────────────────────────────────────
+    // Two-Factor Authentication Methods
+    // ─────────────────────────────────────────────
+
+    public function enableTwoFactor()
+    {
+        $user = Auth::user();
+        $google2fa = new Google2FA();
+
+        // Generate a new secret key
+        $secret = $google2fa->generateSecretKey();
+
+        // Store the secret (not yet confirmed)
+        $user->update([
+            'two_factor_secret' => $secret,
+            'two_factor_confirmed_at' => null,
+            'two_factor_recovery_codes' => null,
+        ]);
+
+        // Generate the QR Code as SVG
+        $qrCodeUrl = $google2fa->getQRCodeUrl(
+            config('app.name'),
+            $user->email,
+            $secret
+        );
+
+        $renderer = new ImageRenderer(
+            new RendererStyle(200),
+            new SvgImageBackEnd()
+        );
+        $writer = new Writer($renderer);
+        $this->twoFactorQrCode = base64_encode($writer->writeString($qrCodeUrl));
+        $this->twoFactorSetupKey = $secret;
+        $this->showTwoFactorSetup = true;
+        $this->twoFactorConfirmCode = '';
+    }
+
+    public function confirmTwoFactor()
+    {
+        $this->validate([
+            'twoFactorConfirmCode' => 'required|digits:6',
+        ], [
+            'twoFactorConfirmCode.required' => 'Masukkan kode OTP dari authenticator kamu.',
+            'twoFactorConfirmCode.digits' => 'Kode OTP harus 6 digit.',
+        ]);
+
+        $user = Auth::user();
+        $google2fa = new Google2FA();
+
+        $valid = $google2fa->verifyKey(
+            $user->two_factor_secret,
+            $this->twoFactorConfirmCode,
+            2
+        );
+
+        if (! $valid) {
+            $this->addError('twoFactorConfirmCode', 'Kode OTP tidak valid. Pastikan waktu perangkat kamu sudah sinkron.');
+            return;
+        }
+
+        // Generate 8 recovery codes
+        $recoveryCodes = [];
+        for ($i = 0; $i < 8; $i++) {
+            $recoveryCodes[] = strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4));
+        }
+
+        $user->update([
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => $recoveryCodes,
+        ]);
+
+        // Mark session as 2FA verified (so current session isn't kicked out)
+        session()->put('two_factor_verified', true);
+
+        $this->twoFactorEnabled = true;
+        $this->showTwoFactorSetup = false;
+        $this->recoveryCodes = $recoveryCodes;
+        $this->twoFactorConfirmCode = '';
+
+        session()->flash('twofactor_success', '2FA berhasil diaktifkan! Simpan recovery codes kamu di tempat yang aman.');
+    }
+
+    public function disableTwoFactor()
+    {
+        $user = Auth::user();
+
+        $user->update([
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
+            'two_factor_confirmed_at' => null,
+        ]);
+
+        $this->twoFactorEnabled = false;
+        $this->showTwoFactorSetup = false;
+        $this->recoveryCodes = [];
+        $this->twoFactorQrCode = '';
+        $this->twoFactorSetupKey = '';
+
+        session()->flash('twofactor_success', '2FA berhasil dinonaktifkan.');
+    }
+
+    public function regenerateRecoveryCodes()
+    {
+        $user = Auth::user();
+
+        if (! $user->hasTwoFactorEnabled()) {
+            return;
+        }
+
+        $recoveryCodes = [];
+        for ($i = 0; $i < 8; $i++) {
+            $recoveryCodes[] = strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4)) . '-' .
+                               strtoupper(substr(bin2hex(random_bytes(8)), 0, 4));
+        }
+
+        $user->update(['two_factor_recovery_codes' => $recoveryCodes]);
+        $this->recoveryCodes = $recoveryCodes;
+
+        session()->flash('twofactor_success', 'Recovery codes baru telah dibuat. Simpan di tempat yang aman!');
+    }
+
+    public function showRecoveryCodes()
+    {
+        $user = Auth::user();
+        $this->recoveryCodes = $user->two_factor_recovery_codes ?? [];
     }
 
     public function render()

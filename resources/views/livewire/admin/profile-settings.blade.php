@@ -1,4 +1,17 @@
 <div>
+    {{-- Mandatory 2FA Warning Banner --}}
+    @if(session('two_factor_required'))
+        <div class="mb-6 px-5 py-4 rounded-xl bg-red-500/10 border border-red-500/40 flex items-start space-x-3">
+            <div class="flex-shrink-0 mt-0.5">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-red-400"></i>
+            </div>
+            <div>
+                <div class="text-sm font-semibold text-red-400 font-mono mb-1">⚠ Two-Factor Authentication Wajib Diaktifkan</div>
+                <div class="text-xs text-slate-400">Kamu tidak bisa mengakses admin panel sebelum mengaktifkan 2FA. Scroll ke bawah ke bagian <span class="text-cyan-400 font-mono">Two-Factor Authentication</span> dan klik <strong>Enable 2FA</strong> untuk melanjutkan.</div>
+            </div>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {{-- Avatar Section --}}
         <div class="lg:col-span-1">
@@ -345,6 +358,173 @@
                         </button>
                     </div>
                 </form>
+            </div>
+
+            {{-- Two-Factor Authentication Section --}}
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-semibold text-white font-mono mb-1 flex items-center">
+                    <i data-lucide="shield-check" class="w-5 h-5 mr-2 text-cyan-400"></i>
+                    Two-Factor Authentication (2FA)
+                </h3>
+                <p class="text-xs text-slate-500 font-mono mb-5">Tambahkan lapisan keamanan ekstra menggunakan TOTP (Google Authenticator, Authy, dll).</p>
+
+                @if(session('twofactor_success'))
+                    <div class="mb-4 px-4 py-3 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm font-mono flex items-center">
+                        <i data-lucide="check-circle" class="w-4 h-4 mr-2 flex-shrink-0"></i>
+                        {{ session('twofactor_success') }}
+                    </div>
+                @endif
+
+                @if(! $twoFactorEnabled && ! $showTwoFactorSetup)
+                    {{-- State 1: 2FA not yet enabled --}}
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-slate-800/50 border border-slate-700">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
+                                <i data-lucide="shield-off" class="w-5 h-5 text-slate-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-slate-300">Status: <span class="text-slate-500 font-mono">Not Enabled</span></div>
+                                <div class="text-xs text-slate-500">Akun kamu belum dilindungi oleh 2FA.</div>
+                            </div>
+                        </div>
+                        <button
+                            wire:click="enableTwoFactor"
+                            wire:loading.attr="disabled"
+                            class="py-2 px-5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 hover:border-cyan-400 rounded-lg text-cyan-400 text-sm font-mono font-medium transition-all duration-200 flex items-center space-x-2"
+                        >
+                            <i data-lucide="shield-plus" class="w-4 h-4"></i>
+                            <span>Enable 2FA</span>
+                        </button>
+                    </div>
+
+                @elseif($showTwoFactorSetup)
+                    {{-- State 2: Setup mode — show QR Code --}}
+                    <div class="space-y-5">
+                        <div class="flex items-center space-x-2 text-amber-400 text-sm font-mono">
+                            <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                            <span>Scan QR code di bawah dengan authenticator app kamu, lalu masukkan kode 6-digit untuk mengkonfirmasi.</span>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-6 items-start">
+                            {{-- QR Code --}}
+                            <div class="flex-shrink-0">
+                                <div class="p-3 bg-white rounded-xl inline-block" style="line-height: 0;">
+                                    <img src="data:image/svg+xml;base64,{{ $twoFactorQrCode }}" alt="2FA QR Code" width="180" height="180">
+                                </div>
+                            </div>
+
+                            <div class="flex-1 space-y-4">
+                                {{-- Manual setup key --}}
+                                <div>
+                                    <label class="block text-xs text-slate-500 font-mono mb-1">Setup key (manual entry):</label>
+                                    <div class="flex items-center space-x-2">
+                                        <code class="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-cyan-300 font-mono text-sm tracking-widest break-all">{{ $twoFactorSetupKey }}</code>
+                                    </div>
+                                </div>
+
+                                {{-- Confirm OTP --}}
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-1 font-mono">Konfirmasi kode OTP:</label>
+                                    <input
+                                        wire:model="twoFactorConfirmCode"
+                                        type="text"
+                                        inputmode="numeric"
+                                        maxlength="6"
+                                        placeholder="······"
+                                        class="w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white placeholder-slate-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-colors font-mono text-center text-2xl tracking-[0.5em]"
+                                    >
+                                    @error('twoFactorConfirmCode')
+                                        <span class="text-red-400 text-xs mt-1 block font-mono">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="flex items-center space-x-3 pt-2">
+                                    <button
+                                        wire:click="confirmTwoFactor"
+                                        wire:loading.attr="disabled"
+                                        class="py-2 px-5 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white text-sm font-medium transition-colors"
+                                    >
+                                        Konfirmasi & Aktifkan
+                                    </button>
+                                    <button
+                                        wire:click="$set('showTwoFactorSetup', false)"
+                                        class="py-2 px-4 text-slate-400 hover:text-white text-sm transition-colors"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                @else
+                    {{-- State 3: 2FA is active --}}
+                    <div class="space-y-5">
+                        {{-- Active badge --}}
+                        <div class="flex items-center justify-between p-4 rounded-lg bg-green-500/5 border border-green-500/30">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-green-400 font-mono">✓ 2FA Aktif</div>
+                                    <div class="text-xs text-slate-500">Login kamu dilindungi oleh TOTP authenticator.</div>
+                                </div>
+                            </div>
+                            <button
+                                wire:click="disableTwoFactor"
+                                wire:confirm="Yakin ingin menonaktifkan 2FA? Akun kamu akan jadi kurang aman."
+                                class="py-2 px-4 bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 hover:border-red-400 rounded-lg text-red-400 text-xs font-mono transition-all duration-200"
+                            >
+                                Disable 2FA
+                            </button>
+                        </div>
+
+                        {{-- Recovery Codes --}}
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-medium text-slate-300 font-mono">Recovery Codes</h4>
+                                    <p class="text-xs text-slate-500">Simpan kode ini di tempat yang aman. Setiap kode hanya bisa digunakan sekali.</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    @if(count($recoveryCodes) === 0)
+                                        <button
+                                            wire:click="showRecoveryCodes"
+                                            class="py-1.5 px-3 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 text-xs font-mono transition-colors flex items-center space-x-1"
+                                        >
+                                            <i data-lucide="eye" class="w-3 h-3"></i>
+                                            <span>Lihat</span>
+                                        </button>
+                                    @endif
+                                    <button
+                                        wire:click="regenerateRecoveryCodes"
+                                        wire:confirm="Recovery codes lama akan tidak valid. Lanjutkan?"
+                                        class="py-1.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-lg text-amber-400 text-xs font-mono transition-all flex items-center space-x-1"
+                                    >
+                                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                                        <span>Regenerate</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            @if(count($recoveryCodes) > 0)
+                                <div class="grid grid-cols-2 gap-2">
+                                    @foreach($recoveryCodes as $code)
+                                        <code class="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-slate-300 font-mono text-xs text-center tracking-widest">{{ $code }}</code>
+                                    @endforeach
+                                </div>
+                                <p class="text-xs text-amber-400/70 font-mono mt-2">
+                                    ⚠ Setelah halaman ini di-refresh, kode tidak akan ditampilkan lagi. Simpan sekarang!
+                                </p>
+                            @else
+                                <div class="text-xs text-slate-600 font-mono italic text-center py-3 border border-dashed border-slate-700 rounded-lg">
+                                    Klik "Lihat" untuk menampilkan recovery codes.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{-- Education Section --}}
