@@ -111,98 +111,172 @@
         </div>
     </div>
 
-    <!-- Custom WYSIWYG Editor Styles -->
+    <!-- Trix Editor -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+
+    <script>
+        // Add text alignment support to Trix Editor
+        Trix.config.blockAttributes.alignLeft = {
+            tagName: "align-left",
+            exclusive: true,
+            terminal: false,
+            breakOnReturn: true,
+            group: false
+        };
+        Trix.config.blockAttributes.alignCenter = {
+            tagName: "align-center",
+            exclusive: true,
+            terminal: false,
+            breakOnReturn: true,
+            group: false
+        };
+        Trix.config.blockAttributes.alignRight = {
+            tagName: "align-right",
+            exclusive: true,
+            terminal: false,
+            breakOnReturn: true,
+            group: false
+        };
+        Trix.config.blockAttributes.alignJustify = {
+            tagName: "align-justify",
+            exclusive: true,
+            terminal: false,
+            breakOnReturn: true,
+            group: false
+        };
+
+        document.addEventListener("trix-initialize", function(event) {
+            var toolbar = event.target.toolbarElement;
+            if (toolbar.querySelector('.trix-button-group--alignment')) return;
+
+            var blockTools = toolbar.querySelector(".trix-button-group--block-tools");
+            if (!blockTools) return;
+
+            var alignGroup = document.createElement("span");
+            alignGroup.className = "trix-button-group trix-button-group--alignment";
+            alignGroup.setAttribute("data-trix-button-group", "alignment");
+
+            var alignments = [
+                { name: 'alignLeft', icon: 'align-left', title: 'Align Left' },
+                { name: 'alignCenter', icon: 'align-center', title: 'Align Center' },
+                { name: 'alignRight', icon: 'align-right', title: 'Align Right' },
+                { name: 'alignJustify', icon: 'align-justify', title: 'Justify' }
+            ];
+
+            alignments.forEach(function(align) {
+                var btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "trix-button";
+                btn.setAttribute("data-trix-attribute", align.name);
+                btn.title = align.title;
+                btn.style.textIndent = "0";
+                btn.style.display = "flex";
+                btn.style.alignItems = "center";
+                btn.style.justifyContent = "center";
+                btn.innerHTML = `<i data-lucide="${align.icon}" class="w-4 h-4 text-slate-400"></i>`;
+                alignGroup.appendChild(btn);
+            });
+
+            blockTools.insertAdjacentElement("afterend", alignGroup);
+            
+            if (window.lucide) {
+                window.lucide.createIcons({
+                    root: alignGroup
+                });
+            }
+        });
+    </script>
+
+    <!-- Custom Trix Editor Styles -->
     <style>
-        /* Editor Container */
-        .wysiwyg-wrapper {
-            border: 1px solid #1e293b;
-            border-radius: 0.75rem;
-            overflow: hidden;
-            background: #020617;
-        }
-        .wysiwyg-wrapper:focus-within {
-            border-color: #a855f7;
-        }
-
-        /* Toolbar */
-        .wysiwyg-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2px;
-            padding: 0.5rem 0.75rem;
+        /* Trix Editor Dark Theme */
+        trix-toolbar {
             background: #0f172a;
-            border-bottom: 1px solid #1e293b;
-            align-items: center;
+            border-bottom: 1px solid #1e293b !important;
+            border-radius: 0.75rem 0.75rem 0 0;
+            padding: 0.5rem 0.75rem !important;
+            margin-bottom: 0 !important;
         }
-        .wysiwyg-toolbar .tb-sep {
-            width: 1px;
-            height: 24px;
-            background: #334155;
-            margin: 0 6px;
-        }
-        .wysiwyg-toolbar button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: transparent;
-            color: #94a3b8;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.15s;
-        }
-        .wysiwyg-toolbar button:hover {
-            background: #1e293b;
-            color: #22d3ee;
-        }
-        .wysiwyg-toolbar button.active {
-            background: #1e293b;
-            color: #22d3ee;
-        }
-        .wysiwyg-toolbar select {
-            background: #0f172a;
-            color: #94a3b8;
+        trix-toolbar .trix-button-group {
             border: 1px solid #334155;
-            border-radius: 0.375rem;
-            padding: 4px 8px;
-            font-size: 13px;
-            cursor: pointer;
-            outline: none;
-            height: 32px;
+            background: #1e293b;
+            margin-bottom: 0.25rem;
         }
-        .wysiwyg-toolbar select:hover {
-            border-color: #22d3ee;
+        trix-toolbar .trix-button {
+            border-bottom: none;
+            color: #94a3b8;
+            background: transparent;
+        }
+        trix-toolbar .trix-button.trix-active {
+            background: #334155;
             color: #22d3ee;
         }
-
-        /* Editable Area */
-        .wysiwyg-editable {
+        trix-toolbar .trix-button::before {
+            filter: invert(0.8);
+        }
+        trix-toolbar .trix-button.trix-active::before {
+            filter: invert(0.5) sepia(1) hue-rotate(150deg) saturate(5);
+        }
+        trix-toolbar .trix-dialog {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        trix-toolbar .trix-dialog .trix-input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+        }
+        
+        /* Custom Alignment Tags */
+        align-left { text-align: left; display: block; }
+        align-center { text-align: center; display: block; }
+        align-right { text-align: right; display: block; }
+        align-justify { text-align: justify; display: block; }
+        
+        align-center figure, align-center img { margin-left: auto !important; margin-right: auto !important; }
+        align-right figure, align-right img { margin-left: auto !important; margin-right: 0 !important; }
+        align-center figcaption { text-align: center; }
+        align-right figcaption { text-align: right; }
+        
+        trix-toolbar .trix-dialog input {
+            background: #020617;
+            border: 1px solid #334155;
+            color: #fff;
+            border-radius: 0.25rem;
+        }
+        trix-toolbar .trix-dialog .trix-button {
+            background: #22d3ee;
+            color: #000;
+            border: none;
+            border-radius: 0.25rem;
+        }
+        trix-toolbar .trix-button:not(:first-child) {
+            border-left: 1px solid #334155;
+        }
+        trix-editor {
             min-height: 400px;
             max-height: 600px;
             overflow-y: auto;
-            padding: 1.5rem;
+            border: 1px solid #1e293b !important;
+            border-top: none !important;
+            border-radius: 0 0 0.75rem 0.75rem;
+            background: #020617;
+            padding: 1.5rem !important;
             color: #cbd5e1;
             font-size: 0.95rem;
             line-height: 1.8;
             outline: none;
         }
-        .wysiwyg-editable:empty::before {
-            content: attr(data-placeholder);
-            color: #475569;
-            pointer-events: none;
+        trix-editor:focus-within {
+            border-color: #a855f7 !important;
+            box-shadow: 0 0 0 1px #a855f7;
         }
-
-        /* Content Styling inside Editor */
-        .wysiwyg-editable h2 { font-size: 1.5em; font-weight: 700; color: #fff; margin: 1em 0 0.5em; }
-        .wysiwyg-editable h3 { font-size: 1.25em; font-weight: 600; color: #e2e8f0; margin: 0.8em 0 0.4em; }
-        .wysiwyg-editable p { margin: 0.5em 0; }
-        .wysiwyg-editable a { color: #22d3ee; text-decoration: underline; }
-        .wysiwyg-editable b, .wysiwyg-editable strong { color: #f1f5f9; }
-        .wysiwyg-editable blockquote {
+        trix-editor h1 { font-size: 1.5em; font-weight: 700; color: #fff; margin: 1em 0 0.5em; }
+        trix-editor a { color: #22d3ee; text-decoration: underline; }
+        trix-editor blockquote {
             border-left: 4px solid #a855f7;
             padding: 0.75rem 1rem;
             margin: 0.75rem 0;
@@ -211,7 +285,7 @@
             color: #94a3b8;
             font-style: italic;
         }
-        .wysiwyg-editable pre {
+        trix-editor pre {
             background: #1e293b;
             color: #e2e8f0;
             padding: 1rem;
@@ -222,28 +296,18 @@
             margin: 0.75rem 0;
             border: 1px solid #334155;
         }
-        .wysiwyg-editable code {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 0.15em 0.4em;
-            border-radius: 0.25rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875em;
-        }
-        .wysiwyg-editable ul, .wysiwyg-editable ol {
-            padding-left: 1.5rem;
-            margin: 0.5rem 0;
-        }
-        .wysiwyg-editable li { margin: 0.25rem 0; }
-        .wysiwyg-editable img {
+        trix-editor img {
             max-width: 100%;
             border-radius: 0.5rem;
             margin: 0.5rem 0;
         }
-        .wysiwyg-editable hr {
-            border: none;
-            border-top: 1px solid #334155;
-            margin: 1.5rem 0;
+        trix-editor figure.attachment {
+            text-align: center;
+        }
+        trix-editor figure.attachment figcaption {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
         }
     </style>
 
@@ -408,144 +472,79 @@
                                 @error('excerpt') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Custom WYSIWYG Editor -->
+                            <!-- Trix WYSIWYG Editor -->
                             <div class="space-y-2" wire:ignore>
                                 <label class="text-sm font-medium text-slate-300">Content</label>
-                                <div x-data="{
-                                    exec(cmd, val = null) {
-                                        document.execCommand(cmd, false, val);
-                                        this.$refs.editable.focus();
-                                        this.sync();
-                                    },
-                                    formatBlock(tag) {
-                                        document.execCommand('formatBlock', false, tag);
-                                        this.$refs.editable.focus();
-                                        this.sync();
-                                    },
-                                    insertLink() {
-                                        const url = prompt('Enter URL:', 'https://');
-                                        if (url) {
-                                            document.execCommand('createLink', false, url);
-                                            this.$refs.editable.focus();
-                                            this.sync();
-                                        }
-                                    },
-                                    insertCode() {
-                                        const sel = window.getSelection();
-                                        if (sel.rangeCount) {
-                                            const range = sel.getRangeAt(0);
-                                            const code = document.createElement('code');
-                                            range.surroundContents(code);
-                                            sel.removeAllRanges();
-                                            this.sync();
-                                        }
-                                    },
-                                    insertCodeBlock() {
-                                        const code = prompt('Enter code:');
-                                        if (code) {
-                                            document.execCommand('insertHTML', false, '<pre><code>' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre><p><br></p>');
-                                            this.sync();
-                                        }
-                                    },
-                                    insertHR() {
-                                        document.execCommand('insertHorizontalRule');
-                                        this.$refs.editable.focus();
-                                        this.sync();
-                                    },
-                                    sync() {
-                                        @this.set('content', this.$refs.editable.innerHTML);
-                                    },
-                                    init() {
-                                        this.$refs.editable.innerHTML = this.$refs.payload.value;
+                                
+                                <div class="rounded-xl overflow-hidden transition-all relative" x-data="{
+                                    uploadFileAttachment(attachment) {
+                                        var file = attachment.file;
+                                        if (!file) return;
+                                        
+                                        var formData = new FormData();
+                                        formData.append('attachment', file);
+
+                                        var xhr = new XMLHttpRequest();
+                                        xhr.open('POST', '{{ route('admin.posts.upload-image', [], false) }}', true);
+                                        var csrfMeta = document.querySelector('meta[name=\'csrf-token\']');
+                                        xhr.setRequestHeader('X-CSRF-TOKEN', csrfMeta ? csrfMeta.getAttribute('content') : '{{ csrf_token() }}');
+                                        xhr.setRequestHeader('Accept', 'application/json');
+
+                                        xhr.upload.onprogress = function(event) {
+                                            var progress = event.loaded / event.total * 100;
+                                            attachment.setUploadProgress(progress);
+                                        };
+
+                                        xhr.onload = function() {
+                                            if (xhr.status >= 200 && xhr.status < 300) {
+                                                try {
+                                                    var response = JSON.parse(xhr.responseText);
+                                                    attachment.setAttributes({
+                                                        url: response.url,
+                                                        href: response.url
+                                                    });
+                                                } catch (e) {
+                                                    console.error('Invalid JSON response', xhr.responseText);
+                                                    alert('Upload failed: Server returned invalid response.');
+                                                    attachment.remove();
+                                                }
+                                            } else {
+                                                console.error('Upload failed with status: ' + xhr.status);
+                                                alert('Upload failed (Status ' + xhr.status + ')');
+                                                attachment.remove();
+                                            }
+                                        };
+
+                                        xhr.onerror = function() {
+                                            alert('Network error occurred during upload.');
+                                            console.error('Network error during XHR request');
+                                            attachment.remove();
+                                        };
+
+                                        xhr.send(formData);
                                     }
                                 }">
-                                    <!-- Hidden payload for safe content transfer -->
-                                    <textarea x-ref="payload" style="display:none">{{ $content }}</textarea>
-                                    
-                                    <div class="wysiwyg-wrapper">
-                                        <!-- Toolbar -->
-                                        <div class="wysiwyg-toolbar">
-                                            <!-- Heading Dropdown -->
-                                            <select @change="formatBlock($event.target.value); $event.target.value='';">
-                                                <option value="">Heading</option>
-                                                <option value="p">Paragraph</option>
-                                                <option value="h2">Heading 2</option>
-                                                <option value="h3">Heading 3</option>
-                                            </select>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Text Formatting -->
-                                            <button type="button" @click="exec('bold')" title="Bold"><b>B</b></button>
-                                            <button type="button" @click="exec('italic')" title="Italic"><i>I</i></button>
-                                            <button type="button" @click="exec('underline')" title="Underline"><u>U</u></button>
-                                            <button type="button" @click="exec('strikeThrough')" title="Strikethrough"><s>S</s></button>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Lists -->
-                                            <button type="button" @click="exec('insertUnorderedList')" title="Bullet List">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                                            </button>
-                                            <button type="button" @click="exec('insertOrderedList')" title="Numbered List">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
-                                            </button>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Block Elements -->
-                                            <button type="button" @click="formatBlock('blockquote')" title="Quote">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/></svg>
-                                            </button>
-                                            <button type="button" @click="insertCode()" title="Inline Code">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                                            </button>
-                                            <button type="button" @click="insertCodeBlock()" title="Code Block">{ }</button>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Alignment -->
-                                            <button type="button" @click="exec('justifyLeft')" title="Align Left">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-                                            </button>
-                                            <button type="button" @click="exec('justifyCenter')" title="Align Center">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg>
-                                            </button>
-                                            <button type="button" @click="exec('justifyRight')" title="Align Right">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
-                                            </button>
-                                            <button type="button" @click="exec('justifyFull')" title="Justify">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
-                                            </button>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Insert -->
-                                            <button type="button" @click="insertLink()" title="Insert Link">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                                            </button>
-                                            <button type="button" @click="insertHR()" title="Horizontal Rule">―</button>
-                                            <div class="tb-sep"></div>
-
-                                            <!-- Undo/Redo -->
-                                            <button type="button" @click="exec('undo')" title="Undo">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                                            </button>
-                                            <button type="button" @click="exec('redo')" title="Redo">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                                            </button>
-                                        </div>
-
-                                        <!-- Editable Content Area -->
-                                        <div 
-                                            x-ref="editable"
-                                            contenteditable="true"
-                                            class="wysiwyg-editable"
-                                            data-placeholder="Write your content here..."
-                                            @input="sync()"
-                                            @paste.prevent="
-                                                const text = $event.clipboardData.getData('text/html') || $event.clipboardData.getData('text/plain');
-                                                document.execCommand('insertHTML', false, text);
-                                                sync();
-                                            "
-                                        ></div>
-                                    </div>
+                                    <input id="x-content" type="hidden" name="content" wire:model="content" value="{{ $content }}">
+                                    <trix-editor 
+                                        input="x-content" 
+                                        class="trix-content" 
+                                        x-on:trix-change="document.getElementById('x-content').dispatchEvent(new Event('input'))"
+                                        x-on:trix-attachment-add="uploadFileAttachment($event.attachment)"
+                                    ></trix-editor>
                                 </div>
+                                
+                                <script>
+                                    // Binding and upload is now handled via AlpineJS above.
+                                    
+                                    // Refresh Trix content when Livewire events are dispatched
+                                    window.addEventListener('refresh-markdown', event => {
+                                        var editorElement = document.querySelector("trix-editor");
+                                        if (editorElement) {
+                                            var newContent = event.detail.content !== undefined ? event.detail.content : (event.detail[0] && event.detail[0].content !== undefined ? event.detail[0].content : '');
+                                            editorElement.editor.loadHTML(newContent);
+                                        }
+                                    });
+                                </script>
                             </div>
                             @error('content') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
 

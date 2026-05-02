@@ -14,7 +14,7 @@
         <div class="absolute top-0 right-0 w-1/3 h-1/3 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header -->
             <header class="mb-12 text-center">
                     <div class="flex flex-wrap items-center gap-4 text-sm font-mono text-slate-400 mb-8 border-b border-slate-700/50 pb-8">
@@ -47,6 +47,18 @@
             </header>
 
             <!-- Content -->
+            <style>
+                /* Custom Alignment Tags */
+                align-left { text-align: left; display: block; }
+                align-center { text-align: center; display: block; }
+                align-right { text-align: right; display: block; }
+                align-justify { text-align: justify; display: block; }
+                
+                .prose align-center figure, .prose align-center img { margin-left: auto !important; margin-right: auto !important; }
+                .prose align-right figure, .prose align-right img { margin-left: auto !important; margin-right: 0 !important; }
+                .prose align-center figcaption { text-align: center; }
+                .prose align-right figcaption { text-align: right; }
+            </style>
             <div class="prose prose-invert prose-lg max-w-none break-words prose-headings:text-white prose-p:text-slate-300 prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline prose-code:text-cyan-300 prose-code:bg-slate-800/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#0d1117] prose-pre:border prose-pre:border-slate-800 prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-800/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-img:rounded-xl">
                 {!! Purifier::clean($post->content) !!}
             </div>

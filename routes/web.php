@@ -108,6 +108,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/proxmox', \App\Livewire\Admin\ManageProxmox::class)->name('admin.proxmox');
         Route::get('/cybersec', \App\Livewire\Admin\ManageCybersecProfiles::class)->name('admin.cybersec');
         
+        // Post attachments
+        Route::post('/posts/upload-image', [\App\Http\Controllers\Admin\PostAttachmentController::class, 'upload'])->name('admin.posts.upload-image');
+        
         // Backup & Restore
         Route::get('/backup', function () {
             return view('admin.backup');

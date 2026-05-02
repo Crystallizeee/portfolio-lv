@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\CybersecProfile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 
 class SyncCybersecProfiles extends Command
 {
@@ -91,60 +92,86 @@ class SyncCybersecProfiles extends Command
             ]);
         }
 
-        // 2. Try to scrape public profile for basic stats
-        // Note: This may be blocked by Cloudflare. We attempt it gracefully.
+        // 2. Try to scrape public profile for basic stats using Python Playwright
         try {
-            $profileResponse = Http::timeout(15)
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                ])
-                ->get("https://tryhackme.com/api/user/rank/{$profile->username}");
+            $scriptPath = base_path('scripts/scrape_cybersec.py');
+            $result = Process::run("python {$scriptPath} --platform tryhackme --username {$profile->username}");
 
-            // If we get JSON back (unlikely but possible), parse it
-            if ($profileResponse->successful() && str_starts_with($profileResponse->header('Content-Type') ?? '', 'application/json')) {
-                $data = $profileResponse->json();
-                if (isset($data['userRank'])) {
+            if ($result->successful()) {
+                $output = json_decode($result->output(), true);
+                if ($output && $output['success']) {
+                    $stats = $output['stats'];
+                    
                     $profile->update([
-                        'points' => $data['userRank'] ?? $profile->points,
+                        'rank' => $stats['rank'] ?? ($stats['top_percent'] ?? $profile->rank),
+                        'points' => $stats['points'] ?? $profile->points,
+                        'rooms_completed' => $stats['rooms_completed'] ?? $profile->rooms_completed,
+                        'badges_count' => $stats['badges_count'] ?? $profile->badges_count,
+                        'streak' => $stats['streak'] ?? $profile->streak,
+                        'top_percent' => isset($stats['top_percent']) ? str_replace(['Top ', '%'], '', $stats['top_percent']) : $profile->top_percent,
                     ]);
-                    $this->info("    ✓ THM stats updated from API");
+                    
+                    $this->info("    ✓ THM stats updated via scraper");
+                } else {
+                    $this->warn("    ⚠ THM scraper error: " . ($output['error'] ?? 'Unknown error'));
                 }
             } else {
-                $this->line("    ℹ THM API protected by Cloudflare (stats require manual update)");
+                $this->warn("    ⚠ THM scraper process failed: " . $result->errorOutput());
             }
         } catch (\Exception $e) {
-            $this->line("    ℹ THM profile scrape skipped: {$e->getMessage()}");
+            $this->error("    ✗ THM scraper failed: {$e->getMessage()}");
         }
     }
 
     protected function syncLetsDefend(CybersecProfile $profile): void
     {
-        // LetsDefend has no public API - just verify profile URL is valid
-        $profileUrl = $profile->profile_url ?? $profile->generated_profile_url;
-
         try {
-            $response = Http::timeout(10)
-                ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                ])
-                ->head($profileUrl);
+            $scriptPath = base_path('scripts/scrape_cybersec.py');
+            $result = Process::run("python {$scriptPath} --platform letsdefend --username {$profile->username}");
+
+            if ($result->successful()) {
+                $output = json_decode($result->output(), true);
+                if ($output && $output['success']) {
+                    $stats = $output['stats'];
+                    
+                    $profile->update([
+                        'rank' => $stats['rank'] ?? $profile->rank,
+                        'points' => $stats['points'] ?? $profile->points,
+                        'rooms_completed' => $stats['rooms_completed'] ?? $profile->rooms_completed,
+                        'badges_count' => $stats['badges_count'] ?? $profile->badges_count,
+                    ]);
+                    
+                    $this->info("    ✓ LetsDefend stats updated via scraper");
+                } else {
+                    $this->warn("    ⚠ LetsDefend scraper error: " . ($output['error'] ?? 'Unknown error'));
+                    
+                    // Fallback to basic URL check if scraper fails
+                    $this->verifyLetsDefendUrl($profile);
+                }
+            } else {
+                $this->warn("    ⚠ LetsDefend scraper process failed");
+                $this->verifyLetsDefendUrl($profile);
+            }
+        } catch (\Exception $e) {
+            $this->error("    ✗ LetsDefend scraper failed: {$e->getMessage()}");
+        }
+    }
+
+    protected function verifyLetsDefendUrl(CybersecProfile $profile): void
+    {
+        $profileUrl = $profile->profile_url ?? $profile->generated_profile_url;
+        try {
+            $response = Http::timeout(10)->withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            ])->head($profileUrl);
 
             if ($response->successful() || $response->status() === 302) {
                 $this->info("    ✓ LetsDefend profile URL verified");
             } else {
-                $this->warn("    ⚠ LetsDefend profile returned HTTP {$response->status()}");
+                $this->warn("    ⚠ LetsDefend profile URL returned HTTP {$response->status()}");
             }
         } catch (\Exception $e) {
             $this->line("    ℹ LetsDefend URL check skipped: {$e->getMessage()}");
         }
-
-        // Store sync timestamp
-        $profile->update([
-            'custom_stats' => array_merge($profile->custom_stats ?? [], [
-                'last_synced_at' => now()->toIso8601String(),
-                'profile_url_verified' => true,
-            ]),
-        ]);
     }
 }
