@@ -137,7 +137,8 @@ class ManagePosts extends Component
         try {
             $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
             $baseUrl = config('services.ollama.base_url', 'https://ollama.com/v1');
-            $model   = config('services.ollama.model_seo', 'gpt-oss:120b'); // Use smarter model for SEO
+            // Use the reliable gemma3:27b model (gpt-oss:120b returns empty content for this task)
+            $model   = config('services.ollama.model', 'gemma3:27b');
 
             if (!$apiKey) {
                 throw new \Exception('Ollama API key not configured.');
@@ -174,17 +175,17 @@ MSG;
 
             $response = Http::withToken($apiKey)
                 ->withHeaders(['Content-Type' => 'application/json'])
-                ->timeout(25)
+                ->timeout(30)
                 ->post("{$baseUrl}/chat/completions", [
-                    'model'    => $model,
-                    'messages' => [
+                    'model'       => $model,
+                    'messages'    => [
                         ['role' => 'system', 'content' => $systemMsg],
                         ['role' => 'user',   'content' => $userMsg],
                     ],
-                    'temperature'     => 0.2,
-                    'max_tokens'      => 512,
-                    'stream'          => false,
-                    'response_format' => ['type' => 'json_object'],
+                    'temperature' => 0.2,
+                    'max_tokens'  => 512,
+                    'stream'      => false,
+                    // Note: response_format not supported by gemma3:27b on Ollama cloud
                 ]);
 
             if ($response->failed()) {
@@ -198,13 +199,27 @@ MSG;
                     ?? $result['message']['content']
                     ?? '';
 
-            // Clean up any stray markdown fences
-            $rawText = preg_replace('/^```(?:json)?\s*/i', '', trim($rawText));
-            $rawText = preg_replace('/\s*```$/', '', $rawText);
+            // Log raw response for debugging
+            Log::debug('AI SEO raw response', ['model' => $model, 'raw' => mb_substr($rawText, 0, 500)]);
 
-            $seoData = json_decode(trim($rawText), true);
+            // Strip markdown code fences (gemma3 wraps JSON in ```json ... ```)
+            $cleanText = preg_replace('/^```(?:json)?\s*/i', '', trim($rawText));
+            $cleanText = preg_replace('/\s*```\s*$/i', '', $cleanText);
+            $cleanText = trim($cleanText);
+
+            // Try direct JSON decode first
+            $seoData = json_decode($cleanText, true);
+
+            // Fallback: extract JSON object from anywhere in the response
+            if (!$seoData || !isset($seoData['meta_title'])) {
+                preg_match('/\{[^{}]*"meta_title"[^{}]*\}/s', $rawText, $m);
+                if (!empty($m[0])) {
+                    $seoData = json_decode($m[0], true);
+                }
+            }
 
             if (!$seoData || !isset($seoData['meta_title'])) {
+                Log::error('AI SEO: Could not parse JSON', ['raw' => mb_substr($rawText, 0, 500)]);
                 throw new \Exception('AI returned an invalid response. Please try again.');
             }
 
