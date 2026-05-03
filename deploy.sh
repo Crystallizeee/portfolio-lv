@@ -7,7 +7,7 @@
 
 set -e  # Exit on any error
 
-APP_DIR="/var/www/portfolio-lv"
+APP_DIR="$(pwd)"
 PHP="php8.2"
 COMPOSER="composer"
 

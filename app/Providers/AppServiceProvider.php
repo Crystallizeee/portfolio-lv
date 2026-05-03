@@ -42,5 +42,20 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Exception $e) {
             // Quietly fail if table doesn't exist yet
         }
+
+        // ── AI Chatbot Rate Limiters ──────────────────────────────────────────
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot-short', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip())
+                ->response(fn() => response()->json([
+                    'reply' => "You're sending messages too quickly. Please wait a moment before trying again.",
+                ], 429));
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('chatbot-long', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perHour(30)->by($request->ip())
+                ->response(fn() => response()->json([
+                    'reply' => "You've reached the hourly limit for the AI assistant. Please try again later.",
+                ], 429));
+        });
     }
 }
