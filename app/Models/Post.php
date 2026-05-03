@@ -18,6 +18,9 @@ class Post extends Model implements Sitemapable
         'excerpt',
         'content',
         'featured_image',
+        'meta_title',
+        'meta_description',
+        'tags',
         'category',
         'status',
         'published_at',
@@ -25,6 +28,7 @@ class Post extends Model implements Sitemapable
 
     protected $casts = [
         'published_at' => 'datetime',
+        'tags'         => 'array',
     ];
 
     public function user(): BelongsTo

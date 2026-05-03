@@ -50,6 +50,13 @@ return [
         'key' => env('GEMINI_API_KEY'),
     ],
 
+    'ollama' => [
+        'key'      => env('OLLAMA_API_KEY'),
+        'base_url' => env('OLLAMA_API_URL', 'https://ollama.com/v1'),
+        'model'    => env('OLLAMA_MODEL', 'gemma3:27b'),
+        'model_seo'=> env('OLLAMA_MODEL_SEO', 'gpt-oss:120b'),
+    ],
+
     'github' => [
         'token' => env('GITHUB_TOKEN'),
         'username' => env('GITHUB_USERNAME'),

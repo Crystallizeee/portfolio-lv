@@ -209,7 +209,155 @@
     
     <script>
         // Initialize Lucide icons
-        lucide.createIcons();
+        const initLucide = () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        };
+        initLucide();
+        document.addEventListener('livewire:navigated', initLucide);
+        Livewire.hook('commit', ({ succeed }) => {
+            succeed(() => queueMicrotask(initLucide));
+        });
+
+        // Scroll to Top
+        const scrollBtn = document.getElementById('scrollToTop');
+        if (scrollBtn) {
+            window.addEventListener('scroll', function () {
+                if (document.documentElement.scrollTop > 20) {
+                    scrollBtn.classList.remove('opacity-0', 'invisible');
+                } else {
+                    scrollBtn.classList.add('opacity-0', 'invisible');
+                }
+            });
+            scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
     </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm">
+        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    </button>
+
+    <!-- AI Chatbot Widget -->
+    <div x-data="chatWidget" class="fixed bottom-8 right-8 z-50">
+        <!-- Chat Window -->
+        <div 
+            x-show="isOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+            class="mb-4 w-[340px] sm:w-[380px] glass-card border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10"
+            x-cloak
+        >
+            <!-- Header -->
+            <div class="flex items-center justify-between px-4 py-3 bg-slate-900/80 border-b border-slate-700/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+                        <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-white">AI Assistant</div>
+                        <div class="text-[10px] text-emerald-400 flex items-center space-x-1">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <span>Online</span>
+                        </div>
+                    </div>
+                </div>
+                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div 
+                x-ref="messagesContainer"
+                class="h-[320px] overflow-y-auto p-4 space-y-3"
+                style="background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.85) 100%);"
+            >
+                <template x-for="(msg, i) in messages" :key="i">
+                    <div :class="msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'">
+                        <div 
+                            :class="msg.role === 'user' 
+                                ? 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-100 rounded-2xl rounded-br-md' 
+                                : 'bg-slate-800/80 border border-slate-700/50 text-slate-200 rounded-2xl rounded-bl-md'"
+                            class="max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed"
+                            x-text="msg.text"
+                        ></div>
+                    </div>
+                </template>
+
+                <!-- Typing Indicator -->
+                <div x-show="isLoading" class="flex justify-start">
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-2xl rounded-bl-md px-4 py-3">
+                        <div class="flex space-x-1.5">
+                            <span class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                            <span class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                            <span class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestion Chips (shown only before first user message) -->
+            <div 
+                x-show="messages.filter(m => m.role === 'user').length === 0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                class="px-3 pb-2 flex flex-wrap gap-1.5"
+            >
+                <template x-for="chip in [
+                    'What are Beni\'s main skills?',
+                    'Tell me about his experience',
+                    'What projects has he built?',
+                    'What certifications does he have?',
+                    'How can I contact Beni?'
+                ]" :key="chip">
+                    <button
+                        @click="userInput = chip; sendMessage()"
+                        class="px-2.5 py-1 text-[10px] bg-slate-800/70 border border-slate-700/60 rounded-full text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 hover:bg-slate-800 transition-all duration-200 leading-none"
+                        x-text="chip"
+                    ></button>
+                </template>
+            </div>
+
+            <!-- Input -->
+            <div class="px-4 py-3 border-t border-slate-700/50 bg-slate-900/60">
+                <form @submit.prevent="sendMessage()" class="flex items-center space-x-2">
+                    <input 
+                        x-model="userInput"
+                        type="text"
+                        placeholder="Ask about my skills, experience..."
+                        maxlength="500"
+                        class="flex-1 bg-slate-800/60 border border-slate-700/50 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
+                        :disabled="isLoading"
+                    >
+                    <button 
+                        type="submit"
+                        :disabled="isLoading || !userInput.trim()"
+                        class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </form>
+                <div class="text-[10px] text-slate-600 mt-1.5 text-center">Powered by AI · Responses may not always be accurate</div>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <button 
+            @click="toggleChat()"
+            class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
+        >
+            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen"></i>
+            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak></i>
+            
+            <!-- Notification dot -->
+            <span x-show="!hasInteracted && !isOpen" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[var(--color-cyber-dark)] animate-pulse"></span>
+        </button>
+    </div>
+
 </body>
 </html>

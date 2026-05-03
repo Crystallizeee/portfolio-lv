@@ -97,6 +97,165 @@ document.addEventListener('alpine:init', () => {
             }
         }
     }));
+
+    // AI Chatbot Widget — Hardened against client-side abuse
+    Alpine.data('chatWidget', () => ({
+        isOpen: false,
+        isLoading: false,
+        hasInteracted: false,
+        userInput: '',
+        messages: [
+            { role: 'bot', text: "Hi! 👋 I'm Beni's AI assistant. Ask me about his skills, experience, or projects!" }
+        ],
+
+        // ── Client-side rate limiting (DoS / resource abuse) ────────────────
+        lastMessageTime: 0,
+        sessionMessageCount: 0,
+        MAX_SESSION_MESSAGES: 20,    // hard cap per page load
+        MIN_MESSAGE_INTERVAL_MS: 2000, // min 2s between messages
+        MAX_CONV_LENGTH: 50,          // max stored messages (prevents memory abuse)
+
+        toggleChat() {
+            this.isOpen = !this.isOpen;
+            this.hasInteracted = true;
+            if (this.isOpen) {
+                this.$nextTick(() => {
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    this.scrollToBottom();
+                });
+            }
+        },
+
+        /**
+         * Lightweight client-side input sanitizer.
+         * Strips HTML tags and normalizes whitespace before sending to backend.
+         * The backend applies full sanitization — this is defense-in-depth.
+         */
+        sanitizeInput(text) {
+            // Strip HTML tags
+            const div = document.createElement('div');
+            div.textContent = text;
+            let clean = div.innerHTML;              // HTML-encoded
+            // Decode back (we want plain text, not HTML entities in the output)
+            const txt = document.createElement('textarea');
+            txt.innerHTML = clean;
+            clean = txt.value;
+            // Collapse excessive whitespace
+            clean = clean.replace(/\s{3,}/g, ' ').trim();
+            // Hard truncate at 500 chars
+            return clean.slice(0, 500);
+        },
+
+        /**
+         * Client-side injection heuristic (quick check before even hitting server).
+         * The server does the authoritative check; this just saves a round-trip.
+         */
+        looksLikeInjection(text) {
+            const patterns = [
+                /ignore\s+(previous|prior|above)\s+instructions?/i,
+                /you\s+are\s+now\s+(a|an)/i,
+                /forget\s+(everything|your\s+rules)/i,
+                /pretend\s+(you\s+are|to\s+be)/i,
+                /act\s+as\s+if/i,
+                /system\s*:\s*\n/i,
+                /reveal\s+your\s+(system\s+prompt|instructions?)/i,
+                /\b(DAN|jailbreak)\b/i,
+            ];
+            return patterns.some(p => p.test(text));
+        },
+
+        async sendMessage() {
+            const raw = this.userInput.trim();
+            if (!raw || this.isLoading) return;
+
+            // ── Session message cap ─────────────────────────────────────────
+            if (this.sessionMessageCount >= this.MAX_SESSION_MESSAGES) {
+                this.messages.push({
+                    role: 'bot',
+                    text: "You've reached the session limit. Please refresh the page to continue chatting."
+                });
+                this.userInput = '';
+                this.scrollToBottom();
+                return;
+            }
+
+            // ── Min interval (burst protection) ────────────────────────────
+            const now = Date.now();
+            if (now - this.lastMessageTime < this.MIN_MESSAGE_INTERVAL_MS) {
+                this.messages.push({
+                    role: 'bot',
+                    text: 'Please wait a moment before sending another message.'
+                });
+                this.userInput = '';
+                this.scrollToBottom();
+                return;
+            }
+
+            // ── Client-side sanitization ────────────────────────────────────
+            const msg = this.sanitizeInput(raw);
+            if (!msg) return;
+
+            // ── Quick injection heuristic ───────────────────────────────────
+            if (this.looksLikeInjection(msg)) {
+                this.messages.push({
+                    role: 'bot',
+                    text: "I can only help with questions about Beni's portfolio and professional background. 😊"
+                });
+                this.userInput = '';
+                this.scrollToBottom();
+                return;
+            }
+
+            // ── Conversation length guard (prevent memory abuse) ─────────────
+            if (this.messages.length >= this.MAX_CONV_LENGTH) {
+                this.messages = this.messages.slice(-10); // keep last 10
+                this.messages.unshift({ role: 'bot', text: '[ Older messages cleared to save space ]' });
+            }
+
+            // ── Send ────────────────────────────────────────────────────────
+            this.messages.push({ role: 'user', text: msg });
+            this.userInput = '';
+            this.isLoading = true;
+            this.lastMessageTime = now;
+            this.sessionMessageCount++;
+            this.scrollToBottom();
+
+            try {
+                const res = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ message: msg })
+                });
+
+                const data = await res.json();
+
+                if (res.status === 429) {
+                    this.messages.push({ role: 'bot', text: data.reply || "You're sending messages too fast. Please wait a moment." });
+                } else if (res.ok) {
+                    // data.reply is already sanitized by backend — safe to use with x-text
+                    this.messages.push({ role: 'bot', text: data.reply });
+                } else {
+                    this.messages.push({ role: 'bot', text: data.reply || 'Sorry, something went wrong.' });
+                }
+            } catch (e) {
+                this.messages.push({ role: 'bot', text: 'Network error. Please check your connection.' });
+            } finally {
+                this.isLoading = false;
+                this.scrollToBottom();
+            }
+        },
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const container = this.$refs.messagesContainer;
+                if (container) container.scrollTop = container.scrollHeight;
+            });
+        }
+    }));
 });
 
 // Global keyboard shortcut for command palette

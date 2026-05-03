@@ -472,6 +472,109 @@
                                 @error('excerpt') <span class="text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
+                            <!-- ✨ AI SEO & Tags Generator -->
+                            <div class="space-y-4 p-5 rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+                                <!-- Section Header -->
+                                <div class="flex items-center justify-between flex-wrap gap-3">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-semibold text-white">AI SEO & Tags</h3>
+                                            <p class="text-[10px] text-slate-500 leading-none">Auto-generate based on your post content</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        wire:click="generateSeoAndTags"
+                                        wire:loading.attr="disabled"
+                                        wire:target="generateSeoAndTags"
+                                        class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 rounded-lg text-white text-sm font-medium transition-all duration-200 shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-wait"
+                                    >
+                                        <span wire:loading.remove wire:target="generateSeoAndTags" class="flex items-center space-x-2">
+                                            <i data-lucide="wand-2" class="w-4 h-4"></i>
+                                            <span>✨ Generate SEO</span>
+                                        </span>
+                                        <span wire:loading wire:target="generateSeoAndTags" class="flex items-center space-x-2">
+                                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span>Generating...</span>
+                                        </span>
+                                    </button>
+                                </div>
+
+                                @if ($seoErrorMessage)
+                                    <div class="flex items-center space-x-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                                        <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                                        <span>{{ $seoErrorMessage }}</span>
+                                    </div>
+                                @endif
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Meta Title -->
+                                    <div class="space-y-1.5">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider">Meta Title</label>
+                                            <span class="text-[10px] font-mono {{ strlen($meta_title) > 60 ? 'text-red-400' : 'text-slate-500' }}">{{ strlen($meta_title) }}/60</span>
+                                        </div>
+                                        <input
+                                            wire:model.live="meta_title"
+                                            type="text"
+                                            maxlength="80"
+                                            class="w-full px-3 py-2 bg-slate-950 border border-slate-700/80 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500/60 transition-all placeholder-slate-600"
+                                            placeholder="SEO-optimized page title..."
+                                        >
+                                        @error('meta_title') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <!-- Meta Description -->
+                                    <div class="space-y-1.5">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-xs font-medium text-slate-400 uppercase tracking-wider">Meta Description</label>
+                                            <span class="text-[10px] font-mono {{ strlen($meta_description) > 155 ? 'text-red-400' : 'text-slate-500' }}">{{ strlen($meta_description) }}/155</span>
+                                        </div>
+                                        <textarea
+                                            wire:model.live="meta_description"
+                                            rows="2"
+                                            maxlength="200"
+                                            class="w-full px-3 py-2 bg-slate-950 border border-slate-700/80 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500/60 transition-all resize-none placeholder-slate-600"
+                                            placeholder="Compelling description for search engines..."
+                                        ></textarea>
+                                        @error('meta_description') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Tags -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tags</label>
+                                    
+                                    <!-- Tag Chips -->
+                                    @if(!empty($tags))
+                                        <div class="flex flex-wrap gap-2 mb-2">
+                                            @foreach($tags as $idx => $tag)
+                                                <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs text-purple-300 font-medium">
+                                                    <span>{{ $tag }}</span>
+                                                    <button type="button" wire:click="removeTag({{ $idx }})" class="text-purple-400 hover:text-white transition-colors ml-1">
+                                                        <i data-lucide="x" class="w-2.5 h-2.5"></i>
+                                                    </button>
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
+                                    <input
+                                        wire:model.live="tagsInput"
+                                        type="text"
+                                        class="w-full px-3 py-2 bg-slate-950 border border-slate-700/80 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500/60 transition-all placeholder-slate-600"
+                                        placeholder="Laravel, Cybersecurity, ISO 27001 (comma-separated)"
+                                    >
+                                    <p class="text-[10px] text-slate-600">Separate tags with commas. AI will suggest tags automatically.</p>
+                                </div>
+                            </div>
+
                             <!-- Trix WYSIWYG Editor -->
                             <div class="space-y-2" wire:ignore>
                                 <label class="text-sm font-medium text-slate-300">Content</label>

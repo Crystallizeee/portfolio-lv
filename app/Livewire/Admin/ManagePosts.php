@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -34,10 +36,20 @@ class ManagePosts extends Component
     public $category = 'Tech';
     public $status = 'draft';
     public $published_at = '';
-    
+
+    // SEO fields
+    public $meta_title = '';
+    public $meta_description = '';
+    public $tags = [];
+    public $tagsInput = ''; // comma-separated raw input for tags
+
+    // AI SEO state
+    public $isGeneratingSeo = false;
+    public $seoErrorMessage = '';
+
     // Supported Categories
     public $categories = ['Tech', 'Tutorial', 'Insight', 'Life', 'Personal', 'Other'];
-    
+
     // Image Upload
     public $featured_image = ''; // Existing image URL/Path
     public $new_featured_image = null; // Temporary upload
@@ -58,6 +70,9 @@ class ManagePosts extends Component
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
             'new_featured_image' => 'nullable|image|max:2048', // 2MB Max
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'tagsInput' => 'nullable|string',
         ];
     }
 
@@ -78,7 +93,7 @@ class ManagePosts extends Component
     public function openEditModal($id)
     {
         $post = Post::findOrFail($id);
-        
+
         $this->editingId = $id;
         $this->title = $post->title;
         $this->slug = $post->slug;
@@ -88,11 +103,15 @@ class ManagePosts extends Component
         $this->status = $post->status;
         $this->published_at = $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : '';
         $this->featured_image = $post->featured_image;
+        $this->meta_title = $post->meta_title ?? '';
+        $this->meta_description = $post->meta_description ?? '';
+        $this->tags = $post->tags ?? [];
+        $this->tagsInput = is_array($post->tags) ? implode(', ', $post->tags) : '';
 
         $this->isEditing = true;
         $this->showModal = true;
-        
-        // Dispatch event to refresh EasyMDE content
+
+        // Dispatch event to refresh Trix content
         $this->dispatch('refresh-markdown', content: $this->content);
     }
 
@@ -102,9 +121,140 @@ class ManagePosts extends Component
         $this->resetForm();
     }
 
+    /**
+     * Generate SEO metadata (Meta Title, Meta Description, Tags) using Ollama AI.
+     */
+    public function generateSeoAndTags()
+    {
+        if (empty($this->title) && empty($this->content)) {
+            $this->seoErrorMessage = 'Please fill in the post title or content first.';
+            return;
+        }
+
+        $this->isGeneratingSeo = true;
+        $this->seoErrorMessage = '';
+
+        try {
+            $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
+            $baseUrl = config('services.ollama.base_url', 'https://ollama.com/v1');
+            $model   = config('services.ollama.model_seo', 'gpt-oss:120b'); // Use smarter model for SEO
+
+            if (!$apiKey) {
+                throw new \Exception('Ollama API key not configured.');
+            }
+
+            // Strip HTML tags from content for cleaner text
+            $plainContent    = strip_tags($this->content);
+            $truncatedContent = Str::limit($plainContent, 2000);
+
+            $systemMsg = 'You are an expert SEO specialist. You ONLY respond with valid JSON objects — no markdown, no explanation, no code fences.';
+
+            $userMsg = <<<MSG
+Based on this blog post, generate SEO metadata.
+
+POST TITLE: {$this->title}
+
+POST CONTENT:
+{$truncatedContent}
+
+Respond ONLY with this exact JSON structure:
+{
+  "meta_title": "SEO title max 60 chars, keyword-rich",
+  "meta_description": "Compelling description max 155 chars",
+  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+}
+
+Rules:
+- meta_title must be ≤ 60 characters
+- meta_description must be ≤ 155 characters
+- tags: 4-6 short keyword tags (Title Case or lowercase)
+- Match the language of the post (English or Indonesian)
+- Return ONLY the JSON object, nothing else
+MSG;
+
+            $response = Http::withToken($apiKey)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->timeout(25)
+                ->post("{$baseUrl}/chat/completions", [
+                    'model'    => $model,
+                    'messages' => [
+                        ['role' => 'system', 'content' => $systemMsg],
+                        ['role' => 'user',   'content' => $userMsg],
+                    ],
+                    'temperature'     => 0.2,
+                    'max_tokens'      => 512,
+                    'stream'          => false,
+                    'response_format' => ['type' => 'json_object'],
+                ]);
+
+            if ($response->failed()) {
+                $errBody = $response->json();
+                $errMsg  = $errBody['error']['message'] ?? $response->body();
+                throw new \Exception('Ollama API error: ' . $errMsg);
+            }
+
+            $result  = $response->json();
+            $rawText = $result['choices'][0]['message']['content']
+                    ?? $result['message']['content']
+                    ?? '';
+
+            // Clean up any stray markdown fences
+            $rawText = preg_replace('/^```(?:json)?\s*/i', '', trim($rawText));
+            $rawText = preg_replace('/\s*```$/', '', $rawText);
+
+            $seoData = json_decode(trim($rawText), true);
+
+            if (!$seoData || !isset($seoData['meta_title'])) {
+                throw new \Exception('AI returned an invalid response. Please try again.');
+            }
+
+            $this->meta_title       = $seoData['meta_title'] ?? '';
+            $this->meta_description = $seoData['meta_description'] ?? '';
+            $this->tags             = is_array($seoData['tags']) ? $seoData['tags'] : [];
+            $this->tagsInput        = implode(', ', $this->tags);
+
+        } catch (\Exception $e) {
+            $this->seoErrorMessage = $e->getMessage();
+            Log::error('AI SEO Generation Error: ' . $e->getMessage());
+        } finally {
+            $this->isGeneratingSeo = false;
+        }
+    }
+
+    /**
+     * Remove a tag chip.
+     */
+    public function removeTag($index)
+    {
+        unset($this->tags[$index]);
+        $this->tags = array_values($this->tags);
+        $this->tagsInput = implode(', ', $this->tags);
+    }
+
+    /**
+     * Sync tags array from comma-separated input.
+     */
+    public function updatedTagsInput($value)
+    {
+        $this->tags = collect(explode(',', $value))
+            ->map(fn($t) => trim($t))
+            ->filter()
+            ->values()
+            ->toArray();
+    }
+
     public function save()
     {
         $this->validate();
+
+        // Sync tags from input before saving
+        if (!empty($this->tagsInput)) {
+            $this->tags = collect(explode(',', $this->tagsInput))
+                ->map(fn($t) => trim($t))
+                ->filter()
+                ->values()
+                ->toArray();
+        }
 
         $data = [
             'user_id' => Auth::id(),
@@ -115,6 +265,9 @@ class ManagePosts extends Component
             'category' => $this->category,
             'status' => $this->status,
             'published_at' => $this->published_at ?: ($this->status === 'published' ? now() : null),
+            'meta_title' => $this->meta_title ?: null,
+            'meta_description' => $this->meta_description ?: null,
+            'tags' => !empty($this->tags) ? $this->tags : null,
         ];
 
         // Handle Image Upload
@@ -145,7 +298,7 @@ class ManagePosts extends Component
     public function delete($id)
     {
         $post = Post::findOrFail($id);
-        
+
         // Delete image if exists
         if ($post->featured_image) {
             $oldPath = str_replace('/storage/', '', $post->featured_image);
@@ -153,7 +306,7 @@ class ManagePosts extends Component
                 Storage::disk('public')->delete($oldPath);
             }
         }
-        
+
         $post->delete();
         session()->flash('message', 'Post deleted successfully!');
     }
@@ -198,9 +351,15 @@ class ManagePosts extends Component
         $this->published_at = '';
         $this->featured_image = '';
         $this->new_featured_image = null;
+        $this->meta_title = '';
+        $this->meta_description = '';
+        $this->tags = [];
+        $this->tagsInput = '';
+        $this->seoErrorMessage = '';
+        $this->isGeneratingSeo = false;
         $this->resetErrorBag();
-        
-        // Reset EasyMDE
+
+        // Reset Trix editor
         $this->dispatch('refresh-markdown', content: '');
     }
 

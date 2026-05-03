@@ -266,74 +266,6 @@
         scrollBtn.addEventListener('click', function() {
             window.scrollTo({top: 0, behavior: 'smooth'});
         });
-
-        // AI Chatbot Widget
-        function chatWidget() {
-            return {
-                isOpen: false,
-                isLoading: false,
-                hasInteracted: false,
-                userInput: '',
-                messages: [
-                    { role: 'bot', text: 'Hi! 👋 I\'m Beni\'s AI assistant. Ask me about his skills, experience, or projects!' }
-                ],
-
-                toggleChat() {
-                    this.isOpen = !this.isOpen;
-                    this.hasInteracted = true;
-                    if (this.isOpen) {
-                        this.$nextTick(() => {
-                            lucide.createIcons();
-                            this.scrollToBottom();
-                        });
-                    }
-                },
-
-                async sendMessage() {
-                    const msg = this.userInput.trim();
-                    if (!msg || this.isLoading) return;
-
-                    this.messages.push({ role: 'user', text: msg });
-                    this.userInput = '';
-                    this.isLoading = true;
-                    this.scrollToBottom();
-
-                    try {
-                        const res = await fetch('/api/chatbot', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-                                'Accept': 'application/json',
-                            },
-                            body: JSON.stringify({ message: msg })
-                        });
-
-                        const data = await res.json();
-
-                        if (res.status === 429) {
-                            this.messages.push({ role: 'bot', text: 'You\'re sending messages too fast. Please wait a moment.' });
-                        } else if (res.ok) {
-                            this.messages.push({ role: 'bot', text: data.reply });
-                        } else {
-                            this.messages.push({ role: 'bot', text: data.reply || 'Sorry, something went wrong.' });
-                        }
-                    } catch (e) {
-                        this.messages.push({ role: 'bot', text: 'Network error. Please check your connection.' });
-                    } finally {
-                        this.isLoading = false;
-                        this.scrollToBottom();
-                    }
-                },
-
-                scrollToBottom() {
-                    this.$nextTick(() => {
-                        const container = this.$refs.messagesContainer;
-                        if (container) container.scrollTop = container.scrollHeight;
-                    });
-                }
-            };
-        }
     </script>
     
     <!-- Preloader -->
@@ -349,7 +281,7 @@
     </div>
 
     <!-- AI Chatbot Widget -->
-    <div x-data="chatWidget()" x-cloak class="fixed bottom-8 right-8 z-50">
+    <div x-data="chatWidget" class="fixed bottom-8 right-8 z-50">
         <!-- Chat Window -->
         <div 
             x-show="isOpen"
@@ -408,6 +340,29 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Suggestion Chips (shown only before first user message) -->
+            <div 
+                x-show="messages.filter(m => m.role === 'user').length === 0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                class="px-3 pb-2 flex flex-wrap gap-1.5"
+            >
+                <template x-for="chip in [
+                    'What are Beni\'s main skills?',
+                    'Tell me about his experience',
+                    'What projects has he built?',
+                    'What certifications does he have?',
+                    'How can I contact Beni?'
+                ]" :key="chip">
+                    <button
+                        @click="userInput = chip; sendMessage()"
+                        class="px-2.5 py-1 text-[10px] bg-slate-800/70 border border-slate-700/60 rounded-full text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 hover:bg-slate-800 transition-all duration-200 leading-none"
+                        x-text="chip"
+                    ></button>
+                </template>
             </div>
 
             <!-- Input -->

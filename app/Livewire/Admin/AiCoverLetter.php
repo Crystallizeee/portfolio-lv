@@ -34,10 +34,12 @@ class AiCoverLetter extends Component
         $this->coverLetter = '';
 
         try {
-            $apiKey = config('services.gemini.key') ?? env('GEMINI_API_KEY');
+            $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
+            $baseUrl = config('services.ollama.base_url', 'https://api.ollama.com/v1');
+            $model   = config('services.ollama.model', 'llama3.2');
 
             if (!$apiKey) {
-                throw new \Exception('Gemini API key not found. Please set GEMINI_API_KEY in your .env file.');
+                throw new \Exception('Ollama API key not found. Please set OLLAMA_API_KEY in your .env file.');
             }
 
             // Gather CV Data
@@ -46,31 +48,30 @@ class AiCoverLetter extends Component
             // Construct Prompt
             $prompt = $this->constructPrompt($cvData);
 
-            // Call Gemini API
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key={$apiKey}", [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt]
-                        ]
-                    ]
-                ],
-                'generationConfig' => [
+            // Call Ollama API (OpenAI-compatible)
+            $response = Http::withToken($apiKey)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->timeout(30)
+                ->post("{$baseUrl}/chat/completions", [
+                    'model'    => $model,
+                    'messages' => [
+                        ['role' => 'user', 'content' => $prompt],
+                    ],
                     'temperature' => 0.7,
-                    'topK' => 40,
-                    'topP' => 0.95,
-                    'maxOutputTokens' => 2048,
-                ]
-            ]);
+                    'max_tokens'  => 2048,
+                    'stream'      => false,
+                ]);
 
             if ($response->failed()) {
-                throw new \Exception('Gemini API request failed: ' . ($response->json()['error']['message'] ?? 'Unknown error'));
+                $errBody = $response->json();
+                $errMsg  = $errBody['error']['message'] ?? $response->body();
+                throw new \Exception('Ollama API request failed: ' . $errMsg);
             }
 
             $result = $response->json();
-            $this->coverLetter = $result['candidates'][0]['content']['parts'][0]['text'] ?? 'Failed to generate cover letter.';
+            $this->coverLetter = $result['choices'][0]['message']['content']
+                              ?? $result['message']['content']
+                              ?? 'Failed to generate cover letter.';
 
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
