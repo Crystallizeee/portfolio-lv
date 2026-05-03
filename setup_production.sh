@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# PORTFOLIO-LV — Full Server Setup & Deploy Script
+# PORTFOLIO-LV — Full Server Setup & Deploy Script (ROOT VERSION)
 # Jalankan ini di server: bash setup_production.sh
 # Server: devuser@192.168.1.250 (TurnKey Debian 12)
 # =============================================================================
@@ -22,11 +22,6 @@ echo "║   Server: $(hostname) | $(date)     ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 
-# ── Check if running as devuser or root ──────────────────────────────────────
-if [[ "$EUID" -ne 0 ]] && ! sudo -n true 2>/dev/null; then
-    warn "Beberapa commands butuh sudo. Pastikan devuser punya sudo access."
-fi
-
 # =============================================================================
 # 1. INSTALL DEPENDENCIES (kalau belum ada)
 # =============================================================================
@@ -35,8 +30,8 @@ log "[1/10] Checking & installing system dependencies..."
 # PHP
 if ! command -v php &>/dev/null; then
     log "Installing PHP 8.2..."
-    sudo apt-get update -qq
-    sudo apt-get install -y php8.2 php8.2-fpm php8.2-pgsql php8.2-mbstring \
+    apt-get update -qq
+    apt-get install -y php8.2 php8.2-fpm php8.2-pgsql php8.2-mbstring \
         php8.2-xml php8.2-curl php8.2-zip php8.2-gd php8.2-intl php8.2-redis \
         php8.2-bcmath php8.2-tokenizer
 else
@@ -54,21 +49,21 @@ fi
 # Node.js
 if ! command -v node &>/dev/null; then
     log "Installing Node.js 20..."
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    apt-get install -y nodejs
 else
     echo "  Node: $(node -v) | npm: $(npm -v)"
 fi
 
 # Git
 if ! command -v git &>/dev/null; then
-    sudo apt-get install -y git
+    apt-get install -y git
 fi
 
 # Nginx
 if ! command -v nginx &>/dev/null; then
     log "Installing Nginx..."
-    sudo apt-get install -y nginx
+    apt-get install -y nginx
 fi
 
 # =============================================================================
@@ -84,20 +79,19 @@ if [ -d "$APP_DIR/.git" ]; then
     git pull origin main
 else
     log "Cloning repository..."
-    sudo mkdir -p /var/www
-    sudo chown devuser:devuser /var/www
+    mkdir -p /var/www
     git clone "$REPO" "$APP_DIR"
     cd "$APP_DIR"
 fi
 
+# Ensure devuser owns the directory if we're deploying as root but want to keep devuser
+chown -R devuser:devuser "$APP_DIR"
 cd "$APP_DIR"
 
 # =============================================================================
 # 3. CREATE .env PRODUCTION
 # =============================================================================
 log "[3/10] Creating production .env..."
-
-APP_KEY=$(php artisan --no-interaction key:generate --show 2>/dev/null || echo "base64:Hh6WKfJvlGdDwSI+3Po+lkCVr4HzxSzVu7MpUMpURkQ=")
 
 cat > .env << 'ENVEOF'
 APP_NAME="Cyber Portfolio"
@@ -183,44 +177,41 @@ echo "  .env created."
 # 4. COMPOSER INSTALL
 # =============================================================================
 log "[4/10] Installing PHP dependencies..."
-composer install --optimize-autoloader --no-dev --no-interaction
+# Run as devuser to avoid permission issues later
+su devuser -s /bin/bash -c "composer install --optimize-autoloader --no-dev --no-interaction"
 
 # =============================================================================
 # 5. NPM BUILD
 # =============================================================================
 log "[5/10] Building frontend assets..."
-npm ci --silent
-npm run build
+su devuser -s /bin/bash -c "npm ci --silent && npm run build"
 
 # =============================================================================
 # 6. DATABASE MIGRATIONS
 # =============================================================================
 log "[6/10] Running database migrations..."
-php artisan migrate --force
+su devuser -s /bin/bash -c "php artisan migrate --force"
 
 # =============================================================================
 # 7. CACHE OPTIMIZATION
 # =============================================================================
 log "[7/10] Caching config, routes, views..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
+su devuser -s /bin/bash -c "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan event:cache"
 
 # =============================================================================
 # 8. STORAGE & PERMISSIONS
 # =============================================================================
 log "[8/10] Setting up storage..."
-php artisan storage:link --force 2>/dev/null || true
-sudo chown -R $WEBUSER:$WEBUSER storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+su devuser -s /bin/bash -c "php artisan storage:link --force 2>/dev/null || true"
+chown -R $WEBUSER:$WEBUSER storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 # =============================================================================
 # 9. NGINX CONFIGURATION
 # =============================================================================
 log "[9/10] Configuring Nginx..."
 
-sudo tee /etc/nginx/sites-available/portfolio-lv > /dev/null << 'NGINXEOF'
+tee /etc/nginx/sites-available/portfolio-lv > /dev/null << 'NGINXEOF'
 server {
     listen 80;
     server_name 192.168.1.250 _;
@@ -272,21 +263,21 @@ server {
 NGINXEOF
 
 # Enable site
-sudo ln -sf /etc/nginx/sites-available/portfolio-lv /etc/nginx/sites-enabled/
-sudo rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
+ln -sf /etc/nginx/sites-available/portfolio-lv /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 
 # Test & reload nginx
-sudo nginx -t && sudo systemctl reload nginx && sudo systemctl enable nginx
+nginx -t && systemctl reload nginx && systemctl enable nginx
 
 # Start PHP-FPM
-sudo systemctl enable php8.2-fpm
-sudo systemctl start php8.2-fpm || sudo systemctl restart php8.2-fpm
+systemctl enable php8.2-fpm
+systemctl start php8.2-fpm || systemctl restart php8.2-fpm
 
 # =============================================================================
 # 10. FINAL CHECK
 # =============================================================================
 log "[10/10] Final verification..."
-php artisan about --only=Environment 2>/dev/null || php artisan --version
+su devuser -s /bin/bash -c "php artisan about --only=Environment 2>/dev/null || php artisan --version"
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════════╗${NC}"
