@@ -135,8 +135,8 @@ class ManagePosts extends Component
         $this->seoErrorMessage = '';
 
         try {
-            $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
-            $baseUrl = config('services.ollama.base_url', 'https://ollama.com/v1');
+            $apiKey  = config('services.ollama.key');
+            $baseUrl = config('services.ollama.base_url');
             // Use the reliable gemma3:27b model (gpt-oss:120b returns empty content for this task)
             $model   = config('services.ollama.model', 'gemma3:27b');
 
