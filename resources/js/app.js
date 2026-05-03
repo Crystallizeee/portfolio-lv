@@ -116,6 +116,13 @@ document.addEventListener('alpine:init', () => {
         MAX_CONV_LENGTH: 50,          // max stored messages (prevents memory abuse)
 
         toggleChat() {
+            // Configure marked for better list handling
+            if (typeof marked !== 'undefined') {
+                marked.setOptions({
+                    breaks: true,
+                    gfm: true
+                });
+            }
             this.isOpen = !this.isOpen;
             this.hasInteracted = true;
             if (this.isOpen) {

@@ -39,6 +39,9 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
@@ -248,7 +251,7 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
-            class="mb-4 w-[340px] sm:w-[380px] glass-card border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10"
+            class="mb-4 w-[380px] sm:w-[440px] glass-card border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10"
             x-cloak
         >
             <!-- Header -->
@@ -273,7 +276,7 @@
             <!-- Messages -->
             <div 
                 x-ref="messagesContainer"
-                class="h-[320px] overflow-y-auto p-4 space-y-3"
+                class="h-[450px] overflow-y-auto p-4 space-y-4 custom-scrollbar"
                 style="background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.85) 100%);"
             >
                 <template x-for="(msg, i) in messages" :key="i">
@@ -282,8 +285,8 @@
                             :class="msg.role === 'user' 
                                 ? 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-100 rounded-2xl rounded-br-md' 
                                 : 'bg-slate-800/80 border border-slate-700/50 text-slate-200 rounded-2xl rounded-bl-md'"
-                            class="max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed"
-                            x-text="msg.text"
+                            class="max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed prose prose-invert prose-sm"
+                            x-html="msg.role === 'bot' ? marked.parse(msg.text) : msg.text"
                         ></div>
                     </div>
                 </template>
