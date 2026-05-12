@@ -74,20 +74,21 @@
         }
 
         /* ===== TWO COLUMN LAYOUT ===== */
-        .layout-table {
+        .layout-wrapper {
+            position: relative;
             width: 100%;
-            border-collapse: collapse;
         }
 
         .main-col {
-            width: 65%;
-            vertical-align: top;
-            padding-right: 25px;
+            width: 63%;
+            padding-right: 2%;
         }
 
         .side-col {
-            width: 35%;
-            vertical-align: top;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 33%;
         }
 
         /* ===== EXPERIENCE ===== */
@@ -260,147 +261,125 @@
         <div class="summary-box">{{ $personal['summary'] }}</div>
         @endif
 
-        <table class="layout-table">
-        @php
-            $mainBlocks = [];
-            $sideBlocks = [];
-        @endphp
-
-        <!-- CAPTURE MAIN BLOCKS -->
-        @if(count($experiences) > 0)
-            @php ob_start(); @endphp
-            <div class="section" style="margin-bottom: 0;">
-                <div class="section-title">{{ __('cv.work_experience') }}</div>
-            </div>
-            @php $mainBlocks[] = ob_get_clean(); @endphp
-
-            @foreach($experiences as $exp)
-                @php ob_start(); @endphp
-                <div class="exp-item">
-                    <div class="exp-role">{{ $exp['role'] }}</div>
-                    <div class="exp-date">{{ $exp['date_range'] }}</div>
-                    <div class="exp-company">{{ $exp['company'] }}</div>
-                    <div class="exp-desc">
-                        @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
-                        @if(count($lines) > 1)
-                            <ul>
-                                @foreach($lines as $line)
-                                    @if(trim($line))
-                                        <li>{{ ltrim(trim($line), '•-● ') }}</li>
-                                    @endif
+        <div class="layout-wrapper">
+            
+            <!-- ===== SIDEBAR ===== -->
+            <div class="side-col">
+                
+                <!-- Skills -->
+                @if(count($skills) > 0)
+                <div class="section" style="margin-bottom: 15px;">
+                    <div class="sidebar-section-title">{{ __('cv.skills') }}</div>
+                    @php $groupedSkills = collect($skills)->groupBy('category'); @endphp
+                    @if($groupedSkills->count() > 1)
+                        @foreach($groupedSkills as $category => $categorySkills)
+                            <div class="skill-group" style="margin-bottom: 8px;">
+                                <div class="skill-category" style="margin-bottom: 2px;">{{ $category ?: 'Other' }}</div>
+                                @foreach($categorySkills as $skill)
+                                    <span class="skill-tag">{{ $skill['name'] }}</span>
                                 @endforeach
-                            </ul>
-                        @else
-                            {{ $exp['description'] }}
-                        @endif
-                    </div>
-                </div>
-                @php $mainBlocks[] = ob_get_clean(); @endphp
-            @endforeach
-        @endif
-
-        @if(count($projects) > 0)
-            @php ob_start(); @endphp
-            <div class="section" style="margin-bottom: 0;">
-                <div class="section-title">{{ __('cv.projects') }}</div>
-            </div>
-            @php $mainBlocks[] = ob_get_clean(); @endphp
-
-            @foreach($projects as $project)
-                @php ob_start(); @endphp
-                <div class="project-item">
-                    <div class="project-name">{{ $project['title'] }}</div>
-                    <div class="project-desc">{{ $project['description'] }}</div>
-                </div>
-                @php $mainBlocks[] = ob_get_clean(); @endphp
-            @endforeach
-        @endif
-
-        <!-- CAPTURE SIDE BLOCKS -->
-        @if(count($skills) > 0)
-            @php ob_start(); @endphp
-            <div class="section">
-                <div class="sidebar-section-title">{{ __('cv.skills') }}</div>
-                @php $groupedSkills = collect($skills)->groupBy('category'); @endphp
-                @if($groupedSkills->count() > 1)
-                    @foreach($groupedSkills as $category => $categorySkills)
+                            </div>
+                        @endforeach
+                    @else
                         <div class="skill-group">
-                            <div class="skill-category">{{ $category ?: 'Other' }}</div>
-                            @foreach($categorySkills as $skill)
+                            @foreach($skills as $skill)
                                 <span class="skill-tag">{{ $skill['name'] }}</span>
                             @endforeach
                         </div>
-                    @endforeach
-                @else
-                    <div class="skill-group">
-                        @foreach($skills as $skill)
-                            <span class="skill-tag">{{ $skill['name'] }}</span>
-                        @endforeach
+                    @endif
+                </div>
+                @endif
+
+                <!-- Education -->
+                @if(count($educations) > 0 && (isset($educations[0]['school']) && $educations[0]['school']))
+                <div class="section" style="margin-bottom: 15px;">
+                    <div class="sidebar-section-title">{{ __('cv.education') }}</div>
+                    @foreach($educations as $edu)
+                    @if(isset($edu['school']) && $edu['school'])
+                    <div class="edu-item" style="margin-bottom: 6px;">
+                        <div class="edu-degree">{{ $edu['degree'] }}</div>
+                        <div class="edu-school">{{ $edu['school'] }}</div>
+                        <div class="edu-year">{{ $edu['year'] }}</div>
                     </div>
-                @endif
-            </div>
-            @php $sideBlocks[] = ob_get_clean(); @endphp
-        @endif
-
-        @if(count($educations) > 0 && (isset($educations[0]['school']) && $educations[0]['school']))
-            @php ob_start(); @endphp
-            <div class="section">
-                <div class="sidebar-section-title">{{ __('cv.education') }}</div>
-                @foreach($educations as $edu)
-                @if(isset($edu['school']) && $edu['school'])
-                <div class="edu-item">
-                    <div class="edu-degree">{{ $edu['degree'] }}</div>
-                    <div class="edu-school">{{ $edu['school'] }}</div>
-                    <div class="edu-year">{{ $edu['year'] }}</div>
+                    @endif
+                    @endforeach
                 </div>
                 @endif
-                @endforeach
-            </div>
-            @php $sideBlocks[] = ob_get_clean(); @endphp
-        @endif
 
-        @if(count($certifications) > 0 && (isset($certifications[0]['name']) && $certifications[0]['name']))
-            @php ob_start(); @endphp
-            <div class="section">
-                <div class="sidebar-section-title">{{ __('cv.certifications') }}</div>
-                @foreach($certifications as $cert)
-                @if(isset($cert['name']) && $cert['name'])
-                <div class="cert-item">
-                    {{ $cert['name'] }}
+                <!-- Certifications -->
+                @if(count($certifications) > 0 && (isset($certifications[0]['name']) && $certifications[0]['name']))
+                <div class="section" style="margin-bottom: 15px;">
+                    <div class="sidebar-section-title">{{ __('cv.certifications') }}</div>
+                    @foreach($certifications as $cert)
+                    @if(isset($cert['name']) && $cert['name'])
+                    <div class="cert-item" style="margin-bottom: 4px;">
+                        {{ $cert['name'] }}
+                    </div>
+                    @endif
+                    @endforeach
                 </div>
                 @endif
-                @endforeach
+
+                <!-- Languages -->
+                @if(count($languages) > 0)
+                <div class="section" style="margin-bottom: 15px;">
+                    <div class="sidebar-section-title">{{ __('cv.languages') }}</div>
+                    @foreach($languages as $lang)
+                        <div class="lang-tag" style="margin-bottom: 2px;"><span class="lang-name">{{ $lang['name'] }}</span> &ndash; {{ $lang['level'] }}</div>
+                    @endforeach
+                </div>
+                @endif
+
             </div>
-            @php $sideBlocks[] = ob_get_clean(); @endphp
-        @endif
 
-        @if(count($languages) > 0)
-            @php ob_start(); @endphp
-            <div class="section">
-                <div class="sidebar-section-title">{{ __('cv.languages') }}</div>
-                @foreach($languages as $lang)
-                    <div class="lang-tag"><span class="lang-name">{{ $lang['name'] }}</span> &ndash; {{ $lang['level'] }}</div>
-                @endforeach
+            <!-- ===== MAIN COLUMN ===== -->
+            <div class="main-col">
+                
+                <!-- Experience -->
+                @if(count($experiences) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.work_experience') }}</div>
+                    @foreach($experiences as $exp)
+                    <div class="exp-item">
+                        <div class="exp-role">{{ $exp['role'] }}</div>
+                        <div class="exp-date">{{ $exp['date_range'] }}</div>
+                        <div class="exp-company">{{ $exp['company'] }}</div>
+                        <div class="exp-desc">
+                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
+                            @if(count($lines) > 1)
+                                <ul>
+                                    @foreach($lines as $line)
+                                        @if(trim($line))
+                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @else
+                                {{ $exp['description'] }}
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <!-- Projects -->
+                @if(count($projects) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.projects') }}</div>
+                    @foreach($projects as $project)
+                    <div class="project-item">
+                        <div class="project-name">{{ $project['title'] }}</div>
+                        <div class="project-desc">{{ $project['description'] }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
             </div>
-            @php $sideBlocks[] = ob_get_clean(); @endphp
-        @endif
 
-        <!-- RENDER THE TABLE ROW BY ROW -->
-        @php
-            $maxBlocks = max(count($mainBlocks), count($sideBlocks));
-        @endphp
-
-        @for($i = 0; $i < $maxBlocks; $i++)
-            <tr>
-                <td class="main-col">
-                    {!! $mainBlocks[$i] ?? '' !!}
-                </td>
-                <td class="side-col">
-                    {!! $sideBlocks[$i] ?? '' !!}
-                </td>
-            </tr>
-        @endfor
-        </table>
+            <div style="clear: both;"></div>
+        </div>
     </div>
 
 </body>
