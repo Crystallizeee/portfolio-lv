@@ -169,18 +169,24 @@ class AiSecurityService
      */
     public function sanitizeOutput(string $output): string
     {
-        // Strip any HTML tags the model might have hallucinated
+        // 1. Initial tag stripping (remove all HTML tags model might hallucinate)
         $output = strip_tags($output);
 
-        // Remove null bytes
+        // 2. Remove dangerous Markdown URI schemes (javascript:, data:, vbscript:, etc.)
+        // This covers [text](javascript:...) and ![alt](data:...)
+        $output = preg_replace('/\[([^\]]*)\]\s*\(\s*(javascript|data|vbscript|file|about):/i', '[$1](#', $output);
+        $output = preg_replace('/!\[([^\]]*)\]\s*\(\s*(javascript|data|vbscript|file|about):/i', '![$1](#', $output);
+
+        // 3. Remove dangerous HTML attributes that might be smuggled in
+        $dangerousAttributes = '/\s+(on[a-z]+|formaction|style|background|srcdoc|contenteditable)\s*=/i';
+        $output = preg_replace($dangerousAttributes, ' data-sanitized=', $output);
+
+        // 4. Remove null bytes
         $output = str_replace("\0", '', $output);
 
-        // Remove potentially dangerous markdown patterns (e.g., [text](javascript:...))
-        $output = preg_replace('/\[([^\]]*)\]\s*\(\s*javascript:/i', '[$1](', $output);
-
-        // Remove HTML entities that could smuggle tags if later decoded
+        // 5. Handle HTML entities and re-strip tags for safety
         $output = html_entity_decode($output, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $output = strip_tags($output); // Second pass after decoding
+        $output = strip_tags($output);
 
         // Hard cap output length at 1500 chars
         $output = mb_substr(trim($output), 0, 1500);

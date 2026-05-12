@@ -116,11 +116,13 @@ document.addEventListener('alpine:init', () => {
         MAX_CONV_LENGTH: 50,          // max stored messages (prevents memory abuse)
 
         toggleChat() {
-            // Configure marked for better list handling
+            // Configure marked for modern API and better list/line-break handling
             if (typeof marked !== 'undefined') {
-                marked.setOptions({
+                marked.use({
                     breaks: true,
-                    gfm: true
+                    gfm: true,
+                    mangle: false,
+                    headerIds: false
                 });
             }
             this.isOpen = !this.isOpen;

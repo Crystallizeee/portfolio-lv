@@ -92,7 +92,7 @@ class ManagePosts extends Component
 
     public function openEditModal($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::where('user_id', Auth::id())->findOrFail($id);
 
         $this->editingId = $id;
         $this->title = $post->title;
@@ -300,7 +300,7 @@ MSG;
         }
 
         if ($this->isEditing && $this->editingId) {
-            Post::findOrFail($this->editingId)->update($data);
+            Post::where('user_id', Auth::id())->findOrFail($this->editingId)->update($data);
             session()->flash('message', 'Post updated successfully!');
         } else {
             Post::create($data);
@@ -312,7 +312,7 @@ MSG;
 
     public function delete($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::where('user_id', Auth::id())->findOrFail($id);
 
         // Delete image if exists
         if ($post->featured_image) {
@@ -329,7 +329,7 @@ MSG;
     // --- Comments Management ---
     public function openCommentsModal($postId)
     {
-        $post = Post::with('comments')->findOrFail($postId);
+        $post = Post::with('comments')->where('user_id', Auth::id())->findOrFail($postId);
         $this->currentPostIdForComments = $post->id;
         $this->currentPostTitle = $post->title;
         $this->postComments = $post->comments()->latest()->get();
@@ -346,7 +346,9 @@ MSG;
 
     public function deleteComment($commentId)
     {
-        \App\Models\Comment::findOrFail($commentId)->delete();
+        \App\Models\Comment::whereHas('post', function($q) {
+            $q->where('user_id', Auth::id());
+        })->findOrFail($commentId)->delete();
         // Refresh comments list
         if ($this->currentPostIdForComments) {
             $this->postComments = \App\Models\Comment::where('post_id', $this->currentPostIdForComments)->latest()->get();

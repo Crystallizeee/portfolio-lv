@@ -19,7 +19,7 @@
             <div class="glass-card p-8">
                 <div class="prose prose-invert max-w-none">
                     <div class="text-slate-300 text-lg leading-relaxed mb-6">
-                        {!! $owner->summary ?? 'I\'m a <span class="text-cyan-400 font-semibold">Hybrid GRC & Technical Practitioner</span> with expertise bridging the gap between compliance frameworks and hands-on security testing.' !!}
+                        {!! Purifier::clean($owner->summary ?? 'I\'m a <span class="text-cyan-400 font-semibold">Hybrid GRC & Technical Practitioner</span> with expertise bridging the gap between compliance frameworks and hands-on security testing.') !!}
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">

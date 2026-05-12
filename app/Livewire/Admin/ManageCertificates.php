@@ -68,7 +68,7 @@ class ManageCertificates extends Component
 
     public function edit($id)
     {
-        $cert = Certificate::find($id);
+        $cert = Certificate::where('user_id', Auth::id())->findOrFail($id);
         $this->editingId = $id;
         $this->existingImage = $cert->image;
         $this->form = [
@@ -103,7 +103,7 @@ class ManageCertificates extends Component
         }
 
         if ($this->editingId) {
-            Certificate::find($this->editingId)->update([
+            Certificate::where('user_id', Auth::id())->findOrFail($this->editingId)->update([
                 'name' => $this->form['name'],
                 'issuer' => $this->form['issuer'],
                 'year' => $this->form['year'],
@@ -134,7 +134,7 @@ class ManageCertificates extends Component
 
     public function delete($id)
     {
-        $cert = Certificate::find($id);
+        $cert = Certificate::where('user_id', Auth::id())->findOrFail($id);
         if ($cert->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($cert->image)) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($cert->image);
         }

@@ -42,7 +42,7 @@ class BackupController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'backup_file' => 'required|file|mimes:json'
+            'backup_file' => 'required|file|mimes:json|max:5120'
         ]);
 
         try {
@@ -58,7 +58,9 @@ class BackupController extends Controller
 
                 // Restore User Profile
                 if (isset($data['user'])) {
-                    $user->update($data['user']);
+                    $allowedFields = ['name', 'phone', 'address', 'linkedin', 'github', 'website', 'summary'];
+                    $userData = array_intersect_key($data['user'], array_flip($allowedFields));
+                    $user->update($userData);
                 }
 
                 // Restore Projects (Delete existing and re-create)

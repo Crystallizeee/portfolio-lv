@@ -111,7 +111,7 @@ class ProfileSettings extends Component
         ]);
 
         if ($this->editingEducationId) {
-            Education::find($this->editingEducationId)->update([
+            Education::where('user_id', Auth::id())->findOrFail($this->editingEducationId)->update([
                 'school' => $this->educationForm['school'],
                 'degree' => $this->educationForm['degree'],
                 'year' => $this->educationForm['year'],
@@ -135,7 +135,7 @@ class ProfileSettings extends Component
 
     public function editEducation($id)
     {
-        $education = Education::find($id);
+        $education = Education::where('user_id', Auth::id())->findOrFail($id);
         $this->editingEducationId = $id;
         $this->educationForm = [
             'school' => $education->school,
@@ -147,7 +147,7 @@ class ProfileSettings extends Component
 
     public function deleteEducation($id)
     {
-        Education::find($id)->delete();
+        Education::where('user_id', Auth::id())->findOrFail($id)->delete();
         $this->loadEducations();
         session()->flash('education_success', 'Education deleted successfully!');
     }

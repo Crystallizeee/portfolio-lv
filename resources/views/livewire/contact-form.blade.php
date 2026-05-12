@@ -9,7 +9,7 @@
                 <span class="text-slate-500">$</span> ./contact_info.sh
             </span>
             <h2 class="font-mono text-3xl md:text-4xl font-bold text-white mb-4">
-                {!! $user->contact_title ?? 'Get In <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Touch</span>' !!}
+                {!! Purifier::clean($user->contact_title ?? 'Get In <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Touch</span>') !!}
             </h2>
             <p class="text-slate-400 max-w-2xl mx-auto">
                 {{ $user->contact_subtitle ?? 'Interested in working together or have a question? Reach out to me directly.' }}
