@@ -77,23 +77,22 @@
 
         .section { margin-bottom: 20px; }
 
-        /* ===== TWO COLUMN LAYOUT (Table-based for DomPDF) ===== */
-        .layout-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .layout-table td {
-            vertical-align: top;
-        }
-
+        /* ===== TWO COLUMN LAYOUT ===== */
         .main-col {
-            width: 63%;
+            width: 62%;
+            float: left;
             padding-right: 25px;
         }
 
         .side-col {
-            width: 37%;
+            width: 34%;
+            float: right;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: block;
+            clear: both;
         }
 
         /* ===== EXPERIENCE ===== */
@@ -102,17 +101,16 @@
             position: relative;
         }
 
+        .exp-header {
+            overflow: hidden;
+        }
+
         .exp-role {
             font-size: 12px;
             font-weight: bold;
             color: #0f172a;
-        }
-
-        .exp-company {
-            font-size: 10px;
-            color: #2563eb;
-            font-weight: 600;
-            margin-bottom: 4px;
+            float: left;
+            width: 68%;
         }
 
         .exp-date {
@@ -120,6 +118,16 @@
             font-weight: 600;
             color: #64748b;
             text-align: right;
+            float: right;
+            width: 30%;
+        }
+
+        .exp-company {
+            font-size: 10px;
+            color: #2563eb;
+            font-weight: 600;
+            margin-bottom: 4px;
+            clear: both;
         }
 
         .exp-desc {
@@ -266,10 +274,10 @@
         <div class="summary-box">{{ $personal['summary'] }}</div>
         @endif
 
-        <table class="layout-table">
-            <tr>
-                <!-- ===== MAIN COLUMN ===== -->
-                <td class="main-col">
+        <div class="clearfix">
+            
+            <!-- ===== MAIN COLUMN (rendered first = appears left) ===== -->
+            <div class="main-col">
                 
                 <!-- Experience -->
                 @if(count($experiences) > 0)
@@ -277,12 +285,10 @@
                     <div class="section-title">{{ __('cv.work_experience') }}</div>
                     @foreach($experiences as $exp)
                     <div class="exp-item">
-                        <table width="100%">
-                            <tr>
-                                <td><div class="exp-role">{{ $exp['role'] }}</div></td>
-                                <td class="exp-date" style="text-align: right; width: 30%;">{{ $exp['date_range'] }}</td>
-                            </tr>
-                        </table>
+                        <div class="exp-header">
+                            <span class="exp-role">{{ $exp['role'] }}</span>
+                            <span class="exp-date">{{ $exp['date_range'] }}</span>
+                        </div>
                         <div class="exp-company">{{ $exp['company'] }}</div>
                         <div class="exp-desc">
                             @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
@@ -316,10 +322,10 @@
                 </div>
                 @endif
 
-                </td>
+            </div>
 
-                <!-- ===== SIDEBAR ===== -->
-                <td class="side-col">
+            <!-- ===== SIDEBAR ===== -->
+            <div class="side-col">
                 
                 <!-- Skills -->
                 @if(count($skills) > 0)
@@ -386,9 +392,9 @@
                 </div>
                 @endif
 
-                </td>
-            </tr>
-        </table>
+            </div>
+
+        </div>
     </div>
 
 </body>
