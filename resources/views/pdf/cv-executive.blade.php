@@ -75,13 +75,12 @@
 
         /* ===== TWO COLUMN LAYOUT ===== */
         .main-col {
-            width: 62%;
+            width: 60%;
             float: left;
-            padding-right: 25px;
         }
 
         .side-col {
-            width: 34%;
+            width: 35%;
             float: right;
         }
 
