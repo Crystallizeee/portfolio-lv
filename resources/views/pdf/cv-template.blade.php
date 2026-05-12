@@ -78,20 +78,23 @@
         .section { margin-bottom: 20px; }
 
         /* ===== TWO COLUMN LAYOUT ===== */
+        .layout-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .layout-table td {
+            vertical-align: top;
+        }
+
         .main-col {
-            width: 60%;
-            float: left;
+            width: 65%;
+            padding-right: 25px;
         }
 
         .side-col {
             width: 35%;
-            float: right;
-        }
-
-        .clearfix::after {
-            content: "";
-            display: block;
-            clear: both;
         }
 
         /* ===== EXPERIENCE ===== */
@@ -100,16 +103,11 @@
             position: relative;
         }
 
-        .exp-header {
-            overflow: hidden;
-        }
-
         .exp-role {
             font-size: 12px;
             font-weight: bold;
             color: #0f172a;
-            float: left;
-            width: 68%;
+            width: 70%;
         }
 
         .exp-date {
@@ -117,7 +115,9 @@
             font-weight: 600;
             color: #64748b;
             text-align: right;
-            float: right;
+            position: absolute;
+            top: 0;
+            right: 0;
             width: 30%;
         }
 
@@ -126,7 +126,6 @@
             color: #2563eb;
             font-weight: 600;
             margin-bottom: 4px;
-            clear: both;
         }
 
         .exp-desc {
@@ -273,10 +272,57 @@
         <div class="summary-box">{{ $personal['summary'] }}</div>
         @endif
 
-        <div class="clearfix">
+        <table class="layout-table">
+            <tr>
             
-            <!-- ===== SIDEBAR (Rendered first for float right) ===== -->
-            <div class="side-col">
+            <!-- ===== MAIN COLUMN ===== -->
+            <td class="main-col">
+                
+                <!-- Experience -->
+                @if(count($experiences) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.work_experience') }}</div>
+                    @foreach($experiences as $exp)
+                    <div class="exp-item">
+                        <div class="exp-role">{{ $exp['role'] }}</div>
+                        <div class="exp-date">{{ $exp['date_range'] }}</div>
+                        <div class="exp-company">{{ $exp['company'] }}</div>
+                        <div class="exp-desc">
+                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
+                            @if(count($lines) > 1)
+                                <ul>
+                                    @foreach($lines as $line)
+                                        @if(trim($line))
+                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @else
+                                {{ $exp['description'] }}
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <!-- Projects -->
+                @if(count($projects) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.projects') }}</div>
+                    @foreach($projects as $project)
+                    <div class="project-item">
+                        <div class="project-name">{{ $project['title'] }}</div>
+                        <div class="project-desc">{{ $project['description'] }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+            </td>
+
+            <!-- ===== SIDEBAR ===== -->
+            <td class="side-col">
                 
                 <!-- Skills -->
                 @if(count($skills) > 0)
@@ -343,57 +389,9 @@
                 </div>
                 @endif
 
-            </div>
-
-            <!-- ===== MAIN COLUMN ===== -->
-            <div class="main-col">
-                
-                <!-- Experience -->
-                @if(count($experiences) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.work_experience') }}</div>
-                    @foreach($experiences as $exp)
-                    <div class="exp-item">
-                        <div class="exp-header">
-                            <span class="exp-role">{{ $exp['role'] }}</span>
-                            <span class="exp-date">{{ $exp['date_range'] }}</span>
-                        </div>
-                        <div class="exp-company">{{ $exp['company'] }}</div>
-                        <div class="exp-desc">
-                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
-                            @if(count($lines) > 1)
-                                <ul>
-                                    @foreach($lines as $line)
-                                        @if(trim($line))
-                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            @else
-                                {{ $exp['description'] }}
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-
-                <!-- Projects -->
-                @if(count($projects) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.projects') }}</div>
-                    @foreach($projects as $project)
-                    <div class="project-item">
-                        <div class="project-name">{{ $project['title'] }}</div>
-                        <div class="project-desc">{{ $project['description'] }}</div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-
-            </div>
-
-        </div>
+            </td>
+            </tr>
+        </table>
     </div>
 
 </body>
