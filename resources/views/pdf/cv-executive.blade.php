@@ -75,21 +75,20 @@
 
         /* ===== TWO COLUMN LAYOUT ===== */
         /* ===== TWO COLUMN LAYOUT ===== */
-        .layout-wrapper {
-            position: relative;
+        .layout-table {
             width: 100%;
+            border-collapse: collapse;
         }
 
         .main-col {
             width: 65%;
-            /* No float, normal block flow allows perfect pagination */
+            vertical-align: top;
+            padding-right: 25px;
         }
 
         .side-col {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 32%;
+            width: 35%;
+            vertical-align: top;
         }
 
         /* ===== EXPERIENCE ===== */
@@ -262,10 +261,57 @@
         <div class="summary-box">{{ $personal['summary'] }}</div>
         @endif
 
-        <div class="layout-wrapper">
+        <table class="layout-table">
+            <tr>
             
-            <!-- ===== SIDEBAR (Absolutely positioned to the right) ===== -->
-            <div class="side-col">
+            <!-- ===== MAIN COLUMN ===== -->
+            <td class="main-col">
+                
+                <!-- Experience -->
+                @if(count($experiences) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.work_experience') }}</div>
+                    @foreach($experiences as $exp)
+                    <div class="exp-item">
+                        <div class="exp-role">{{ $exp['role'] }}</div>
+                        <div class="exp-date">{{ $exp['date_range'] }}</div>
+                        <div class="exp-company">{{ $exp['company'] }}</div>
+                        <div class="exp-desc">
+                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
+                            @if(count($lines) > 1)
+                                <ul>
+                                    @foreach($lines as $line)
+                                        @if(trim($line))
+                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @else
+                                {{ $exp['description'] }}
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <!-- Projects -->
+                @if(count($projects) > 0)
+                <div class="section">
+                    <div class="section-title">{{ __('cv.projects') }}</div>
+                    @foreach($projects as $project)
+                    <div class="project-item">
+                        <div class="project-name">{{ $project['title'] }}</div>
+                        <div class="project-desc">{{ $project['description'] }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+            </td>
+
+            <!-- ===== SIDEBAR ===== -->
+            <td class="side-col">
                 
                 <!-- Skills -->
                 @if(count($skills) > 0)
@@ -331,55 +377,9 @@
                 </div>
                 @endif
 
-            </div>
-
-            <!-- ===== MAIN COLUMN (Normal flow for pagination) ===== -->
-            <div class="main-col">
-                
-                <!-- Experience -->
-                @if(count($experiences) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.work_experience') }}</div>
-                    @foreach($experiences as $exp)
-                    <div class="exp-item">
-                        <div class="exp-role">{{ $exp['role'] }}</div>
-                        <div class="exp-date">{{ $exp['date_range'] }}</div>
-                        <div class="exp-company">{{ $exp['company'] }}</div>
-                        <div class="exp-desc">
-                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
-                            @if(count($lines) > 1)
-                                <ul>
-                                    @foreach($lines as $line)
-                                        @if(trim($line))
-                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            @else
-                                {{ $exp['description'] }}
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-
-                <!-- Projects -->
-                @if(count($projects) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.projects') }}</div>
-                    @foreach($projects as $project)
-                    <div class="project-item">
-                        <div class="project-name">{{ $project['title'] }}</div>
-                        <div class="project-desc">{{ $project['description'] }}</div>
-                    </div>
-                    @endforeach
-                </div>
-                @endif
-
-            </div>
-
-        </div>
+            </td>
+            </tr>
+        </table>
     </div>
 
 </body>
