@@ -1,0 +1,4 @@
+## 2024-05-14 - Timing Attack in API Token Comparison
+**Vulnerability:** The API token verification for CV download endpoint was using `!==` (strict inequality) for comparison, which made it vulnerable to timing attacks.
+**Learning:** Standard comparison operators (`==`, `!=`, `===`, `!==`) compare strings byte by byte and return early on the first mismatch. An attacker could exploit this by measuring the response time to guess a token character-by-character.
+**Prevention:** Always use `hash_equals()` for comparing sensitive tokens, secrets, or hashes in PHP to ensure constant-time comparison, protecting against timing-based enumeration attacks.
