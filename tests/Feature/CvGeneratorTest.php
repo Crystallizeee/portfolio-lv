@@ -10,6 +10,12 @@ use Tests\TestCase;
 
 class CvGeneratorTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutVite();
+    }
+
     use RefreshDatabase;
 
     public function test_cv_generator_page_renders_successfully()
