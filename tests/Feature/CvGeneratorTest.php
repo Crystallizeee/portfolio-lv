@@ -14,7 +14,12 @@ class CvGeneratorTest extends TestCase
 
     public function test_cv_generator_page_renders_successfully()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'two_factor_secret' => 'some_secret',
+            'two_factor_confirmed_at' => now(), // Need to pass hasTwoFactorEnabled
+        ]);
+
+        $this->withSession(['two_factor_verified' => true]);
 
         $this->actingAs($user)
             ->get(route('admin.cv-generator'))
@@ -85,4 +90,3 @@ class CvGeneratorTest extends TestCase
             ->assertFileDownloaded('cv-db-user.pdf');
     }
 }
-
