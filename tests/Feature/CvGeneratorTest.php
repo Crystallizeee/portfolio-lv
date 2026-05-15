@@ -14,9 +14,12 @@ class CvGeneratorTest extends TestCase
 
     public function test_cv_generator_page_renders_successfully()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'two_factor_confirmed_at' => now(),
+        ]);
 
         $this->actingAs($user)
+            ->withSession(['two_factor_verified' => true])
             ->get(route('admin.cv-generator'))
             ->assertSuccessful()
             ->assertSeeLivewire(CvGenerator::class);
