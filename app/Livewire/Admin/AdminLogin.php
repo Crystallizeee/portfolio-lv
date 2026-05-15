@@ -4,6 +4,8 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 
 class AdminLogin extends Component
 {
@@ -16,11 +18,28 @@ class AdminLogin extends Component
         'password' => 'required|min:6',
     ];
 
+    protected function throttleKey()
+    {
+        return mb_strtolower($this->email) . '|' . request()->ip();
+    }
+
     public function login()
     {
         $this->validate();
 
+        if (RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            $seconds = RateLimiter::availableIn($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.throttle', [
+                    'seconds' => $seconds,
+                    'minutes' => ceil($seconds / 60),
+                ]),
+            ]);
+        }
+
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            RateLimiter::clear($this->throttleKey());
             session()->regenerate();
 
             $user = Auth::user();
@@ -39,6 +58,7 @@ class AdminLogin extends Component
             return redirect()->intended(route('admin.dashboard'));
         }
 
+        RateLimiter::hit($this->throttleKey());
         $this->addError('email', 'Kredensial yang diberikan tidak cocok dengan data kami.');
     }
 
