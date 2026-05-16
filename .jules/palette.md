@@ -1,0 +1,3 @@
+## 2024-05-17 - Livewire Submit Button Loading States
+**Learning:** Livewire form submissions can sometimes be slow. Without explicit visual feedback, users may click submit multiple times, leading to duplicate requests. Relying solely on `wire:loading` without targeting specific actions (`wire:target`) can cause unintended loading states across unrelated components.
+**Action:** Always add explicit loading states to Livewire submit buttons, using `wire:loading.attr="disabled"` to prevent duplicate submissions and `wire:target` to scope the loading state specifically to the intended action. Replace the button content or show a spinner to provide immediate visual feedback.

@@ -29,10 +29,10 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button wire:click="approveComment({{ $pending->id }})" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui">
+                                    <button wire:click="approveComment({{ $pending->id }})" aria-label="Setujui komentar dari {{ $pending->name }}" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui">
                                         <i data-lucide="check" class="w-4 h-4"></i>
                                     </button>
-                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus">
+                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" aria-label="Hapus komentar dari {{ $pending->name }}" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </div>
@@ -67,13 +67,13 @@
         @endif
 
         <div class="mb-4">
-            <label for="name" class="block mb-2 text-sm font-medium text-slate-300">Nama</label>
+            <label for="name" class="block mb-2 text-sm font-medium text-slate-300">Nama <span class="text-rose-500" aria-hidden="true">*</span></label>
             <input type="text" id="name" wire:model="name" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-slate-500" placeholder="Masukkan nama Anda" required>
             @error('name') <span class="text-rose-500 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
         
         <div class="mb-4">
-            <label for="content" class="block mb-2 text-sm font-medium text-slate-300">Komentar</label>
+            <label for="content" class="block mb-2 text-sm font-medium text-slate-300">Komentar <span class="text-rose-500" aria-hidden="true">*</span></label>
             <textarea id="content" wire:model="content" rows="4" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-slate-500" placeholder="Tulis komentar Anda di sini..." required></textarea>
             @error('content') <span class="text-rose-500 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
@@ -84,8 +84,12 @@
             <input type="text" id="website" wire:model="website" autocomplete="off" tabindex="-1">
         </div>
 
-        <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors">
-            Kirim Komentar
+        <button type="submit" wire:loading.attr="disabled" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            <span wire:loading.remove wire:target="addComment">Kirim Komentar</span>
+            <span wire:loading wire:target="addComment" class="flex items-center gap-2">
+                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                Mengirim...
+            </span>
         </button>
     </form>
 
@@ -104,7 +108,7 @@
                         </div>
                     </div>
                     @auth
-                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar">
+                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" aria-label="Hapus komentar dari {{ $comment->name }}" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     @endauth
