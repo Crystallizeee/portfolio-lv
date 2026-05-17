@@ -35,3 +35,8 @@ scripts/config.py
 # Python bytecode cache (may contain compiled secrets)
 __pycache__/
 *.pyc
+fix_cv.py
+sourceoftruth.md
+agent.md
+public/debug-cv.pdf
+source_of_truth.md

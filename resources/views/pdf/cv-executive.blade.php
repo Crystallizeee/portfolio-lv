@@ -5,382 +5,327 @@
     <title>{{ $personal['name'] }} - CV</title>
     <style>
         @page {
-            margin: 45px 50px;
+            margin: 35px 40px 35px 40px;
         }
 
         body {
+            width: 100%;
             font-family: 'Helvetica', 'Arial', sans-serif;
             color: #1e293b;
-            line-height: 1.6;
+            line-height: 1.45;
             margin: 0;
             padding: 0;
-            font-size: 11px;
+            font-size: 9.5px;
         }
 
         table { border-collapse: collapse; width: 100%; }
 
         /* ===== HEADER ===== */
         .header {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #1e3a5f;
             background-color: #1e3a5f;
-            padding: 18px 20px 14px 20px;
-            margin: -45px -50px 20px -50px;
+            padding: 14px 18px 10px 18px;
+            margin: -35px -40px 12px -40px;
         }
 
+        .header-table td { vertical-align: top; }
+
         .name {
-            font-size: 26px;
+            font-size: 20px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #ffffff;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .professional-title {
-            font-size: 11px;
+            font-size: 9px;
             color: #d4a843;
             font-weight: bold;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-bottom: 5px;
         }
 
         .contact-item {
-            font-size: 9.5px;
+            font-size: 8px;
             color: #94b8db;
-            margin-bottom: 3px;
-        }
-
-        .contact-icon { 
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 6px;
-            width: 12px;
-            height: 12px;
-        }
-
-        /* ===== BODY ===== */
-        .section-title {
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #1e3a5f;
-            margin-bottom: 12px;
-            padding-bottom: 4px;
-            border-bottom: 2px solid #1e3a5f;
-        }
-
-        /* ===== TWO COLUMN LAYOUT ===== */
-        .layout-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        .main-col {
-            width: 63%;
-            padding-right: 2%;
-        }
-
-        .side-col {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 33%;
-        }
-
-        /* ===== EXPERIENCE ===== */
-        .exp-item {
-            margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 2px solid #e2e8f0;
-            position: relative;
-        }
-
-        .exp-role {
-            font-size: 12px;
-            font-weight: bold;
-            color: #0f172a;
-            width: 70%;
-        }
-
-        .exp-date {
-            font-size: 9px;
-            font-weight: 600;
-            color: #d4a843;
-            text-align: right;
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 30%;
-        }
-
-        .exp-company {
-            font-size: 10px;
-            color: #1e3a5f;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .exp-desc {
-            font-size: 9.5px;
-            color: #334155;
-            line-height: 1.6;
-        }
-
-        .exp-desc ul { margin: 5px 0 0 0; padding-left: 15px; }
-        .exp-desc li { margin-bottom: 3px; }
-
-        /* ===== PROJECTS ===== */
-        .project-item {
-            margin-bottom: 12px;
-            padding: 10px;
-            background-color: #f8fafc;
-            border-left: 3px solid #d4a843;
-        }
-
-        .project-name {
-            font-size: 10.5px;
-            font-weight: bold;
-            color: #1e3a5f;
-            margin-bottom: 3px;
-        }
-
-        .project-desc {
-            font-size: 9px;
-            color: #475569;
-            line-height: 1.5;
+            margin-bottom: 1px;
         }
 
         /* ===== SUMMARY ===== */
         .summary-box {
             background-color: #f0f4f8;
-            border-left: 4px solid #d4a843;
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 10px;
+            border-left: 3px solid #d4a843;
+            padding: 7px 10px;
+            margin-bottom: 10px;
+            font-size: 8.5px;
             color: #334155;
             font-style: italic;
+            line-height: 1.45;
         }
 
-        /* ===== SIDEBAR ===== */
-        .sidebar-section-title {
-            font-size: 9px;
+        /* ===== SECTION TITLES ===== */
+        .section-title {
+            font-size: 8.5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+            margin-top: 2px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid #1e3a5f;
+        }
+
+        /* ===== EXPERIENCE ===== */
+        .exp-item {
+            margin-bottom: 8px;
+        }
+
+        .exp-header td { vertical-align: top; }
+
+        .exp-role {
+            font-size: 10px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .exp-date {
+            font-size: 7.5px;
+            font-weight: 600;
+            color: #d4a843;
+            text-align: right;
+        }
+
+        .exp-company {
+            font-size: 8.5px;
+            color: #1e3a5f;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .exp-desc {
+            font-size: 8px;
+            color: #334155;
+            line-height: 1.45;
+        }
+
+        .exp-desc ul { margin: 2px 0 0 0; padding-left: 12px; }
+        .exp-desc li { margin-bottom: 1px; }
+
+        /* ===== SKILLS (inline) ===== */
+        .skill-cat-label {
+            font-size: 7.5px;
             font-weight: bold;
             color: #1e3a5f;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            border-left: 3px solid #d4a843;
-            padding-left: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .skill-group { margin-bottom: 15px; }
-        .skill-category { font-size: 8.5px; font-weight: bold; color: #475569; margin-bottom: 5px; }
-
-        .skill-tag {
-            display: inline-block;
-            background-color: #1e3a5f;
-            color: #ffffff;
-            padding: 2px 8px;
-            font-size: 8.5px;
-            font-weight: 600;
-            border-radius: 3px;
-            margin-right: 4px;
-            margin-bottom: 5px;
+        .skill-list {
+            font-size: 8px;
+            color: #334155;
         }
 
-        .edu-item { margin-bottom: 10px; }
-        .edu-degree { font-size: 10px; font-weight: bold; color: #0f172a; }
-        .edu-school { font-size: 9px; color: #1e3a5f; font-weight: 500; }
-        .edu-year { font-size: 8.5px; color: #64748b; }
-
-        .cert-item { margin-bottom: 6px; font-size: 9px; color: #334155; padding-left: 8px; border-left: 2px solid #d4a843; }
-
-        .lang-tag {
-            display: block;
-            font-size: 9px;
-            color: #475569;
+        .skills-row {
             margin-bottom: 4px;
+        }
+
+        /* ===== EDUCATION / CERT / LANG ===== */
+        .edu-degree { font-size: 9px; font-weight: bold; color: #0f172a; }
+        .edu-school { font-size: 8px; color: #1e3a5f; font-weight: 500; }
+        .edu-year { font-size: 7.5px; color: #64748b; }
+
+        .cert-item {
+            font-size: 8px;
+            color: #334155;
+            margin-bottom: 2px;
+            padding-left: 8px;
+            border-left: 2px solid #d4a843;
+        }
+
+        .lang-item {
+            font-size: 8px;
+            color: #475569;
         }
         .lang-name { font-weight: bold; color: #1e3a5f; }
 
+        /* ===== PROJECTS ===== */
+        .project-item {
+            margin-bottom: 5px;
+            padding: 4px 8px;
+            background-color: #f8fafc;
+            border-left: 3px solid #d4a843;
+        }
+
+        .project-name {
+            font-size: 9px;
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-bottom: 1px;
+        }
+
+        .project-desc {
+            font-size: 7.5px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-bar {
+            position: fixed;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background-color: #1e3a5f;
+        }
+
+        /* ===== DIVIDER ===== */
+        .section-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 8px 0;
+        }
     </style>
 </head>
 <body>
 
+    <div class="footer-bar"></div>
+
     <!-- ===== HEADER ===== -->
     <div class="header">
-        <table width="100%">
+        <table class="header-table" width="100%">
             <tr>
-                <td width="55%" style="vertical-align: top;">
+                <td width="55%">
                     <div class="name">{{ $personal['name'] }}</div>
                     <div class="professional-title">{{ $personal['professional_title'] }}</div>
                 </td>
-                <td width="45%" style="vertical-align: top; text-align: right;">
-                    @if($personal['address'])
-                        <div class="contact-item">
-                            {{ $personal['address'] }}
-                        </div>
-                    @endif
-                    @if($personal['phone'])
-                        <div class="contact-item">
-                            {{ $personal['phone'] }}
-                        </div>
-                    @endif
-                    <div class="contact-item">
-                        {{ $personal['email'] }}
-                    </div>
-                    @if($personal['linkedin'])
-                        <div class="contact-item">
-                            {{ str_replace(['https://', 'http://'], '', $personal['linkedin']) }}
-                        </div>
-                    @endif
-                    @if($personal['website'])
-                        <div class="contact-item">
-                            {{ str_replace(['https://', 'http://'], '', $personal['website']) }}
-                        </div>
-                    @endif
-                    @if($personal['github'])
-                        <div class="contact-item">
-                            {{ str_replace(['https://', 'http://'], '', $personal['github']) }}
-                        </div>
-                    @endif
+                <td width="45%" style="text-align: right;">
+                    @if($personal['address'])<div class="contact-item">{{ $personal['address'] }}</div>@endif
+                    @if($personal['phone'])<div class="contact-item">{{ $personal['phone'] }}</div>@endif
+                    <div class="contact-item">{{ $personal['email'] }}</div>
+                    @if($personal['linkedin'])<div class="contact-item">{{ str_replace(['https://', 'http://'], '', $personal['linkedin']) }}</div>@endif
+                    @if($personal['website'])<div class="contact-item">{{ str_replace(['https://', 'http://'], '', $personal['website']) }}</div>@endif
+                    @if($personal['github'])<div class="contact-item">{{ str_replace(['https://', 'http://'], '', $personal['github']) }}</div>@endif
                 </td>
             </tr>
         </table>
     </div>
 
-    <div class="body-content">
-        
-        <!-- ===== SUMMARY ===== -->
-        @if($personal['summary'])
-        <div class="summary-box">{{ $personal['summary'] }}</div>
-        @endif
+    <!-- ===== SUMMARY ===== -->
+    @if($personal['summary'])
+    <div class="summary-box">{{ $personal['summary'] }}</div>
+    @endif
 
-        <div class="layout-wrapper">
-            
-            <!-- ===== SIDEBAR ===== -->
-            <div class="side-col">
-                
-                <!-- Skills -->
-                @if(count($skills) > 0)
-                <div class="section" style="margin-bottom: 15px;">
-                    <div class="sidebar-section-title">{{ __('cv.skills') }}</div>
-                    @php $groupedSkills = collect($skills)->groupBy('category'); @endphp
-                    @if($groupedSkills->count() > 1)
-                        @foreach($groupedSkills as $category => $categorySkills)
-                            <div class="skill-group" style="margin-bottom: 8px;">
-                                <div class="skill-category" style="margin-bottom: 2px;">{{ $category ?: 'Other' }}</div>
-                                @foreach($categorySkills as $skill)
-                                    <span class="skill-tag">{{ $skill['name'] }}</span>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="skill-group">
-                            @foreach($skills as $skill)
-                                <span class="skill-tag">{{ $skill['name'] }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-                @endif
+    <!-- ===== EXPERIENCE ===== -->
+    @if(count($experiences) > 0)
+    <div class="section-title">{{ __("cv.work_experience") }}</div>
+    @foreach($experiences as $exp)
+    <div class="exp-item">
+        <table class="exp-header" width="100%">
+            <tr>
+                <td><span class="exp-role">{{ $exp['role'] }}</span></td>
+                <td style="width: 25%;"><span class="exp-date">{{ $exp['date_range'] }}</span></td>
+            </tr>
+        </table>
+        <div class="exp-company">{{ $exp['company'] }}</div>
+        <div class="exp-desc">
+            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
+            @if(count($lines) > 1)
+                <ul>
+                    @foreach($lines as $line)
+                        @if(trim($line))
+                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
+                        @endif
+                    @endforeach
+                </ul>
+            @else
+                {{ $exp['description'] }}
+            @endif
+        </div>
+    </div>
+    @endforeach
+    @endif
 
+    <hr class="section-divider">
+
+    <!-- ===== SKILLS (compact inline format) ===== -->
+    @if(count($skills) > 0)
+    <div class="section-title">{{ __('cv.skills') }}</div>
+    @php $groupedSkills = collect($skills)->groupBy('category'); @endphp
+    @foreach($groupedSkills as $category => $categorySkills)
+    <div class="skills-row">
+        <span class="skill-cat-label">{{ $category ?: 'Other' }}:</span>
+        <span class="skill-list">{{ $categorySkills->pluck('name')->join(' · ') }}</span>
+    </div>
+    @endforeach
+    @endif
+
+    <hr class="section-divider">
+
+    <!-- ===== EDUCATION + CERTIFICATIONS + LANGUAGES in compact table ===== -->
+    <table width="100%">
+        <tr>
+            <td width="35%" style="vertical-align: top; padding-right: 10px;">
                 <!-- Education -->
                 @if(count($educations) > 0 && (isset($educations[0]['school']) && $educations[0]['school']))
-                <div class="section" style="margin-bottom: 15px;">
-                    <div class="sidebar-section-title">{{ __('cv.education') }}</div>
-                    @foreach($educations as $edu)
+                <div class="section-title">{{ __('cv.education') }}</div>
+                @foreach($educations as $edu)
                     @if(isset($edu['school']) && $edu['school'])
-                    <div class="edu-item" style="margin-bottom: 6px;">
+                    <div style="margin-bottom: 4px;">
                         <div class="edu-degree">{{ $edu['degree'] }}</div>
                         <div class="edu-school">{{ $edu['school'] }}</div>
                         <div class="edu-year">{{ $edu['year'] }}</div>
                     </div>
                     @endif
-                    @endforeach
-                </div>
-                @endif
-
-                <!-- Certifications -->
-                @if(count($certifications) > 0 && (isset($certifications[0]['name']) && $certifications[0]['name']))
-                <div class="section" style="margin-bottom: 15px;">
-                    <div class="sidebar-section-title">{{ __('cv.certifications') }}</div>
-                    @foreach($certifications as $cert)
-                    @if(isset($cert['name']) && $cert['name'])
-                    <div class="cert-item" style="margin-bottom: 4px;">
-                        {{ $cert['name'] }}
-                    </div>
-                    @endif
-                    @endforeach
-                </div>
+                @endforeach
                 @endif
 
                 <!-- Languages -->
                 @if(count($languages) > 0)
-                <div class="section" style="margin-bottom: 15px;">
-                    <div class="sidebar-section-title">{{ __('cv.languages') }}</div>
-                    @foreach($languages as $lang)
-                        <div class="lang-tag" style="margin-bottom: 2px;"><span class="lang-name">{{ $lang['name'] }}</span> &ndash; {{ $lang['level'] }}</div>
-                    @endforeach
-                </div>
+                <div class="section-title" style="margin-top: 8px;">{{ __('cv.languages') }}</div>
+                @foreach($languages as $lang)
+                    <div class="lang-item"><span class="lang-name">{{ $lang['name'] }}</span> &ndash; {{ $lang['level'] }}</div>
+                @endforeach
                 @endif
-
-            </div>
-
-            <!-- ===== MAIN COLUMN ===== -->
-            <div class="main-col">
-                
-                <!-- Experience -->
-                @if(count($experiences) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.work_experience') }}</div>
-                    @foreach($experiences as $exp)
-                    <div class="exp-item">
-                        <div class="exp-role">{{ $exp['role'] }}</div>
-                        <div class="exp-date">{{ $exp['date_range'] }}</div>
-                        <div class="exp-company">{{ $exp['company'] }}</div>
-                        <div class="exp-desc">
-                            @php $lines = array_filter(explode("\n", $exp['description'])); @endphp
-                            @if(count($lines) > 1)
-                                <ul>
-                                    @foreach($lines as $line)
-                                        @if(trim($line))
-                                            <li>{{ ltrim(trim($line), '•-● ') }}</li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            @else
-                                {{ $exp['description'] }}
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
+            </td>
+            <td width="65%" style="vertical-align: top;">
+                <!-- Certifications -->
+                @if(count($certifications) > 0 && (isset($certifications[0]['name']) && $certifications[0]['name']))
+                <div class="section-title">{{ __('cv.certifications') }}</div>
+                @foreach($certifications as $cert)
+                    @if(isset($cert['name']) && $cert['name'])
+                    <div class="cert-item">{{ $cert['name'] }}@if(isset($cert['issuer']) && $cert['issuer']) — {{ $cert['issuer'] }}@endif</div>
+                    @endif
+                @endforeach
                 @endif
+            </td>
+        </tr>
+    </table>
 
-                <!-- Projects -->
-                @if(count($projects) > 0)
-                <div class="section">
-                    <div class="section-title">{{ __('cv.projects') }}</div>
-                    @foreach($projects as $project)
-                    <div class="project-item">
-                        <div class="project-name">{{ $project['title'] }}</div>
-                        <div class="project-desc">{{ $project['description'] }}</div>
-                    </div>
-                    @endforeach
+    <!-- ===== PROJECTS ===== -->
+    @if(count($projects) > 0)
+    <hr class="section-divider">
+    <div class="section-title">{{ __("cv.projects") }}</div>
+    <table width="100%">
+        @foreach(collect($projects)->chunk(2) as $chunk)
+        <tr>
+            @foreach($chunk as $project)
+            <td width="50%" style="vertical-align: top; padding-right: 8px; padding-bottom: 5px;">
+                <div class="project-item">
+                    <div class="project-name">{{ $project['title'] }}</div>
+                    <div class="project-desc">{{ $project['description'] }}</div>
                 </div>
-                @endif
-
-            </div>
-
-            <div style="clear: both;"></div>
-        </div>
-    </div>
+            </td>
+            @endforeach
+            @if($chunk->count() === 1)
+            <td width="50%"></td>
+            @endif
+        </tr>
+        @endforeach
+    </table>
+    @endif
 
 </body>
 </html>
