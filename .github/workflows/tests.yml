@@ -43,5 +43,8 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Setup Database
+        run: touch database/database.sqlite && php artisan migrate:fresh --env=testing
+
       - name: Execute tests
         run: php artisan test
