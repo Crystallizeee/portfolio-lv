@@ -4,6 +4,8 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AdminLogin extends Component
 {
@@ -20,7 +22,17 @@ class AdminLogin extends Component
     {
         $this->validate();
 
+        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('email', "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            RateLimiter::clear($throttleKey);
+
             session()->regenerate();
 
             $user = Auth::user();
@@ -39,6 +51,7 @@ class AdminLogin extends Component
             return redirect()->intended(route('admin.dashboard'));
         }
 
+        RateLimiter::hit($throttleKey, 60); // 60 seconds lockout
         $this->addError('email', 'Kredensial yang diberikan tidak cocok dengan data kami.');
     }
 
