@@ -85,10 +85,6 @@ Route::prefix('admin')->group(function () {
     // Guest routes
     Route::middleware('guest')->group(function () {
         Route::get('/login', AdminLogin::class)->name('admin.login');
-        // Rate limit logging in
-        Route::post('/login', [AdminLogin::class, 'store'])
-            ->middleware('throttle:5,1')
-            ->name('admin.login.store');
     });
     
     // Authenticated routes
