@@ -36,6 +36,19 @@ class HomeController extends Controller
 
         if ($owner) {
             Analytics::track($owner->id, 'profile_view');
+        } else {
+            $owner = new \stdClass();
+            $owner->id = null;
+            $owner->about_grc_list = null;
+            $owner->about_tech_list = null;
+            $owner->summary = null;
+            $owner->name = null;
+            $owner->email = null;
+            $owner->linkedin = null;
+            $owner->github = null;
+            $owner->website = null;
+            $owner->contact_title = null;
+            $owner->contact_subtitle = null;
         }
         
         return view('welcome', compact('owner'));

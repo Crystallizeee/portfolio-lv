@@ -97,8 +97,15 @@ class User extends Authenticatable
      */
     public static function getPortfolioOwner(): ?self
     {
-        return self::where('email', 'benidictustriwibowo@gmail.com')->first() 
+        $owner = self::where('email', 'benidictustriwibowo@gmail.com')->first()
             ?: self::where('email', 'like', '%benidictus%')->first()
             ?: self::first();
+
+        if ($owner) {
+            $owner->about_grc_list = $owner->about_grc_list ?? [];
+            $owner->about_tech_list = $owner->about_tech_list ?? [];
+        }
+
+        return $owner;
     }
 }
