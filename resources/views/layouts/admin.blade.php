@@ -74,11 +74,11 @@
                     <span class="terminal-text font-mono text-base tracking-tighter truncate transition-all duration-300" x-show="!sidebarCollapsed" x-transition:enter="delay-200">ADMIN PANEL</span>
                 </div>
                 <!-- Desktop Minimize Toggle -->
-                <button type="button" @click="toggleCollapse()" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 transition-colors">
+                <button type="button" @click="toggleCollapse()" aria-label="Toggle sidebar collapse" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 transition-colors">
                     <i data-lucide="chevron-left" class="w-4 h-4 transition-transform duration-500" :class="sidebarCollapsed ? 'rotate-180' : ''"></i>
                 </button>
                 <!-- Mobile Close Button -->
-                <button type="button" @click="sidebarOpen = false" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white transition-all hover:rotate-90 cursor-pointer">
+                <button type="button" @click="sidebarOpen = false" aria-label="Close sidebar" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white transition-all hover:rotate-90 cursor-pointer">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
@@ -134,7 +134,7 @@
                     </div>
                     <form action="{{ route('admin.logout') }}" method="POST" class="shrink-0" x-show="!sidebarCollapsed">
                         @csrf
-                        <button type="submit" class="p-2 text-slate-500 hover:text-rose-400 transition-all hover:scale-110 cursor-pointer">
+                        <button type="submit" aria-label="Logout" class="p-2 text-slate-500 hover:text-rose-400 transition-all hover:scale-110 cursor-pointer">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
                         </button>
                     </form>
@@ -143,7 +143,7 @@
                 <div class="mt-4 flex justify-center" x-show="sidebarCollapsed">
                     <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="p-1.5 text-slate-600 hover:text-rose-400 transition-colors cursor-pointer">
+                        <button type="submit" aria-label="Logout" class="p-1.5 text-slate-600 hover:text-rose-400 transition-colors cursor-pointer">
                             <i data-lucide="log-out" class="w-4 h-4"></i>
                         </button>
                     </form>
@@ -159,13 +159,13 @@
             <header class="h-16 mx-4 mt-4 glass-card flex items-center justify-between px-6 z-30 transition-all duration-500">
                 <div class="flex items-center space-x-4">
                     <!-- Mobile Burger -->
-                    <button type="button" @click="sidebarOpen = true" class="md:hidden p-2 text-slate-400 hover:text-white transition-all bg-white/5 rounded-lg active:scale-95">
+                    <button type="button" @click="sidebarOpen = true" aria-label="Open sidebar" class="md:hidden p-2 text-slate-400 hover:text-white transition-all bg-white/5 rounded-lg active:scale-95">
                         <i data-lucide="menu" class="w-5 h-5"></i>
                     </button>
                     
                     <div class="flex space-x-2 items-center">
                         <!-- Mobile/Tablet Toggle Collapse (Hidden on very small mobile if preferred, but useful for tablet) -->
-                        <button type="button" @click="toggleCollapse()" class="p-1.5 text-slate-500 hover:text-cyan-400 transition-colors rounded-lg bg-white/5 md:hidden">
+                        <button type="button" @click="toggleCollapse()" aria-label="Toggle sidebar collapse" class="p-1.5 text-slate-500 hover:text-cyan-400 transition-colors rounded-lg bg-white/5 md:hidden">
                             <i data-lucide="maximize-2" class="w-4 h-4" x-show="sidebarCollapsed"></i>
                             <i data-lucide="minimize-2" class="w-4 h-4" x-show="!sidebarCollapsed"></i>
                         </button>

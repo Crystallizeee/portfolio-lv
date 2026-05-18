@@ -1,0 +1,3 @@
+## 2026-05-18 - Accessibility of Icon-Only Buttons
+**Learning:** This application relies heavily on Lucide icons (`<i data-lucide="..."></i>`) for interactive elements like mobile menus, command palettes, sidebar toggles, and chat widgets. These `<button>` elements are often entirely icon-based and lack text or accessible names, leading to poor screen reader support and accessibility.
+**Action:** When working on layout templates (`app.blade.php`, `admin.blade.php`) or UI components, always verify that icon-only interactive elements (especially buttons) are provided with a descriptive `aria-label` to ensure they are accessible.
