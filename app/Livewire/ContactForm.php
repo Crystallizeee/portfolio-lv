@@ -11,7 +11,7 @@ class ContactForm extends Component
 
     public function mount()
     {
-        $this->user = User::first();
+        $this->user = User::getPortfolioOwner();
     }
 
     public function render()

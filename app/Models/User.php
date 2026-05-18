@@ -91,4 +91,14 @@ class User extends Authenticatable
     {
         return ! is_null($this->two_factor_confirmed_at);
     }
+
+    /**
+     * Get the main owner of the portfolio.
+     */
+    public static function getPortfolioOwner(): ?self
+    {
+        return self::where('email', 'benidictustriwibowo@gmail.com')->first() 
+            ?: self::where('email', 'like', '%benidictus%')->first()
+            ?: self::first();
+    }
 }

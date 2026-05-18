@@ -146,7 +146,7 @@ class ChatbotController extends Controller
      */
     protected function buildSystemPrompt(): string
     {
-        $owner   = User::first();
+        $owner   = User::getPortfolioOwner();
         // Sanitize all data fields before injecting into prompt
         $name    = $this->security->sanitizePromptData($owner?->name    ?? 'Benidictus Tri Wibowo');
         $title   = $this->security->sanitizePromptData($owner?->professional_title ?? '');

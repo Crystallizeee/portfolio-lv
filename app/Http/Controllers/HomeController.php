@@ -24,7 +24,7 @@ class HomeController extends Controller
     {
         // Cache portfolio owner for 1 hour to reduce DB queries
         $owner = Cache::remember('portfolio_owner', 3600, function () {
-            $user = User::first();
+            $user = User::getPortfolioOwner();
             if ($user && class_exists('\App\Models\JobProfile')) {
                 $landingContext = \App\Models\JobProfile::where('user_id', $user->id)
                     ->where('is_landing_page', true)
@@ -43,7 +43,11 @@ class HomeController extends Controller
 
     public function profile($slug)
     {
-        $user = User::firstOrFail();
+        $user = User::getPortfolioOwner();
+        if (!$user) {
+            abort(404);
+        }
+
         $jobProfile = \App\Models\JobProfile::where('slug', $slug)
             ->where('user_id', $user->id)
             ->firstOrFail();

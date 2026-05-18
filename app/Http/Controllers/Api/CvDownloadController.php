@@ -36,8 +36,8 @@ class CvDownloadController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Get the first (owner) user
-        $user = User::first();
+        // Get the correct owner user
+        $user = User::getPortfolioOwner();
 
         if (!$user) {
             return response()->json(['error' => 'No user found'], 404);
