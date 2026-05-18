@@ -12,6 +12,14 @@ class ContactForm extends Component
     public function mount()
     {
         $this->user = User::getPortfolioOwner();
+        if (!$this->user) {
+            $this->user = new \stdClass();
+            $this->user->email = null;
+            $this->user->linkedin = null;
+            $this->user->github = null;
+            $this->user->contact_title = null;
+            $this->user->contact_subtitle = null;
+        }
     }
 
     public function render()
