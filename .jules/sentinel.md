@@ -1,0 +1,4 @@
+## 2024-05-18 - [Missing Rate Limiting on Livewire Login Action]
+**Vulnerability:** The Livewire AdminLogin component (`app/Livewire/Admin/AdminLogin.php`) handles login submissions (`login` method) but does not implement any rate limiting to protect against brute-force attacks. The standard Laravel rate-limiting middleware applied to the `/admin/login` POST route (`routes/web.php`) is bypassed because Livewire components handle actions via their own internal mechanisms (e.g. `livewire/message` endpoint), not via traditional form POST routes.
+**Learning:** Livewire bypasses standard route-level middleware for component actions. Rate limiting needs to be explicitly applied within the component methods using the `RateLimiter` facade.
+**Prevention:** Always implement explicit rate limiting in sensitive Livewire component actions (like login, password reset, or OTP verification) instead of relying on route middleware.
