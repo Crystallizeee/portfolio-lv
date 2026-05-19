@@ -1,4 +1,4 @@
-## 2024-05-18 - [Livewire Component Action Route Bypass]
-**Vulnerability:** Livewire forms bypassed route-level rate limiting
-**Learning:** Livewire form submissions bypass standard Laravel route middlewares, leaving them vulnerable to brute-force attacks if rate limiting isn't explicitly applied.
-**Prevention:** Apply rate limiting using `RateLimiter` facade inside Livewire component actions instead of `routes/web.php`.
+## 2025-02-14 - [Livewire Method Rate Limiting]
+**Vulnerability:** Missing rate limiting on 2FA challenge component logic.
+**Learning:** Livewire methods bypass standard route-level middleware, requiring manual implementation of rate limiting using `RateLimiter`.
+**Prevention:** Always ensure any authentication or sensitive actions performed via Livewire component methods are explicitly protected using the `RateLimiter` facade.

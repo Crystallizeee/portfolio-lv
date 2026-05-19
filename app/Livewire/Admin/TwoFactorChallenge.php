@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use PragmaRX\Google2FA\Google2FA;
 
 class TwoFactorChallenge extends Component
@@ -25,14 +26,22 @@ class TwoFactorChallenge extends Component
             return redirect()->route('admin.login');
         }
 
+        $throttleKey = '2fa-challenge|' . $user->id . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError($this->usingRecoveryCode ? 'recoveryCode' : 'code', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
         if ($this->usingRecoveryCode) {
-            $this->verifyRecoveryCode($user);
+            $this->verifyRecoveryCode($user, $throttleKey);
         } else {
-            $this->verifyTotp($user);
+            $this->verifyTotp($user, $throttleKey);
         }
     }
 
-    protected function verifyTotp($user): void
+    protected function verifyTotp($user, string $throttleKey): void
     {
         $this->validateOnly('code', ['code' => 'required|digits:6']);
 
@@ -45,14 +54,16 @@ class TwoFactorChallenge extends Component
         );
 
         if (! $valid) {
+            RateLimiter::hit($throttleKey);
             $this->addError('code', 'Kode OTP tidak valid atau sudah kedaluwarsa.');
             return;
         }
 
+        RateLimiter::clear($throttleKey);
         $this->completeVerification();
     }
 
-    protected function verifyRecoveryCode($user): void
+    protected function verifyRecoveryCode($user, string $throttleKey): void
     {
         $this->validateOnly('recoveryCode', ['recoveryCode' => 'required|string']);
 
@@ -67,6 +78,7 @@ class TwoFactorChallenge extends Component
         }
 
         if ($matchedIndex === null) {
+            RateLimiter::hit($throttleKey);
             $this->addError('recoveryCode', 'Recovery code tidak valid.');
             return;
         }
@@ -75,6 +87,7 @@ class TwoFactorChallenge extends Component
         unset($recoveryCodes[$matchedIndex]);
         $user->update(['two_factor_recovery_codes' => array_values($recoveryCodes)]);
 
+        RateLimiter::clear($throttleKey);
         $this->completeVerification();
     }
 
