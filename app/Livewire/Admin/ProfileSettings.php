@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use App\Models\Education;
@@ -266,17 +267,27 @@ class ProfileSettings extends Component
 
     public function updatePassword()
     {
+        $user = Auth::user();
+        $throttleKey = 'update-password|' . $user->id . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('current_password', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
         $this->validate([
             'current_password' => 'required',
             'new_password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        $user = Auth::user();
-
         if (!Hash::check($this->current_password, $user->password)) {
+            RateLimiter::hit($throttleKey);
             $this->addError('current_password', 'The current password is incorrect.');
             return;
         }
+
+        RateLimiter::clear($throttleKey);
 
         $user->update([
             'password' => Hash::make($this->new_password),
