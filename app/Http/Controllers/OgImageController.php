@@ -10,6 +10,9 @@ class OgImageController extends Controller
 {
     public function generate($type, $slug)
     {
+        $type = preg_replace('/[^a-zA-Z0-9_-]/', '', $type);
+        $slug = preg_replace('/[^a-zA-Z0-9_-]/', '', $slug);
+
         $cacheKey = "{$type}_{$slug}";
         $cachePath = "og-images/{$cacheKey}.png";
         $fullPath = storage_path("app/public/{$cachePath}");
