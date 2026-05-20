@@ -72,6 +72,7 @@
                     <button 
                         @click="$dispatch('toggle-command-palette')"
                         class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                        aria-label="Open command palette"
                     >
                         <kbd class="font-mono">Ctrl</kbd>
                         <span>+</span>
@@ -82,6 +83,7 @@
                     <button 
                         @click="mobileMenuOpen = !mobileMenuOpen" 
                         class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                        aria-label="Toggle mobile menu"
                     >
                         <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
                         <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
@@ -237,7 +239,7 @@
     </script>
 
     <!-- Scroll to Top Button -->
-    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm">
+    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
         <i data-lucide="arrow-up" class="w-6 h-6"></i>
     </button>
 
@@ -269,7 +271,7 @@
                         </div>
                     </div>
                 </div>
-                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors">
+                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors" aria-label="Close chat window">
                     <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
                 </button>
             </div>
@@ -342,6 +344,7 @@
                         type="submit"
                         :disabled="isLoading || !userInput.trim()"
                         class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label="Send message"
                     >
                         <i data-lucide="send" class="w-4 h-4"></i>
                     </button>
@@ -354,6 +357,7 @@
         <button 
             @click="toggleChat()"
             class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
+            aria-label="Toggle chat widget"
         >
             <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen"></i>
             <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak></i>
