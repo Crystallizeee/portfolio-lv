@@ -6,3 +6,7 @@
 **Vulnerability:** Missing rate limiting on `updatePassword` component logic.
 **Learning:** Livewire methods that verify passwords must have rate limiting manually implemented using `RateLimiter` to prevent brute force attacks on the password.
 **Prevention:** Always explicitly use `RateLimiter` facade on Livewire methods that verify credentials or passwords.
+## 2025-02-14 - Add rate limiting to Livewire toggleLike action
+**Vulnerability:** The PostLikeButton component was missing rate limiting, allowing rapid abuse of the toggleLike action.
+**Learning:** Livewire actions bypass standard HTTP route middleware, so rate limiting must be explicitly defined using the RateLimiter facade within the component methods.
+**Prevention:** For Livewire components, ensure all actions exposed to the user implement manual rate limiting if they mutate database state or can be abused for DoS.

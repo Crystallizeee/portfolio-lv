@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Services\IpAnonymizer;
+use Illuminate\Support\Facades\RateLimiter;
 
 class PostLikeButton extends Component
 {
@@ -20,6 +21,13 @@ class PostLikeButton extends Component
     public function toggleLike()
     {
         $ipHash = IpAnonymizer::hashRequest();
+        $rateLimitKey = 'like-post-' . $this->post->id . '-' . $ipHash;
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 10)) {
+            session()->flash('error', 'Too many attempts. Please try again later.');
+            return;
+        }
+
         $like = \App\Models\PostLike::where('post_id', $this->post->id)
                                     ->where('ip_hash', $ipHash)
                                     ->first();
@@ -34,6 +42,8 @@ class PostLikeButton extends Component
         }
 
         $this->updateLikeStatus();
+
+        RateLimiter::hit($rateLimitKey, 60);
     }
 
     private function updateLikeStatus()
