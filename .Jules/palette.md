@@ -1,3 +1,6 @@
 ## 2024-03-21 - Icon-Only Buttons Missing ARIA Labels
 **Learning:** The application extensively uses Lucide icons (`<i data-lucide="..."></i>`) for key interactive elements like mobile menus, chat widgets, sidebar toggles, and scroll-to-top buttons. These buttons lack descriptive `aria-label` attributes, making them inaccessible to screen readers as there is no visible text.
 **Action:** Always verify icon-only buttons (`<button>` tags wrapping solely `<i data-lucide="..."></i>` or SVG elements) include explicit `aria-label` attributes describing their function, particularly in core layout components like `app.blade.php` and `admin.blade.php`.
+## 2024-03-21 - Toggle Button ARIA Attributes
+**Learning:** When adding accessibility context to toggle buttons with dynamic inner content (like a 'Like' counter), applying `aria-label` directly on the `<button>` overrides all inner text. Furthermore, if you hide the visible dynamic content span using `aria-hidden="true"`, you must explicitly include the dynamic variable inside the visually hidden `<span class="sr-only">` text so screen readers can announce the exact value.
+**Action:** Use `aria-pressed` for the button state, `aria-hidden` on decorative SVGs, and include the dynamic variable in the visually hidden screen reader text (e.g., `<span class="sr-only">Like post, current likes: {{ $count }}</span>`).
