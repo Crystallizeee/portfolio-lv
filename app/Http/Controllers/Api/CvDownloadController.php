@@ -32,7 +32,7 @@ class CvDownloadController extends Controller
         $token = $request->bearerToken();
         $expectedToken = config('services.cv_api.token');
 
-        if (!$expectedToken || $token !== $expectedToken) {
+        if (!$expectedToken || !is_string($token) || !hash_equals($expectedToken, $token)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
