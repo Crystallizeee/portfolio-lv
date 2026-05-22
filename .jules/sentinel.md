@@ -1,8 +1,4 @@
-## 2025-02-14 - [Livewire Method Rate Limiting]
-**Vulnerability:** Missing rate limiting on 2FA challenge component logic.
-**Learning:** Livewire methods bypass standard route-level middleware, requiring manual implementation of rate limiting using `RateLimiter`.
-**Prevention:** Always ensure any authentication or sensitive actions performed via Livewire component methods are explicitly protected using the `RateLimiter` facade.
-## 2025-02-14 - [Livewire Update Password Rate Limiting]
-**Vulnerability:** Missing rate limiting on `updatePassword` component logic.
-**Learning:** Livewire methods that verify passwords must have rate limiting manually implemented using `RateLimiter` to prevent brute force attacks on the password.
-**Prevention:** Always explicitly use `RateLimiter` facade on Livewire methods that verify credentials or passwords.
+## 2024-05-23 - Timing Attack Vulnerability in Token Verification
+**Vulnerability:** Found a timing attack vulnerability in `CvDownloadController.php` where a sensitive authentication token (`CV_API_TOKEN`) was verified using a non-constant time comparison operator (`!==`).
+**Learning:** Using standard comparison operators (`==`, `===`, `!=`, `!==`) for secrets allows attackers to measure the time it takes for the comparison to fail. Because these operators terminate upon the first mismatched character, attackers can guess a token character-by-character based on slightly longer response times.
+**Prevention:** Always use PHP's `hash_equals()` for comparing sensitive strings, hashes, or tokens, as it guarantees a constant-time comparison. Additionally, ensure variables passed to `hash_equals()` are strictly strings, as PHP 8+ throws a TypeError if a null value is passed.
