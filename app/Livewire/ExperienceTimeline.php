@@ -9,7 +9,10 @@ class ExperienceTimeline extends Component
 {
     public function render()
     {
-        $experiences = Experience::orderBy('sort_order', 'asc')->get();
+        // ⚡ Bolt Optimization: Cache the experience query to prevent redundant DB hits
+        $experiences = \Illuminate\Support\Facades\Cache::remember('experiences_landing', 3600, function () {
+            return Experience::orderBy('sort_order', 'asc')->get();
+        });
         
         return view('livewire.experience-timeline', [
             'experiences' => $experiences,
