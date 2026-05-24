@@ -11,7 +11,11 @@ class CertificatesSection extends Component
 
     public function mount()
     {
-        $this->certificates = Certificate::orderBy('sort_order')->get();
+        // ⚡ Bolt Optimization: Cache the certificates query to prevent redundant DB hits
+        // on the heavily trafficked landing page. Reduces response time and DB load.
+        $this->certificates = \Illuminate\Support\Facades\Cache::remember('certificates_landing', 3600, function () {
+            return Certificate::orderBy('sort_order')->get();
+        });
     }
 
     public function render()
