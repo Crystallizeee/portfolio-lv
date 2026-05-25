@@ -11,7 +11,11 @@ class CybersecBadges extends Component
 
     public function mount()
     {
-        $this->profiles = CybersecProfile::visible()->get();
+        // ⚡ Bolt Optimization: Cache the cybersec profiles query to prevent redundant DB hits
+        // on the heavily trafficked landing page. Reduces response time and DB load.
+        $this->profiles = \Illuminate\Support\Facades\Cache::remember('cybersec_profiles_landing', 3600, function () {
+            return CybersecProfile::visible()->get();
+        });
     }
 
     public function render()
