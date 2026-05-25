@@ -38,6 +38,7 @@
                         <button 
                             wire:click="edit({{ $cert['id'] }})"
                             class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                            aria-label="Edit certificate"
                         >
                             <i data-lucide="pencil" class="w-4 h-4"></i>
                         </button>
@@ -45,6 +46,7 @@
                             wire:click="delete({{ $cert['id'] }})"
                             wire:confirm="Are you sure you want to delete this certificate?"
                             class="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                            aria-label="Delete certificate"
                         >
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
@@ -106,7 +108,7 @@
                     <h3 class="text-lg font-semibold text-white font-mono">
                         {{ $editingId ? 'Edit Certificate' : 'Add Certificate' }}
                     </h3>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors">
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors" aria-label="Close modal">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>

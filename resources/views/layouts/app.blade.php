@@ -79,6 +79,7 @@
                     <button 
                         @click="$dispatch('toggle-command-palette')"
                         class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                        aria-label="Open command palette"
                     >
                         <kbd class="font-mono">Ctrl</kbd>
                         <span>+</span>
