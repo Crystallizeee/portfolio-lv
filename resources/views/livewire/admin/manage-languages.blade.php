@@ -34,6 +34,7 @@
                         <button 
                             wire:click="edit({{ $lang['id'] }})"
                             class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                            aria-label="Edit language"
                         >
                             <i data-lucide="pencil" class="w-4 h-4"></i>
                         </button>
@@ -41,6 +42,7 @@
                             wire:click="delete({{ $lang['id'] }})"
                             wire:confirm="Are you sure you want to delete this language?"
                             class="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                            aria-label="Delete language"
                         >
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
@@ -78,7 +80,7 @@
                     <h3 class="text-lg font-semibold text-white font-mono">
                         {{ $editingId ? 'Edit Language' : 'Add Language' }}
                     </h3>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors">
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors" aria-label="Close modal">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
