@@ -29,11 +29,11 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button wire:click="approveComment({{ $pending->id }})" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui">
-                                        <i data-lucide="check" class="w-4 h-4"></i>
+                                    <button wire:click="approveComment({{ $pending->id }})" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui" aria-label="Setujui komentar">
+                                        <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
-                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus" aria-label="Hapus komentar menunggu moderasi">
+                                        <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
@@ -84,8 +84,18 @@
             <input type="text" id="website" wire:model="website" autocomplete="off" tabindex="-1">
         </div>
 
-        <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors">
-            Kirim Komentar
+        <button type="submit"
+                wire:loading.attr="disabled"
+                wire:target="addComment"
+                class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+            <span wire:loading.remove wire:target="addComment">Kirim Komentar</span>
+            <span wire:loading wire:target="addComment" class="flex items-center space-x-2">
+                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Mengirim...</span>
+            </span>
         </button>
     </form>
 
@@ -104,8 +114,8 @@
                         </div>
                     </div>
                     @auth
-                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar" aria-label="Hapus komentar">
+                            <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     @endauth
                 </div>
