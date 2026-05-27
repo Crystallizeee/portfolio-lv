@@ -108,7 +108,7 @@
                                     </div>
                                     <span class="text-sm font-mono text-slate-500">Education #{{ $index + 1 }}</span>
                                 </div>
-                                <button wire:click="removeEducation({{ $index }})" class="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg" title="Remove">
+                                <button wire:click="removeEducation({{ $index }})" class="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg" title="Remove" aria-label="Remove">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </div>
@@ -160,7 +160,7 @@
                 <div class="space-y-4">
                     @foreach($certifications as $index => $cert)
                         <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700 relative group transition-all hover:border-slate-600">
-                            <button wire:click="removeCertification({{ $index }})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
+                            <button wire:click="removeCertification({{ $index }})" aria-label="Remove certification" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -203,7 +203,7 @@
                 <div class="space-y-4">
                     @foreach($manualExperiences as $index => $exp)
                         <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700 relative group transition-all hover:border-slate-600">
-                            <button wire:click="removeManualExperience({{ $index }})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
+                            <button wire:click="removeManualExperience({{ $index }})" aria-label="Remove experience" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -249,7 +249,7 @@
                         @foreach($manualSkills as $index => $skill)
                             <div class="relative group">
                                 <input wire:model="manualSkills.{{ $index }}.name" type="text" class="w-full px-3 py-2 bg-slate-900 border border-slate-600 rounded text-sm text-white focus:border-green-400 focus:outline-none" placeholder="Skill name">
-                                <button wire:click="removeManualSkill({{ $index }})" class="absolute top-1/2 -translate-y-1/2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                                <button wire:click="removeManualSkill({{ $index }})" aria-label="Remove skill" class="absolute top-1/2 -translate-y-1/2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
                                     <i data-lucide="x" class="w-4 h-4"></i>
                                 </button>
                             </div>
@@ -276,7 +276,7 @@
                 <div class="space-y-4">
                     @foreach($manualLanguages as $index => $lang)
                         <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700 relative group transition-all hover:border-slate-600">
-                            <button wire:click="removeManualLanguage({{ $index }})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
+                            <button wire:click="removeManualLanguage({{ $index }})" aria-label="Remove language" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-1">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

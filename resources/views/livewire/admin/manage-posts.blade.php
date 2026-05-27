@@ -351,6 +351,7 @@
                             </div>
                             <button 
                                 wire:click="closeModal" 
+                                aria-label="Close modal"
                                 class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-200"
                             >
                                 <i data-lucide="x" class="w-4 h-4"></i>
@@ -557,7 +558,7 @@
                                             @foreach($tags as $idx => $tag)
                                                 <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs text-purple-300 font-medium">
                                                     <span>{{ $tag }}</span>
-                                                    <button type="button" wire:click="removeTag({{ $idx }})" class="text-purple-400 hover:text-white transition-colors ml-1">
+                                                    <button type="button" wire:click="removeTag({{ $idx }})" aria-label="Remove tag" class="text-purple-400 hover:text-white transition-colors ml-1">
                                                         <i data-lucide="x" class="w-2.5 h-2.5"></i>
                                                     </button>
                                                 </span>
@@ -732,7 +733,7 @@
                         <i data-lucide="message-square" class="w-5 h-5 text-cyan-500"></i>
                         <span>Comments on: <span class="text-cyan-400">{{ $currentPostTitle }}</span></span>
                     </h3>
-                    <button wire:click="closeCommentsModal" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors">
+                    <button wire:click="closeCommentsModal" aria-label="Close comments modal" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
                 </div>
