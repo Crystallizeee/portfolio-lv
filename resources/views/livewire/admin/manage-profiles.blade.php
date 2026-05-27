@@ -148,6 +148,7 @@
                         </div>
                         <button 
                             wire:click="closeModal" 
+                            aria-label="Close modal"
                             class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200"
                         >
                             <i data-lucide="x" class="w-4 h-4"></i>

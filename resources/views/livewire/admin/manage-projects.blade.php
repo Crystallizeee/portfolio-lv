@@ -148,6 +148,7 @@
                             </div>
                             <button 
                                 wire:click="closeModal" 
+                                aria-label="Close modal"
                                 class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200"
                             >
                                 <i data-lucide="x" class="w-4 h-4"></i>
@@ -290,6 +291,7 @@
                                                         <button 
                                                             type="button"
                                                             wire:click="removeGalleryImage({{ $index }})"
+                                                            aria-label="Remove gallery image"
                                                             class="absolute top-1 right-1 bg-red-500/80 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                                                         >
                                                             <i data-lucide="trash-2" class="w-3 h-3"></i>
