@@ -104,7 +104,7 @@ class CvGenerator extends Component
     public function updatedSelectedProfileId($value)
     {
         if ($value) {
-            $profile = JobProfile::find($value);
+            $profile = JobProfile::where('user_id', Auth::id())->find($value);
             if ($profile) {
                 $this->professional_title = $profile->professional_title;
                 $this->summary = $profile->summary;

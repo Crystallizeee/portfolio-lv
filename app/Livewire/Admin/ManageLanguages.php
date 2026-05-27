@@ -53,7 +53,7 @@ class ManageLanguages extends Component
 
     public function edit($id)
     {
-        $lang = Language::find($id);
+        $lang = Language::where('user_id', Auth::id())->findOrFail($id);
         $this->editingId = $id;
         $this->form = [
             'name' => $lang->name,
@@ -70,7 +70,7 @@ class ManageLanguages extends Component
         ]);
 
         if ($this->editingId) {
-            Language::find($this->editingId)->update([
+            Language::where('user_id', Auth::id())->findOrFail($this->editingId)->update([
                 'name' => $this->form['name'],
                 'level' => $this->form['level'],
             ]);
@@ -91,7 +91,7 @@ class ManageLanguages extends Component
 
     public function delete($id)
     {
-        Language::find($id)->delete();
+        Language::where('user_id', Auth::id())->findOrFail($id)->delete();
         $this->loadLanguages();
         session()->flash('success', 'Language deleted successfully!');
     }

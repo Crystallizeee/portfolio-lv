@@ -7,3 +7,8 @@
 **Vulnerability:** The `$type` and `$slug` route parameters in `OgImageController` were used directly in `storage_path()` to construct file paths for caching and returning generated images. This could allow an attacker to read or write arbitrary files on the system using `../` directory traversal payloads.
 **Learning:** Route parameters and user inputs should never be trusted when constructing file paths, even if they are expected to match certain patterns elsewhere. If not sanitized before file system operations, they bypass typical route constraints and directly interface with the OS file system.
 **Prevention:** Always sanitize user input intended for file paths using a strict allowlist approach. For expected alphanumeric slugs or types, a regex like `preg_replace('/[^a-zA-Z0-9_-]/', '', $input)` ensures only safe characters are used to construct the final path.
+
+## 2024-05-27 - Livewire IDOR in Admin Components
+**Vulnerability:** Insecure Direct Object References (IDOR) across `ManageLanguages`, `ManageCybersecProfiles`, and `CvGenerator` where `Model::find($id)` was used to fetch, update, and delete objects without verifying the owner.
+**Learning:** Livewire components were blindly trusting user-supplied `$id` parameters for database lookups.
+**Prevention:** Always scope Eloquent lookups with `where('user_id', Auth::id())->findOrFail($id)` to strictly enforce ownership boundaries, and prefer `findOrFail()` over `find()` to avoid 500 errors on null updates.
