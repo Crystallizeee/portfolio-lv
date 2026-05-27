@@ -97,8 +97,12 @@ class User extends Authenticatable
      */
     public static function getPortfolioOwner(): ?self
     {
-        return self::where('email', 'benidictustriwibowo@gmail.com')->first() 
-            ?: self::where('email', 'like', '%benidictus%')->first()
-            ?: self::first();
+        // ⚡ Bolt Optimization: Cache the portfolio owner query to prevent redundant DB hits
+        // across various components (e.g., ContactForm) and controllers. Reduces response time.
+        return \Illuminate\Support\Facades\Cache::remember('portfolio_owner_base', 3600, function () {
+            return self::where('email', 'benidictustriwibowo@gmail.com')->first()
+                ?: self::where('email', 'like', '%benidictus%')->first()
+                ?: self::first();
+        });
     }
 }
