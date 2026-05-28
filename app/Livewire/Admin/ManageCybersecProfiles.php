@@ -49,7 +49,7 @@ class ManageCybersecProfiles extends Component
 
     public function edit($id)
     {
-        $profile = CybersecProfile::find($id);
+        $profile = CybersecProfile::where('user_id', Auth::id())->find($id);
         if (!$profile) return;
 
         $this->editingId = $id;
@@ -107,7 +107,7 @@ class ManageCybersecProfiles extends Component
         ];
 
         if ($this->editingId) {
-            CybersecProfile::find($this->editingId)->update($data);
+            CybersecProfile::where('user_id', Auth::id())->findOrFail($this->editingId)->update($data);
             session()->flash('success', 'Profile updated successfully!');
         } else {
             $data['sort_order'] = count($this->profiles);
@@ -122,14 +122,14 @@ class ManageCybersecProfiles extends Component
 
     public function delete($id)
     {
-        CybersecProfile::find($id)?->delete();
+        CybersecProfile::where('user_id', Auth::id())->find($id)?->delete();
         $this->loadProfiles();
         session()->flash('success', 'Profile deleted successfully!');
     }
 
     public function toggleVisibility($id)
     {
-        $profile = CybersecProfile::find($id);
+        $profile = CybersecProfile::where('user_id', Auth::id())->find($id);
         if ($profile) {
             $profile->update(['is_visible' => !$profile->is_visible]);
             $this->loadProfiles();
