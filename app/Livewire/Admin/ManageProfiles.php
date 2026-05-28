@@ -39,7 +39,7 @@ class ManageProfiles extends Component
 
     public function editProfile($id)
     {
-        $profile = JobProfile::findOrFail($id);
+        $profile = JobProfile::where('user_id', Auth::id())->findOrFail($id);
         $this->editingProfileId = $profile->id;
         $this->name = $profile->name;
         $this->professional_title = $profile->professional_title;
@@ -63,7 +63,7 @@ class ManageProfiles extends Component
         $techList = array_filter(array_map('trim', explode("\n", $this->about_tech_list)));
 
         if ($this->editingProfileId) {
-            JobProfile::findOrFail($this->editingProfileId)->update([
+            JobProfile::where('user_id', Auth::id())->findOrFail($this->editingProfileId)->update([
                 'name' => $this->name,
                 'slug' => Str::slug($this->name),
                 'professional_title' => $this->professional_title,
@@ -92,7 +92,7 @@ class ManageProfiles extends Component
 
     public function deleteProfile($id)
     {
-        $profile = JobProfile::findOrFail($id);
+        $profile = JobProfile::where('user_id', Auth::id())->findOrFail($id);
         if ($profile->is_landing_page) {
             session()->flash('error', 'Cannot delete the active landing page profile.');
             return;
@@ -108,7 +108,7 @@ class ManageProfiles extends Component
         JobProfile::where('user_id', Auth::id())->update(['is_landing_page' => false]);
         
         // Set selected to true
-        $profile = JobProfile::findOrFail($id);
+        $profile = JobProfile::where('user_id', Auth::id())->findOrFail($id);
         $profile->update(['is_landing_page' => true]);
         
         $this->loadProfiles();

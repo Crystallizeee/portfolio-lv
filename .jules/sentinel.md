@@ -12,3 +12,8 @@
 **Vulnerability:** Insecure Direct Object References (IDOR) across `ManageLanguages`, `ManageCybersecProfiles`, and `CvGenerator` where `Model::find($id)` was used to fetch, update, and delete objects without verifying the owner.
 **Learning:** Livewire components were blindly trusting user-supplied `$id` parameters for database lookups.
 **Prevention:** Always scope Eloquent lookups with `where('user_id', Auth::id())->findOrFail($id)` to strictly enforce ownership boundaries, and prefer `findOrFail()` over `find()` to avoid 500 errors on null updates.
+
+## 2024-05-24 - [IDOR in User Models]
+**Vulnerability:** Insecure Direct Object Reference (IDOR) vulnerabilities where components performed `Model::findOrFail($id)` or `Model::findOrFail($commentId)` without verifying if the authenticated user owned the parent entity or the object itself. Found in `PostComments.php` and `ManageProfiles.php`.
+**Learning:** For user-specific models or child models nested under user-specific models, calling `findOrFail()` with user input directly allows attackers to modify or delete objects belonging to other users. Laravel Eloquent queries must explicitly enforce authorization or scope.
+**Prevention:** Always scope Eloquent queries to the authenticated user using `Model::where('user_id', Auth::id())->findOrFail($id)` or verify the ownership of parent entities using `whereHas('post', function($q) { $q->where('user_id', auth()->id()); })` for nested relationships.
