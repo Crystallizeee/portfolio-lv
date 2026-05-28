@@ -9,3 +9,7 @@
 ## 2026-05-27 - [Global Static Data Query Caching in Models]
 **Learning:** Functions in Models that retrieve global, static data (like the portfolio owner) and are called from multiple components and controllers can cause redundant synchronous DB hits if they do not utilize caching internally, even if one controller caches the result.
 **Action:** Move the `Cache::remember` logic inside the Model's retrieval method (e.g., `User::getPortfolioOwner()`) instead of the controller to ensure all downstream callers benefit from the cache automatically and avoid repetitive DB queries.
+
+## 2026-05-28 - [Admin Dashboard N+1 Query in Date Iterations]
+**Learning:** Found N+1 queries in `AdminDashboard`'s `prepareChartData` where queries were executed inside a `foreach` loop that iterated through an array of dates to retrieve analytics and visit stats per day.
+**Action:** Instead of querying inside the loop, use `whereBetween` on the date range along with `selectRaw('date(created_at) as date, count(*) as count')`, `groupBy('date')`, and `pluck('count', 'date')`. Then inside the loop, retrieve the data using `$collection->get($date, 0)`.
