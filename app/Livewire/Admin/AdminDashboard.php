@@ -76,17 +76,28 @@ class AdminDashboard extends Component
             return now()->subDays($daysAgo)->format('Y-m-d');
         });
 
+        $startDate = now()->subDays(6)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        // ⚡ Bolt Optimization: Group by date instead of querying inside loop to avoid N+1 queries
+        $viewsData = SiteVisit::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('date(created_at) as date, count(*) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        $downloadsData = Analytics::where('user_id', Auth::id())
+            ->where('type', 'cv_download')
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->selectRaw('date, sum(count) as count')
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
         $views = [];
         $downloads = [];
 
         foreach ($days as $date) {
-            $views[] = SiteVisit::whereDate('created_at', $date)
-                ->count();
-
-            $downloads[] = Analytics::where('user_id', Auth::id())
-                ->where('type', 'cv_download')
-                ->where('date', $date)
-                ->sum('count');
+            $views[] = $viewsData->get($date, 0);
+            $downloads[] = $downloadsData->get($date, 0);
         }
 
         $this->chartData = [
