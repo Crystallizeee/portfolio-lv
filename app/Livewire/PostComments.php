@@ -138,7 +138,9 @@ class PostComments extends Component
     public function deleteComment($commentId)
     {
         if (auth()->check()) {
-            Comment::findOrFail($commentId)->delete();
+            Comment::whereHas('post', function($q) {
+                $q->where('user_id', auth()->id());
+            })->findOrFail($commentId)->delete();
             session()->flash('message', 'Komentar berhasil dihapus.');
         }
     }
@@ -149,7 +151,9 @@ class PostComments extends Component
     public function approveComment($commentId)
     {
         if (auth()->check()) {
-            Comment::findOrFail($commentId)->update(['is_approved' => true]);
+            Comment::whereHas('post', function($q) {
+                $q->where('user_id', auth()->id());
+            })->findOrFail($commentId)->update(['is_approved' => true]);
             session()->flash('message', 'Komentar berhasil disetujui.');
         }
     }
