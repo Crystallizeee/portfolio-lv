@@ -17,3 +17,7 @@
 **Vulnerability:** Insecure Direct Object Reference (IDOR) vulnerabilities where components performed `Model::findOrFail($id)` or `Model::findOrFail($commentId)` without verifying if the authenticated user owned the parent entity or the object itself. Found in `PostComments.php` and `ManageProfiles.php`.
 **Learning:** For user-specific models or child models nested under user-specific models, calling `findOrFail()` with user input directly allows attackers to modify or delete objects belonging to other users. Laravel Eloquent queries must explicitly enforce authorization or scope.
 **Prevention:** Always scope Eloquent queries to the authenticated user using `Model::where('user_id', Auth::id())->findOrFail($id)` or verify the ownership of parent entities using `whereHas('post', function($q) { $q->where('user_id', auth()->id()); })` for nested relationships.
+## 2026-05-29 - [Fix XSS Vulnerability in Chatbot]
+**Vulnerability:** User and bot chat inputs rendered using x-html without DOMPurify for user input and condition blocks.
+**Learning:** Alpine.js x-html parses unescaped raw strings. Using a ternary conditional directly in x-html bindings requires wrapping the ENTIRE result in DOMPurify.sanitize(), not just parts of it.
+**Prevention:** Ensure the entire returned expression of x-html directives handling dynamic text is enclosed in a sanitation function.

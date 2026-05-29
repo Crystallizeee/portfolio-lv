@@ -330,7 +330,7 @@
                                 ? 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-100 rounded-2xl rounded-br-md' 
                                 : 'bg-slate-800/80 border border-slate-700/50 text-slate-200 rounded-2xl rounded-bl-md'"
                             class="max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed prose prose-invert prose-sm"
-                            x-html="msg.role === 'bot' ? marked.parse(msg.text) : msg.text"
+                            x-html="DOMPurify.sanitize(msg.role === 'bot' ? marked.parse(msg.text) : msg.text)"
                         ></div>
                     </div>
                 </template>
