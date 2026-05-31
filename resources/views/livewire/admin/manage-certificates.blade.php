@@ -212,9 +212,18 @@
                         </button>
                         <button 
                             type="submit"
-                            class="py-2 px-6 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition-colors"
+                            class="py-2 px-6 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-wait"
+                            wire:target="save"
                         >
-                            {{ $editingId ? 'Update' : 'Add Certificate' }}
+                            <span wire:loading.remove wire:target="save">
+                                {{ $editingId ? 'Update' : 'Add Certificate' }}
+                            </span>
+                            <span wire:loading wire:target="save" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                <span>Saving...</span>
+                            </span>
                         </button>
                     </div>
                 </form>
