@@ -37,17 +37,22 @@ class TrackPageVisits
             Cookie::queue('visitor_id', $visitorId, 60 * 24 * 365); // 1 year
         }
 
-        try {
-            SiteVisit::create([
-                'ip_hash' => IpAnonymizer::hash($request->ip()),
-                'url' => $request->fullUrl(),
-                'user_agent' => substr($userAgent, 0, 255),
-                'referer' => substr($request->header('referer'), 0, 255),
-                'visitor_id' => $visitorId,
-            ]);
-        } catch (\Exception $e) {
-            // Silently fail logging to not disrupt user
-        }
+        // ⚡ Bolt Optimization: Defer the DB write so it doesn't block the main thread.
+        // This allows the HTTP response to be sent to the user immediately,
+        // while the analytics recording happens in the background.
+        defer(function () use ($request, $userAgent, $visitorId) {
+            try {
+                SiteVisit::create([
+                    'ip_hash' => IpAnonymizer::hash($request->ip()),
+                    'url' => $request->fullUrl(),
+                    'user_agent' => substr($userAgent, 0, 255),
+                    'referer' => substr($request->header('referer'), 0, 255),
+                    'visitor_id' => $visitorId,
+                ]);
+            } catch (\Exception $e) {
+                // Silently fail logging to not disrupt user
+            }
+        });
 
         return $next($request);
     }
