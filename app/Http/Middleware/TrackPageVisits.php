@@ -37,17 +37,23 @@ class TrackPageVisits
             Cookie::queue('visitor_id', $visitorId, 60 * 24 * 365); // 1 year
         }
 
-        try {
-            SiteVisit::create([
-                'ip_hash' => IpAnonymizer::hash($request->ip()),
-                'url' => $request->fullUrl(),
-                'user_agent' => substr($userAgent, 0, 255),
-                'referer' => substr($request->header('referer'), 0, 255),
-                'visitor_id' => $visitorId,
-            ]);
-        } catch (\Exception $e) {
-            // Silently fail logging to not disrupt user
-        }
+        $visitData = [
+            'ip_hash' => IpAnonymizer::hash($request->ip()),
+            'url' => $request->fullUrl(),
+            'user_agent' => substr($userAgent, 0, 255),
+            'referer' => substr($request->header('referer'), 0, 255),
+            'visitor_id' => $visitorId,
+        ];
+
+        // Defer the database insertion to run after the HTTP response is sent
+        // This improves page load performance by not blocking the request thread
+        defer(function () use ($visitData) {
+            try {
+                SiteVisit::create($visitData);
+            } catch (\Exception $e) {
+                // Silently fail logging to not disrupt user
+            }
+        });
 
         return $next($request);
     }
