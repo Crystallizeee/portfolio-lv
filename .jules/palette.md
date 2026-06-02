@@ -1,3 +1,3 @@
-## 2026-05-30 - Prevent Global Loading State on Generic Submits
-**Learning:** In Livewire, using `wire:loading` on a button without specifying `wire:target` causes the button to show its loading state during *any* server roundtrip initiated by the component (e.g., clicking a separate 'Delete' button in a table).
-**Action:** Always specify `wire:target="methodName"` alongside `wire:loading` and `wire:loading.attr="disabled"` on async submit buttons to ensure the loading state is scoped precisely to the action it triggers.
+## 2024-05-18 - Alpine.js Accordion/Disclosure Accessibility
+**Learning:** When using Alpine.js (`x-data="{ expanded: false }"`) for "Read more / Show less" style disclosure widgets or accordions, ensuring the button uses dynamic `:aria-expanded="expanded"` and `aria-controls` linked to a specific container `id` is a critical and simple accessibility win. Screen readers can then accurately convey whether the section is collapsed or expanded.
+**Action:** When implementing or modifying any custom expanding sections, verify the presence of `aria-expanded` and matching `aria-controls`/`id` pairs on the toggle button and content container.
