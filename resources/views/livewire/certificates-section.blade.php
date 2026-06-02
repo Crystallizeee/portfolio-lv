@@ -52,12 +52,16 @@
                         <!-- Description -->
                         @if($cert->description)
                             <div x-data="{ expanded: false }" class="mb-6">
-                                <div class="text-sm text-slate-400 leading-relaxed transition-all duration-300 relative"
+                                <div id="cert-desc-{{ $cert->id }}"
+                                     class="text-sm text-slate-400 leading-relaxed transition-all duration-300 relative"
                                      :class="expanded ? '' : 'line-clamp-3'">
                                     {!! nl2br(e($cert->description)) !!}
                                 </div>
                                 @if(strlen($cert->description) > 120)
-                                    <button @click="expanded = !expanded" class="text-xs text-yellow-500 hover:text-yellow-400 mt-1.5 font-medium transition-colors">
+                                    <button @click="expanded = !expanded"
+                                            :aria-expanded="expanded"
+                                            aria-controls="cert-desc-{{ $cert->id }}"
+                                            class="text-xs text-yellow-500 hover:text-yellow-400 mt-1.5 font-medium transition-colors">
                                         <span x-text="expanded ? 'Show less' : 'Read more...'"></span>
                                     </button>
                                 @endif
