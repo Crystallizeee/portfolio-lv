@@ -31,20 +31,26 @@ class Analytics extends Model
      */
     public static function track(int $userId, string $type): void
     {
+        // Capture context state before deferring
         $today = now()->toDateString();
         $ipHash = IpAnonymizer::hashRequest();
-        
-        $record = self::firstOrCreate(
-            [
-                'user_id' => $userId, 
-                'type' => $type, 
-                'date' => $today,
-                'ip_hash' => $ipHash
-            ],
-            ['count' => 0]
-        );
-        
-        $record->increment('count');
+
+        // ⚡ Bolt: Defer non-critical analytics tracking to a background task.
+        // This removes synchronous DB queries from the critical request path,
+        // improving HTTP response times and perceived performance.
+        defer(function () use ($userId, $type, $today, $ipHash) {
+            $record = self::firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'type' => $type,
+                    'date' => $today,
+                    'ip_hash' => $ipHash
+                ],
+                ['count' => 0]
+            );
+
+            $record->increment('count');
+        });
     }
 
     /**
