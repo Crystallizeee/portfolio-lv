@@ -7,3 +7,7 @@
 ## 2026-06-03 - Defer Synchronous Database Writes in Middleware
 **Learning:** In Laravel 11.x+, performing synchronous database inserts (like tracking page visits in middleware) blocks the HTTP response, increasing TTFB and reducing perceived performance. Always capture context state (like `now()` or request IP) before deferring, as the request might be terminated when the closure executes.
 **Action:** Use Laravel's `defer()` helper to push non-critical, synchronous database operations to a background task that executes after the response is sent to the client, capturing context state before deferring.
+
+## 2025-02-12 - User-Agent Parsing Loop Bottleneck
+**Learning:** Instantiating `Jenssegers\Agent\Agent` and parsing hundreds of User-Agent strings (e.g., inside an analytics dashboard loop) on every synchronous request is highly CPU intensive and severely degrades load times.
+**Action:** Always wrap heavy synchronous data processing loops—especially those utilizing regex-heavy string parsing—inside a `Cache::remember` block, even for admin-facing dashboards where real-time accuracy can be traded for performance.

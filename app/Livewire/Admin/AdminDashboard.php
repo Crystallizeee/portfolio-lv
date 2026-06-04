@@ -39,35 +39,44 @@ class AdminDashboard extends Component
 
     private function analyzeTraffic()
     {
-        $visits = SiteVisit::orderBy('created_at', 'desc')->take(500)->get();
-        $agent = new \Jenssegers\Agent\Agent();
-        
-        $browsers = [];
-        $devices = [];
-
-        foreach ($visits as $visit) {
-            if (empty($visit->user_agent)) continue;
+        // ⚡ Bolt Optimization: Cache the traffic analysis to prevent 500 loop iterations
+        // and expensive Agent parsing on every dashboard reload.
+        $trafficData = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_traffic_analysis', 3600, function () {
+            $visits = SiteVisit::orderBy('created_at', 'desc')->take(500)->get();
+            $agent = new \Jenssegers\Agent\Agent();
             
-            $agent->setUserAgent($visit->user_agent);
-            
-            $browser = $agent->browser();
-            $platform = $agent->platform();
-            
-            $browser = $browser ?: 'Unknown';
-            $platform = $platform ?: 'Unknown';
+            $browsers = [];
+            $devices = [];
 
-            if (!isset($browsers[$browser])) $browsers[$browser] = 0;
-            $browsers[$browser]++;
+            foreach ($visits as $visit) {
+                if (empty($visit->user_agent)) continue;
 
-            if (!isset($devices[$platform])) $devices[$platform] = 0;
-            $devices[$platform]++;
-        }
+                $agent->setUserAgent($visit->user_agent);
 
-        arsort($browsers);
-        arsort($devices);
+                $browser = $agent->browser();
+                $platform = $agent->platform();
 
-        $this->topBrowsers = array_slice($browsers, 0, 5, true);
-        $this->topDevices = array_slice($devices, 0, 5, true);
+                $browser = $browser ?: 'Unknown';
+                $platform = $platform ?: 'Unknown';
+
+                if (!isset($browsers[$browser])) $browsers[$browser] = 0;
+                $browsers[$browser]++;
+
+                if (!isset($devices[$platform])) $devices[$platform] = 0;
+                $devices[$platform]++;
+            }
+
+            arsort($browsers);
+            arsort($devices);
+
+            return [
+                'topBrowsers' => array_slice($browsers, 0, 5, true),
+                'topDevices' => array_slice($devices, 0, 5, true),
+            ];
+        });
+
+        $this->topBrowsers = $trafficData['topBrowsers'];
+        $this->topDevices = $trafficData['topDevices'];
     }
 
     private function prepareChartData()
