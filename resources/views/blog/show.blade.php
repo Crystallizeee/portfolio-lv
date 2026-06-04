@@ -81,7 +81,8 @@
                                 setTimeout(() => copied = false, 2000);
                             "
                             class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-colors" 
-                            title="Salin Tautan">
+                            title="Salin Tautan"
+                            aria-label="Salin Tautan">
                             
                             <div x-show="!copied"><i data-lucide="link" class="w-4 h-4"></i></div>
                             <div x-cloak x-show="copied"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div>
