@@ -32,7 +32,8 @@ class BlogController extends Controller
                 $query->where('status', 'published')
                       ->orWhere(function($q) {
                           if (auth()->check()) {
-                              $q->whereIn('status', ['draft', 'published']);
+                              $q->whereIn('status', ['draft', 'published'])
+                                ->where('user_id', auth()->id());
                           }
                       });
             })

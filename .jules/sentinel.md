@@ -21,3 +21,7 @@
 **Vulnerability:** User and bot chat inputs rendered using x-html without DOMPurify for user input and condition blocks.
 **Learning:** Alpine.js x-html parses unescaped raw strings. Using a ternary conditional directly in x-html bindings requires wrapping the ENTIRE result in DOMPurify.sanitize(), not just parts of it.
 **Prevention:** Ensure the entire returned expression of x-html directives handling dynamic text is enclosed in a sanitation function.
+## 2025-03-01 - Missing Ownership Check on Draft Posts
+**Vulnerability:** In `BlogController::show`, authenticated users could bypass authorization to view any other user's draft posts due to an missing `user_id` constraint when checking for `auth()->check()`.
+**Learning:** Checking if a user is authenticated (`auth()->check()`) is not the same as checking if the authenticated user is authorized to view a specific resource.
+**Prevention:** Always scope visibility constraints for user-specific data using `where('user_id', auth()->id())` to prevent IDOR.
