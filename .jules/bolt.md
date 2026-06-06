@@ -11,3 +11,7 @@
 ## 2025-02-12 - User-Agent Parsing Loop Bottleneck
 **Learning:** Instantiating `Jenssegers\Agent\Agent` and parsing hundreds of User-Agent strings (e.g., inside an analytics dashboard loop) on every synchronous request is highly CPU intensive and severely degrades load times.
 **Action:** Always wrap heavy synchronous data processing loops—especially those utilizing regex-heavy string parsing—inside a `Cache::remember` block, even for admin-facing dashboards where real-time accuracy can be traded for performance.
+
+## 2026-06-06 - Missing WithPagination Trait Bug
+**Learning:** When replacing `get()` with `paginate()` in Livewire components to fix memory bottlenecks, failing to include the `Livewire\WithPagination` trait causes functional regressions where interactive actions lose pagination state.
+**Action:** Always verify that the component class uses `Livewire\WithPagination` when implementing pagination.
