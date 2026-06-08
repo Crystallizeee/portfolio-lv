@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 // ─────────────────────────────────────────────────────────────────────────────
 
 Route::get('/cv/download', [CvDownloadController::class, 'download'])
+    ->middleware('throttle:10,1')
     ->name('api.cv.download');
 
 Route::post('/chatbot', [ChatbotController::class, 'chat'])
