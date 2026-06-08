@@ -25,3 +25,7 @@
 **Vulnerability:** In `BlogController::show`, authenticated users could bypass authorization to view any other user's draft posts due to an missing `user_id` constraint when checking for `auth()->check()`.
 **Learning:** Checking if a user is authenticated (`auth()->check()`) is not the same as checking if the authenticated user is authorized to view a specific resource.
 **Prevention:** Always scope visibility constraints for user-specific data using `where('user_id', auth()->id())` to prevent IDOR.
+## 2024-05-28 - Missing Rate Limiting on API Endpoint
+**Vulnerability:** The API endpoint `GET /api/cv/download` lacked rate limiting, allowing potential Denial of Service (DoS) attacks by repeatedly generating PDFs.
+**Learning:** Even if an API endpoint requires an authorization token, it can still be abused to exhaust server resources (like CPU for PDF generation) if no rate limits are enforced.
+**Prevention:** Always apply rate limiting middleware (e.g., `throttle`) to resource-intensive endpoints to protect against DoS attacks.
