@@ -25,3 +25,7 @@
 **Vulnerability:** In `BlogController::show`, authenticated users could bypass authorization to view any other user's draft posts due to an missing `user_id` constraint when checking for `auth()->check()`.
 **Learning:** Checking if a user is authenticated (`auth()->check()`) is not the same as checking if the authenticated user is authorized to view a specific resource.
 **Prevention:** Always scope visibility constraints for user-specific data using `where('user_id', auth()->id())` to prevent IDOR.
+## 2025-02-12 - Apply rate limiting to heavy API endpoints
+**Vulnerability:** Resource exhaustion via unthrottled API endpoint
+**Learning:** Even if an API endpoint requires an authorization token, it can still be vulnerable to resource exhaustion (DoS) if it performs heavy operations (like PDF generation in `api/cv/download`).
+**Prevention:** Always apply rate limiting middleware (e.g., `throttle:10,1`) to resource-intensive routes, even when authenticated.
