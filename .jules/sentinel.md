@@ -29,3 +29,8 @@
 **Vulnerability:** Resource exhaustion via unthrottled API endpoint
 **Learning:** Even if an API endpoint requires an authorization token, it can still be vulnerable to resource exhaustion (DoS) if it performs heavy operations (like PDF generation in `api/cv/download`).
 **Prevention:** Always apply rate limiting middleware (e.g., `throttle:10,1`) to resource-intensive routes, even when authenticated.
+
+## 2025-02-14 - Prevent Disk Exhaustion (DoS) in Dynamic Image Generators
+**Vulnerability:** The application featured an endpoint for generating Open Graph (OG) images where the `$type` parameter was sanitized for path traversal but wasn't strictly validated against a known allowlist. It would fall through to a default case, still constructing a unique cache key (`{$type}_{$slug}.png`) and generating a new image on disk for every unique unknown combination.
+**Learning:** Even with basic sanitization (like `preg_replace` stripping special characters), if you don't limit the accepted values for dynamic resources that write to disk, an attacker can easily exhaust server storage space by brute-forcing a massive number of unique permutations (e.g., fuzzing the `$type` parameter).
+**Prevention:** Always use strict allowlisting (e.g., `in_array`) for dynamic types. Crucially, map any unknown types to a generic, shared string (e.g., `default`) BEFORE constructing the cache key or filename. This forces all invalid requests to map to the exact same cached file, effectively mitigating unbounded disk growth.
