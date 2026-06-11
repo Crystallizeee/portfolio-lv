@@ -752,7 +752,7 @@
                                                 <p class="text-xs text-slate-400">{{ $comment->created_at->format('d M Y, H:i') }}</p>
                                             </div>
                                         </div>
-                                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Are you sure you want to permanently delete this comment?" class="text-slate-500 hover:text-red-400 p-1.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors" title="Delete Comment">
+                                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Are you sure you want to permanently delete this comment?" class="text-slate-500 hover:text-red-400 p-1.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors" title="Delete Comment" aria-label="Delete Comment">
                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                                         </button>
                                     </div>
