@@ -322,18 +322,21 @@
                     <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button wire:click="toggleVisibility({{ $profile['id'] }})"
                                 class="p-2 rounded-lg transition-colors {{ $profile['is_visible'] ? 'text-slate-400 hover:text-yellow-400 hover:bg-yellow-500/10' : 'text-slate-600 hover:text-emerald-400 hover:bg-emerald-500/10' }}"
-                                title="{{ $profile['is_visible'] ? 'Hide' : 'Show' }}">
+                                title="{{ $profile['is_visible'] ? 'Hide' : 'Show' }}"
+                                aria-label="{{ $profile['is_visible'] ? 'Hide' : 'Show' }}">
                             <i data-lucide="{{ $profile['is_visible'] ? 'eye' : 'eye-off' }}" class="w-4 h-4"></i>
                         </button>
                         <button wire:click="edit({{ $profile['id'] }})"
                                 class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
-                                title="Edit">
+                                title="Edit"
+                                aria-label="Edit">
                             <i data-lucide="pencil" class="w-4 h-4"></i>
                         </button>
                         <button wire:click="delete({{ $profile['id'] }})"
                                 wire:confirm="Are you sure you want to delete this profile?"
                                 class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                                title="Delete">
+                                title="Delete"
+                                aria-label="Delete">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>

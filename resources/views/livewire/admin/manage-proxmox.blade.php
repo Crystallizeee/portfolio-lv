@@ -171,6 +171,7 @@
                                                 wire:click="startEditAlias({{ $resource['vmid'] }})"
                                                 class="p-1 text-slate-500 hover:text-emerald-400 transition-colors"
                                                 title="Edit Alias"
+                                                aria-label="Edit Alias"
                                             >
                                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                                             </button>
