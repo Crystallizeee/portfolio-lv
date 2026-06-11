@@ -14,6 +14,12 @@ class OgImageController extends Controller
         $type = preg_replace('/[^a-zA-Z0-9_-]/', '', $type);
         $slug = preg_replace('/[^a-zA-Z0-9_-]/', '', $slug);
 
+        // Prevent disk exhaustion (DoS) by mapping unknown types to a shared default
+        if (!in_array($type, ['post', 'project'])) {
+            $type = 'default';
+            $slug = 'default';
+        }
+
         $cacheKey = "{$type}_{$slug}";
         $cachePath = "og-images/{$cacheKey}.png";
         $fullPath = storage_path("app/public/{$cachePath}");
