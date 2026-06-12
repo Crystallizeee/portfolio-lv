@@ -84,6 +84,8 @@
                         @click="mobileMenuOpen = !mobileMenuOpen" 
                         class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
                         aria-label="Toggle mobile menu"
+                        :aria-expanded="mobileMenuOpen.toString()"
+                        aria-controls="mobile-menu"
                     >
                         <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
                         <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
@@ -94,6 +96,7 @@
 
         <!-- Mobile Menu -->
         <div 
+            id="mobile-menu"
             x-show="mobileMenuOpen" 
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2"
