@@ -14,6 +14,12 @@ class OgImageController extends Controller
         $type = preg_replace('/[^a-zA-Z0-9_-]/', '', $type);
         $slug = preg_replace('/[^a-zA-Z0-9_-]/', '', $slug);
 
+        // Map unknown types to a shared default image to prevent disk exhaustion DoS
+        if (!in_array($type, ['post', 'project'])) {
+            $type = 'default';
+            $slug = 'portfolio';
+        }
+
         $cacheKey = "{$type}_{$slug}";
         $cachePath = "og-images/{$cacheKey}.png";
         $fullPath = storage_path("app/public/{$cachePath}");
