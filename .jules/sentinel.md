@@ -29,3 +29,7 @@
 **Vulnerability:** Resource exhaustion via unthrottled API endpoint
 **Learning:** Even if an API endpoint requires an authorization token, it can still be vulnerable to resource exhaustion (DoS) if it performs heavy operations (like PDF generation in `api/cv/download`).
 **Prevention:** Always apply rate limiting middleware (e.g., `throttle:10,1`) to resource-intensive routes, even when authenticated.
+## 2025-02-12 - Prevent Disk Exhaustion in OgImageController
+**Vulnerability:** The `OgImageController` accepted any arbitrary `$type` and `$slug`, and used them directly to construct the cache file path, leading to infinite file generation and potential disk exhaustion.
+**Learning:** Dynamic image generation endpoints must strictly map unknown types to a shared default image and slug BEFORE cache key construction.
+**Prevention:** Normalize unknown parameters to a single default value before file operations.
