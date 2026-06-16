@@ -221,7 +221,7 @@
             <div class="glass-card w-full max-w-md p-6 border-cyan-500/30">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-mono font-bold text-white">Edit Display Name</h3>
-                    <button wire:click="cancelEdit" class="text-slate-500 hover:text-white transition-colors">
+                    <button wire:click="cancelEdit" class="text-slate-500 hover:text-white transition-colors" aria-label="Cancel edit">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
