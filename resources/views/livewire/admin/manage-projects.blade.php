@@ -101,6 +101,11 @@
                 @endforelse
             </tbody>
         </table>
+        @if($projects->hasPages())
+            <div class="p-4 border-t border-slate-700/50 bg-slate-800/20">
+                {{ $projects->links() }}
+            </div>
+        @endif
     </div>
 
     <!-- Modal -->
