@@ -11,3 +11,6 @@
 ## 2025-02-12 - User-Agent Parsing Loop Bottleneck
 **Learning:** Instantiating `Jenssegers\Agent\Agent` and parsing hundreds of User-Agent strings (e.g., inside an analytics dashboard loop) on every synchronous request is highly CPU intensive and severely degrades load times.
 **Action:** Always wrap heavy synchronous data processing loops—especially those utilizing regex-heavy string parsing—inside a `Cache::remember` block, even for admin-facing dashboards where real-time accuracy can be traded for performance.
+## 2026-06-18 - Cache Global SEO Metadata Query
+**Learning:** Performing a database query inside the `boot()` method of a Service Provider (e.g., `AppServiceProvider`) forces that query to execute synchronously on every single HTTP request (including all API, Web, and Livewire endpoints).
+**Action:** Always wrap heavy or global data queries placed in Service Providers or heavily-included layout components with `Cache::remember()` to avoid creating a severe N+1-like global database bottleneck.

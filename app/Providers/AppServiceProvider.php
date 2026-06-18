@@ -37,7 +37,10 @@ class AppServiceProvider extends ServiceProvider
 
         try {
             // Share global SEO data with all views
-            $seo = \App\Models\SeoMetadata::where('model_type', 'global')->first();
+            // ⚡ Bolt Optimization: Cache the global SEO metadata to prevent a DB query on every request
+            $seo = \Illuminate\Support\Facades\Cache::remember('global_seo_metadata', 86400, function () {
+                return \App\Models\SeoMetadata::where('model_type', 'global')->first();
+            });
             \Illuminate\Support\Facades\View::share('seo', $seo);
         } catch (\Exception $e) {
             // Quietly fail if table doesn't exist yet
