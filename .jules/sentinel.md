@@ -29,3 +29,7 @@
 **Vulnerability:** Resource exhaustion via unthrottled API endpoint
 **Learning:** Even if an API endpoint requires an authorization token, it can still be vulnerable to resource exhaustion (DoS) if it performs heavy operations (like PDF generation in `api/cv/download`).
 **Prevention:** Always apply rate limiting middleware (e.g., `throttle:10,1`) to resource-intensive routes, even when authenticated.
+## 2025-05-29 - Missing Rate Limiting on External API Calls
+**Vulnerability:** The `generate` method in the `AiCoverLetter` Livewire component lacked rate limiting while communicating with an external AI API (Ollama/OpenAI), exposing the application to Denial of Service (DoS), API quota exhaustion, and Denial of Wallet (DoW) attacks.
+**Learning:** Livewire methods that perform heavy computational tasks or invoke third-party APIs can be rapidly triggered by users. Without rate limits, an attacker can continuously send requests, exhausting resources and racking up costs.
+**Prevention:** Always implement explicit rate limiting using Laravel's `RateLimiter` facade on Livewire methods that trigger resource-intensive tasks or external API calls. Ensure an appropriate throttle key (e.g., using `auth()->id()`) and reasonable limits (e.g., 5 attempts) are configured.

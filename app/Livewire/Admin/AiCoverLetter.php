@@ -8,6 +8,7 @@ use App\Models\Skill;
 use App\Models\Project;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AiCoverLetter extends Component
 {
@@ -24,6 +25,14 @@ class AiCoverLetter extends Component
 
     public function generate()
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the external API endpoint
+        $throttleKey = 'ai-cover-letter:' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->errorMessage = "Too many requests. Please try again in {$seconds} seconds.";
+            return;
+        }
+
         if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
             $this->errorMessage = 'Please provide either a job URL or a manual job description.';
             return;
@@ -32,6 +41,8 @@ class AiCoverLetter extends Component
         $this->isGenerating = true;
         $this->errorMessage = '';
         $this->coverLetter = '';
+
+        RateLimiter::hit($throttleKey, 60);
 
         try {
             $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
