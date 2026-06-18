@@ -18,7 +18,9 @@ class SeoManager extends Component
     public function mount()
     {
         // specific 'global' record
-        $seo = SeoMetadata::where('model_type', 'global')->first();
+        $seo = \Illuminate\Support\Facades\Cache::remember('global_seo_metadata', 86400, function () {
+            return SeoMetadata::where('model_type', 'global')->first();
+        });
 
         if ($seo) {
             $this->title = $seo->title;
@@ -52,6 +54,8 @@ class SeoManager extends Component
                 'indexable' => $this->indexable,
             ]
         );
+
+        \Illuminate\Support\Facades\Cache::forget('global_seo_metadata');
 
         session()->flash('message', 'Global SEO settings updated successfully.');
     }

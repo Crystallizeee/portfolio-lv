@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @php
-        $globalSeo = \App\Models\SeoMetadata::where('model_type', 'global')->first();
+        $globalSeo = \Illuminate\Support\Facades\Cache::remember('global_seo_metadata', 86400, function () {
+            return \App\Models\SeoMetadata::where('model_type', 'global')->first();
+        });
         $seoTitle = $title ?? $globalSeo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional';
         $seoDescription = $description ?? $globalSeo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security';
         $seoKeywords = $keywords ?? $globalSeo?->keywords ?? 'cybersecurity, grc, penetration testing, laravel';
