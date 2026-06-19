@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManagePosts extends Component
 {
@@ -126,10 +127,20 @@ class ManagePosts extends Component
      */
     public function generateSeoAndTags()
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the external API endpoint
+        $throttleKey = 'ai-seo-generation:' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->seoErrorMessage = "Too many requests. Please try again in {$seconds} seconds.";
+            return;
+        }
+
         if (empty($this->title) && empty($this->content)) {
             $this->seoErrorMessage = 'Please fill in the post title or content first.';
             return;
         }
+
+        RateLimiter::hit($throttleKey, 60);
 
         $this->isGeneratingSeo = true;
         $this->seoErrorMessage = '';
