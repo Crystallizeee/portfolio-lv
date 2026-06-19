@@ -33,3 +33,7 @@
 **Vulnerability:** The `generate` method in the `AiCoverLetter` Livewire component lacked rate limiting while communicating with an external AI API (Ollama/OpenAI), exposing the application to Denial of Service (DoS), API quota exhaustion, and Denial of Wallet (DoW) attacks.
 **Learning:** Livewire methods that perform heavy computational tasks or invoke third-party APIs can be rapidly triggered by users. Without rate limits, an attacker can continuously send requests, exhausting resources and racking up costs.
 **Prevention:** Always implement explicit rate limiting using Laravel's `RateLimiter` facade on Livewire methods that trigger resource-intensive tasks or external API calls. Ensure an appropriate throttle key (e.g., using `auth()->id()`) and reasonable limits (e.g., 5 attempts) are configured.
+## 2025-05-30 - Missing Rate Limiting on CV PDF Generation
+**Vulnerability:** The `generatePdf` method in the `CvGenerator` Livewire component lacked rate limiting while compiling and generating a PDF from database records.
+**Learning:** Resource-intensive operations (like PDF generation using DOMPDF) are prime targets for resource exhaustion (DoS) attacks. Even authenticated or admin features should be protected against rapid repeated triggers which can exhaust CPU or memory.
+**Prevention:** Always implement manual rate limiting using `Illuminate\Support\Facades\RateLimiter` on compute-heavy Livewire methods. Return feedback safely using `$this->addError()` and display it via `@error` directives in the UI.

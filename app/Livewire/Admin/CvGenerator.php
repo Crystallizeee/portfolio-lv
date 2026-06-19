@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Analytics;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\RateLimiter;
 
 class CvGenerator extends Component
 {
@@ -181,10 +182,19 @@ class CvGenerator extends Component
 
     public function generatePdf()
     {
+        $throttleKey = 'cv-generator:' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('generatePdf', "Too many requests. Please try again in {$seconds} seconds.");
+            return;
+        }
+
         $this->validate([
             'name' => 'required',
             'email' => 'required|email',
         ]);
+
+        RateLimiter::hit($throttleKey, 60);
 
         $userId = Auth::id();
 
