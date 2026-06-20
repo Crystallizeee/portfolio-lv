@@ -67,12 +67,14 @@
                                 <button 
                                     wire:click="openEditModal({{ $skill->id }})"
                                     class="px-3 py-1.5 text-xs text-green-400 hover:bg-green-500/20 rounded-lg transition-all duration-200 border border-green-500/30"
+                                    aria-label="Edit skill {{ $skill->name }}"
                                 >
                                     Edit
                                 </button>
                                 <button 
                                     @click="deleteId = {{ $skill->id }}; showDeleteModal = true"
                                     class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30"
+                                    aria-label="Delete skill {{ $skill->name }}"
                                 >
                                     Delete
                                 </button>
@@ -140,6 +142,7 @@
                             <button 
                                 wire:click="closeModal" 
                                 class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200"
+                                aria-label="Close modal"
                             >
                                 X
                             </button>
