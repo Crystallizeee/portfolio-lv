@@ -30,6 +30,15 @@ class PostComments extends Component
 
         $ipHash = IpAnonymizer::hashRequest();
 
+        // Rate limiting: max 3 comments per IP per 10 minutes
+        $rateLimitKey = 'comment:' . $ipHash;
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            session()->flash('error', "Terlalu banyak komentar. Coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        RateLimiter::hit($rateLimitKey, 600); // 10 minute window
+
         // Honeypot check — bots fill hidden fields
         if (!empty($this->website)) {
             Comment::create([
@@ -49,15 +58,6 @@ class PostComments extends Component
             session()->flash('comment_pending', true);
             return;
         }
-
-        // Rate limiting: max 3 comments per IP per 10 minutes
-        $rateLimitKey = 'comment:' . $ipHash;
-        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
-            $seconds = RateLimiter::availableIn($rateLimitKey);
-            session()->flash('error', "Terlalu banyak komentar. Coba lagi dalam {$seconds} detik.");
-            return;
-        }
-        RateLimiter::hit($rateLimitKey, 600); // 10 minute window
 
         // Calculate spam score
         $spamScore = $this->calculateSpamScore($this->name, $this->content);
