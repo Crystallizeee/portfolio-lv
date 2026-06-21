@@ -1,5 +1,7 @@
 <div class="flex items-center space-x-2">
     <button wire:click="toggleLike" 
+            wire:loading.attr="disabled"
+            wire:loading.class="opacity-50 cursor-wait"
             aria-pressed="{{ $hasLiked ? 'true' : 'false' }}"
             class="group flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 {{ $hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-rose-400' }}"
             title="{{ $hasLiked ? 'Unlike' : 'Like' }}">
