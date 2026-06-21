@@ -86,9 +86,11 @@
                         @click="mobileMenuOpen = !mobileMenuOpen" 
                         class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
                         aria-label="Toggle mobile menu"
+                        :aria-expanded="mobileMenuOpen.toString()"
+                        aria-controls="mobile-menu"
                     >
-                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
-                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
+                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen" aria-hidden="true"></i>
+                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -96,6 +98,7 @@
 
         <!-- Mobile Menu -->
         <div 
+            id="mobile-menu"
             x-show="mobileMenuOpen" 
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2"
@@ -242,13 +245,14 @@
 
     <!-- Scroll to Top Button -->
     <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
-        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+        <i data-lucide="arrow-up" class="w-6 h-6" aria-hidden="true"></i>
     </button>
 
     <!-- AI Chatbot Widget -->
     <div x-data="chatWidget" class="fixed bottom-8 right-8 z-50">
         <!-- Chat Window -->
         <div 
+            id="chat-window"
             x-show="isOpen"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
@@ -360,9 +364,11 @@
             @click="toggleChat()"
             class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
             aria-label="Toggle chat widget"
+            :aria-expanded="isOpen.toString()"
+            aria-controls="chat-window"
         >
-            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen"></i>
-            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak></i>
+            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen" aria-hidden="true"></i>
+            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak aria-hidden="true"></i>
             
             <!-- Notification dot -->
             <span x-show="!hasInteracted && !isOpen" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[var(--color-cyber-dark)] animate-pulse"></span>
