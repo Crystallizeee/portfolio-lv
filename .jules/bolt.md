@@ -14,3 +14,6 @@
 ## 2026-06-18 - Cache Global SEO Metadata Query
 **Learning:** Performing a database query inside the `boot()` method of a Service Provider (e.g., `AppServiceProvider`) forces that query to execute synchronously on every single HTTP request (including all API, Web, and Livewire endpoints).
 **Action:** Always wrap heavy or global data queries placed in Service Providers or heavily-included layout components with `Cache::remember()` to avoid creating a severe N+1-like global database bottleneck.
+## 2025-05-18 - Bulk API Fetching to prevent N+1 queries
+**Learning:** Making separate HTTP requests to external APIs (e.g., Proxmox API) for individual entities (VMs, LXCs) inside loops or regular Livewire polling intervals (`#[Polling]`) introduces severe N+1 request bottlenecks, delaying component render times significantly.
+**Action:** Always utilize bulk endpoints to fetch the state of all entities in a single request. Extract the needed data and cache the batched result using `Cache::remember()`, thereby reducing O(N) external requests to O(1).

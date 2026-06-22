@@ -38,133 +38,126 @@ class ServerStatus extends Component
         })->toArray();
     }
 
-    protected function getNodeStatus(HomelabService $service): array
+    protected function getProxmoxBulkData(string $type, string $host, string $node, string $tokenId, string $tokenSecret)
     {
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
+        return Cache::remember("proxmox_bulk_{$type}_{$node}", 30, function () use ($type, $host, $node, $tokenId, $tokenSecret) {
             try {
-                $host = config('services.proxmox.host');
-                $node = config('services.proxmox.node');
-                $tokenId = config('services.proxmox.token_id');
-                $tokenSecret = config('services.proxmox.token_secret');
-
-                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
-
+                $endpoint = $type === 'node' ? "/nodes/{$node}/status" : "/nodes/{$node}/{$type}";
                 $response = Http::withoutVerifying()
                     ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
                     ->timeout(5)
-                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/status");
+                    ->get("https://{$host}:8006/api2/json{$endpoint}");
 
                 if ($response->successful()) {
                     $data = $response->json()['data'];
-                    $result = [
-                        'name' => $service->alias ?? $service->name,
-                        'node' => $service->node_label,
-                        'status' => 'online',
-                        'cpu' => round($data['cpu'] * 100, 1) . '%',
-                        'memory' => round(($data['memory']['used'] / ($data['memory']['total'] ?: 1)) * 100, 1) . '%',
-                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
-                        'icon' => $service->icon,
-                        'color' => 'green',
-                    ];
-
-                    // Persist to DB for fallback
-                    $service->updateCachedStatus($result);
-
-                    return $result;
+                    if ($type === 'node') {
+                        return $data;
+                    }
+                    return collect($data)->keyBy('vmid')->toArray();
                 }
-                return $this->fallbackStatus($service);
             } catch (\Exception $e) {
-                return $this->fallbackStatus($service);
+                // Silently fail
             }
+            return null;
         });
+    }
+
+    protected function getNodeStatus(HomelabService $service): array
+    {
+        $host = config('services.proxmox.host');
+        $node = config('services.proxmox.node');
+        $tokenId = config('services.proxmox.token_id');
+        $tokenSecret = config('services.proxmox.token_secret');
+
+        if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
+
+        $data = $this->getProxmoxBulkData('node', $host, $node, $tokenId, $tokenSecret);
+
+        if ($data !== null) {
+            $result = [
+                'name' => $service->alias ?? $service->name,
+                'node' => $service->node_label,
+                'status' => 'online',
+                'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
+                'memory' => round((($data['memory']['used'] ?? 0) / ($data['memory']['total'] ?: 1)) * 100, 1) . '%',
+                'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                'icon' => $service->icon,
+                'color' => 'green',
+            ];
+
+            // Persist to DB for fallback
+            $service->updateCachedStatus($result);
+            return $result;
+        }
+        return $this->fallbackStatus($service);
     }
 
     protected function getVmStatus(HomelabService $service): array
     {
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
-            try {
-                $host = config('services.proxmox.host');
-                $node = config('services.proxmox.node');
-                $tokenId = config('services.proxmox.token_id');
-                $tokenSecret = config('services.proxmox.token_secret');
+        $host = config('services.proxmox.host');
+        $node = config('services.proxmox.node');
+        $tokenId = config('services.proxmox.token_id');
+        $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
+        if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
 
-                $response = Http::withoutVerifying()
-                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
-                    ->timeout(5)
-                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/qemu/{$service->vmid}/status/current");
+        $allVms = $this->getProxmoxBulkData('qemu', $host, $node, $tokenId, $tokenSecret);
 
-                if ($response->successful()) {
-                    $data = $response->json()['data'];
-                    $status = $data['status'] ?? 'unknown';
-                    $isRunning = $status === 'running';
+        if ($allVms !== null && isset($allVms[$service->vmid])) {
+            $data = $allVms[$service->vmid];
+            $status = $data['status'] ?? 'unknown';
+            $isRunning = $status === 'running';
 
-                    $result = [
-                        'name' => $service->alias ?? $service->name,
-                        'node' => $service->node_label,
-                        'status' => $isRunning ? 'running' : $status,
-                        'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
-                        'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
-                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
-                        'icon' => $service->icon,
-                        'color' => $isRunning ? 'green' : 'red',
-                    ];
+            $result = [
+                'name' => $service->alias ?? $service->name,
+                'node' => $service->node_label,
+                'status' => $isRunning ? 'running' : $status,
+                'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
+                'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
+                'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                'icon' => $service->icon,
+                'color' => $isRunning ? 'green' : 'red',
+            ];
 
-                    // Persist to DB for fallback
-                    $service->updateCachedStatus($result);
-
-                    return $result;
-                }
-                return $this->fallbackStatus($service);
-            } catch (\Exception $e) {
-                return $this->fallbackStatus($service);
-            }
-        });
+            // Persist to DB for fallback
+            $service->updateCachedStatus($result);
+            return $result;
+        }
+        return $this->fallbackStatus($service);
     }
 
     protected function getLxcStatus(HomelabService $service): array
     {
-        return Cache::remember("homelab_{$service->vmid}_status", 30, function () use ($service) {
-            try {
-                $host = config('services.proxmox.host');
-                $node = config('services.proxmox.node');
-                $tokenId = config('services.proxmox.token_id');
-                $tokenSecret = config('services.proxmox.token_secret');
+        $host = config('services.proxmox.host');
+        $node = config('services.proxmox.node');
+        $tokenId = config('services.proxmox.token_id');
+        $tokenSecret = config('services.proxmox.token_secret');
 
-                if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
+        if (!$host || !$tokenId || !$tokenSecret) return $this->fallbackStatus($service);
 
-                $response = Http::withoutVerifying()
-                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
-                    ->timeout(5)
-                    ->get("https://{$host}:8006/api2/json/nodes/{$node}/lxc/{$service->vmid}/status/current");
+        $allLxcs = $this->getProxmoxBulkData('lxc', $host, $node, $tokenId, $tokenSecret);
 
-                if ($response->successful()) {
-                    $data = $response->json()['data'];
-                    $status = $data['status'] ?? 'unknown';
-                    $isRunning = $status === 'running';
+        if ($allLxcs !== null && isset($allLxcs[$service->vmid])) {
+            $data = $allLxcs[$service->vmid];
+            $status = $data['status'] ?? 'unknown';
+            $isRunning = $status === 'running';
 
-                    $result = [
-                        'name' => $service->alias ?? $service->name,
-                        'node' => $service->node_label,
-                        'status' => $isRunning ? 'running' : $status,
-                        'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
-                        'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
-                        'uptime' => $this->formatUptime($data['uptime'] ?? 0),
-                        'icon' => $service->icon,
-                        'color' => $isRunning ? 'green' : 'red',
-                    ];
+            $result = [
+                'name' => $service->alias ?? $service->name,
+                'node' => $service->node_label,
+                'status' => $isRunning ? 'running' : $status,
+                'cpu' => round(($data['cpu'] ?? 0) * 100, 1) . '%',
+                'memory' => round((($data['mem'] ?? 0) / ($data['maxmem'] ?: 1)) * 100, 1) . '%',
+                'uptime' => $this->formatUptime($data['uptime'] ?? 0),
+                'icon' => $service->icon,
+                'color' => $isRunning ? 'green' : 'red',
+            ];
 
-                    // Persist to DB for fallback
-                    $service->updateCachedStatus($result);
-
-                    return $result;
-                }
-                return $this->fallbackStatus($service);
-            } catch (\Exception $e) {
-                return $this->fallbackStatus($service);
-            }
-        });
+            // Persist to DB for fallback
+            $service->updateCachedStatus($result);
+            return $result;
+        }
+        return $this->fallbackStatus($service);
     }
 
     /**
