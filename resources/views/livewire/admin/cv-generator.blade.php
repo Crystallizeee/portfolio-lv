@@ -7,15 +7,18 @@
             </div>
             <p class="text-slate-400">Buat CV profesional dari data portfolio Anda</p>
         </div>
-        <button 
-            wire:click="generatePdf"
-            class="hidden md:flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/50 rounded-xl text-cyan-400 hover:from-cyan-500/30 hover:to-blue-500/30 hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-500/10"
-            wire:loading.class="opacity-50 cursor-wait"
-        >
-            <i wire:loading.remove data-lucide="download" class="w-4 h-4"></i>
-            <i wire:loading data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
-            <span class="font-medium">Generate PDF</span>
-        </button>
+        <div class="flex flex-col items-end">
+            <button
+                wire:click="generatePdf"
+                class="hidden md:flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/50 rounded-xl text-cyan-400 hover:from-cyan-500/30 hover:to-blue-500/30 hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-500/10"
+                wire:loading.class="opacity-50 cursor-wait"
+            >
+                <i wire:loading.remove data-lucide="download" class="w-4 h-4"></i>
+                <i wire:loading data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                <span class="font-medium">Generate PDF</span>
+            </button>
+            @error('generatePdf') <span class="text-red-400 text-xs mt-2 block">{{ $message }}</span> @enderror
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -509,6 +512,7 @@
                             <i data-lucide="download" class="w-5 h-5"></i>
                             <span>Generate CV</span>
                         </button>
+                        @error('generatePdf') <span class="text-red-400 text-xs mt-2 block text-center">{{ $message }}</span> @enderror
                     </div>
                 </div>
             </div>
