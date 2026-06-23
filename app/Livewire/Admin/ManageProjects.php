@@ -55,7 +55,7 @@ class ManageProjects extends Component
             'tech_stack' => 'required|string',
             'url' => 'nullable|url',
             'gallery' => 'nullable|array',
-            'new_gallery_images.*' => 'image|max:2048', // Validation for each image
+            'new_gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048', // Validation for each image
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
             'seo_keywords' => 'nullable|string|max:255',

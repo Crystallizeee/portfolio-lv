@@ -70,7 +70,7 @@ class ManagePosts extends Component
             'category' => 'required|string|max:50',
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
-            'new_featured_image' => 'nullable|image|max:2048', // 2MB Max
+            'new_featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // 2MB Max
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'tagsInput' => 'nullable|string',
