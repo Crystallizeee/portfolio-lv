@@ -91,7 +91,7 @@ class ManageCertificates extends Component
             'form.credential_id' => 'nullable|string|max:255',
             'form.credential_url' => 'nullable|url|max:500',
             'form.description' => 'nullable|string|max:2000',
-            'image' => 'nullable|image|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         $imagePath = $this->existingImage;
