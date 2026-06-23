@@ -17,3 +17,6 @@
 ## 2025-05-18 - Bulk API Fetching to prevent N+1 queries
 **Learning:** Making separate HTTP requests to external APIs (e.g., Proxmox API) for individual entities (VMs, LXCs) inside loops or regular Livewire polling intervals (`#[Polling]`) introduces severe N+1 request bottlenecks, delaying component render times significantly.
 **Action:** Always utilize bulk endpoints to fetch the state of all entities in a single request. Extract the needed data and cache the batched result using `Cache::remember()`, thereby reducing O(N) external requests to O(1).
+## 2025-02-18 - Missing Livewire Pagination Trait Causes Full Reloads
+**Learning:** Replacing `get()` with `paginate()` in a Livewire component correctly limits queries, but if you forget to `use Livewire\WithPagination;` inside the class, Livewire will render standard HTML `href` links for pagination controls instead of handling them via AJAX. This causes full page reloads, destroying the internal state of interactive components (like open modals or unsaved form input).
+**Action:** When converting a query to use `paginate()` in a Livewire component for performance, always manually verify that the component class imports and uses the `Livewire\WithPagination` trait.
