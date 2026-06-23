@@ -14,7 +14,7 @@ class PostAttachmentController extends Controller
         \Illuminate\Support\Facades\Log::info('Has file? ' . ($request->hasFile('attachment') ? 'Yes' : 'No'));
         
         $request->validate([
-            'attachment' => 'required|image|max:5120', // Max 5MB
+            'attachment' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // Max 5MB
         ]);
 
         if ($request->hasFile('attachment')) {
