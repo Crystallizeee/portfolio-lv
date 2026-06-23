@@ -7,3 +7,6 @@
 ## 2024-06-16 - Add missing aria-labels to Livewire admin icon-only buttons
 **Learning:** Found a recurring pattern in the admin Livewire components where icon-only buttons (using `<i data-lucide="..."></i>` inside a `<button>`) for actions like "close modal" or "remove item" lacked `aria-label` attributes. This made them inaccessible to screen readers.
 **Action:** Always ensure that icon-only buttons in new or existing components include an explicit `aria-label` attribute (e.g., `aria-label="Close modal"`). When the action applies to a specific item in a list, use dynamic variables to provide context (e.g., `aria-label="Remove item {{ $index + 1 }}"`).
+## 2025-02-12 - Replaced Modal Text Close buttons with Icon
+**Learning:** Some Livewire admin modal close buttons were using a hardcoded "X" text, which looks unpolished and lacks an `aria-label` for screen readers.
+**Action:** Replace hardcoded "X" close buttons in modals with the standard `<i data-lucide="x"></i>` icon and ensure they have an `aria-label="Close modal"` attribute.
