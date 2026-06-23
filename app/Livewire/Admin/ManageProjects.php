@@ -228,7 +228,9 @@ class ManageProjects extends Component
     public function render()
     {
         return view('livewire.admin.manage-projects', [
-            'projects' => Project::orderBy('created_at', 'desc')->get(),
+            // ⚡ Bolt Optimization: Replace get() with paginate() to prevent memory exhaustion and slow load times
+            // when managing a large number of projects in the admin panel.
+            'projects' => Project::orderBy('created_at', 'desc')->paginate(10),
         ])->layout('layouts.admin', ['title' => 'Manage Projects']);
     }
 }
