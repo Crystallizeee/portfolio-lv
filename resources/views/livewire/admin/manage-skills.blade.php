@@ -140,7 +140,7 @@
                             <button 
                                 wire:click="closeModal" 
                                 class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200"
-                            >
+                             aria-label="Close modal">
                                 X
                             </button>
                         </div>
