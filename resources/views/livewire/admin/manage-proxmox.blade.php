@@ -158,6 +158,9 @@
                                                     ? 'bg-emerald-500' 
                                                     : 'bg-slate-700' 
                                                 }}"
+                                            role="switch"
+                                            aria-checked="{{ $this->isOnHomelab($resource['vmid']) ? 'true' : 'false' }}"
+                                            aria-label="Toggle Home Lab for {{ $resource['name'] }}"
                                         >
                                             <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
                                                 {{ $this->isOnHomelab($resource['vmid']) 
@@ -171,8 +174,9 @@
                                                 wire:click="startEditAlias({{ $resource['vmid'] }})"
                                                 class="p-1 text-slate-500 hover:text-emerald-400 transition-colors"
                                                 title="Edit Alias"
+                                                aria-label="Edit alias for {{ $resource['name'] }}"
                                             >
-                                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                                <i data-lucide="edit-3" aria-hidden="true" class="w-4 h-4"></i>
                                             </button>
                                         @endif
                                     </div>
@@ -187,6 +191,9 @@
                                                 ? 'bg-cyan-500' 
                                                 : 'bg-slate-700' 
                                             }}"
+                                        role="switch"
+                                        aria-checked="{{ $this->isLinked($resource['vmid']) ? 'true' : 'false' }}"
+                                        aria-label="Toggle Projects for {{ $resource['name'] }}"
                                     >
                                         <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
                                             {{ $this->isLinked($resource['vmid']) 
