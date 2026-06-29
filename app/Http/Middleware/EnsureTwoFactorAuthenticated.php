@@ -16,7 +16,8 @@ class EnsureTwoFactorAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment('local')) {
+        // Only bypass 2FA when explicitly opted-in via config (NOT tied to APP_ENV)
+        if (config('auth.skip_2fa', false)) {
             return $next($request);
         }
 

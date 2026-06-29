@@ -65,52 +65,61 @@ class BackupController extends Controller
 
                 // Restore Projects (Delete existing and re-create)
                 if (isset($data['projects'])) {
+                    $allowedProjectFields = ['title', 'slug', 'description', 'status', 'type', 'tech_stack', 'url', 'github_url', 'image', 'show_on_landing', 'proxmox_vmid', 'sort_order'];
                     Project::truncate();
                     foreach ($data['projects'] as $item) {
-                        Project::create($item);
+                        Project::create(array_intersect_key($item, array_flip($allowedProjectFields)));
                     }
                 }
 
                 // Restore Experiences
                 if (isset($data['experiences'])) {
+                    $allowedExpFields = ['company', 'role', 'date_range', 'description', 'sort_order'];
                     Experience::truncate();
                     foreach ($data['experiences'] as $item) {
-                        Experience::create($item);
+                        Experience::create(array_intersect_key($item, array_flip($allowedExpFields)));
                     }
                 }
 
                 // Restore Skills
                 if (isset($data['skills'])) {
+                    $allowedSkillFields = ['name', 'level', 'category', 'sort_order'];
                     Skill::truncate();
                     foreach ($data['skills'] as $item) {
-                        Skill::create($item);
+                        Skill::create(array_intersect_key($item, array_flip($allowedSkillFields)));
                     }
                 }
 
                 // Restore Education
                 if (isset($data['educations'])) {
+                    $allowedEduFields = ['school', 'degree', 'year', 'thesis', 'sort_order'];
                     Education::where('user_id', $user->id)->delete();
                     foreach ($data['educations'] as $item) {
-                        $item['user_id'] = $user->id; // Ensure current user ID
-                        Education::create($item);
+                        $safeItem = array_intersect_key($item, array_flip($allowedEduFields));
+                        $safeItem['user_id'] = $user->id;
+                        Education::create($safeItem);
                     }
                 }
 
                 // Restore Certificates
                 if (isset($data['certifications'])) {
+                    $allowedCertFields = ['name', 'issuer', 'year', 'description', 'credential_url', 'sort_order'];
                     Certificate::where('user_id', $user->id)->delete();
                     foreach ($data['certifications'] as $item) {
-                        $item['user_id'] = $user->id;
-                        Certificate::create($item);
+                        $safeItem = array_intersect_key($item, array_flip($allowedCertFields));
+                        $safeItem['user_id'] = $user->id;
+                        Certificate::create($safeItem);
                     }
                 }
 
                 // Restore Languages
                 if (isset($data['languages'])) {
+                    $allowedLangFields = ['name', 'level', 'sort_order'];
                     Language::where('user_id', $user->id)->delete();
                     foreach ($data['languages'] as $item) {
-                        $item['user_id'] = $user->id;
-                        Language::create($item);
+                        $safeItem = array_intersect_key($item, array_flip($allowedLangFields));
+                        $safeItem['user_id'] = $user->id;
+                        Language::create($safeItem);
                     }
                 }
             });
@@ -118,7 +127,8 @@ class BackupController extends Controller
             return back()->with('success', 'Backup restored successfully!');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Restore failed: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Backup restore failed', ['error' => $e->getMessage()]);
+            return back()->with('error', 'Restore failed. Please check the backup file format and try again.');
         }
     }
 }

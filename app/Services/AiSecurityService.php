@@ -245,9 +245,9 @@ class AiSecurityService
         $key       = "ai_cb:{$ip}";
         $failKey   = "ai_cb_fail:{$ip}";
         $blockKey  = "ai_cb_block:{$ip}";
-        $maxFails  = (int) env('AI_CIRCUIT_BREAKER_MAX_FAILS', 5);
+        $maxFails  = (int) config('services.ai_security.max_fails', 5);
         $windowSec = 120; // failure window (2 min)
-        $blockSec  = (int) env('AI_CIRCUIT_BREAKER_BLOCK_SECONDS', 300);
+        $blockSec  = (int) config('services.ai_security.block_seconds', 300);
 
         // Already blocked?
         if (Cache::has($blockKey)) {

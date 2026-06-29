@@ -20,12 +20,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Force HTTPS if enabled via .env (set FORCE_HTTPS=true on production)
-        if (env('FORCE_HTTPS', false)) {
+        if (config('app.force_https', false)) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
         // Configure trusted proxies (for Nginx/Cloudflare reverse proxy)
-        if ($proxies = env('TRUSTED_PROXIES')) {
+        if ($proxies = config('app.trusted_proxies')) {
             \Illuminate\Http\Request::setTrustedProxies(
                 $proxies === '*' ? ['127.0.0.1', '::1'] : explode(',', $proxies),
                 \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |

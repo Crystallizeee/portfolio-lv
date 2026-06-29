@@ -55,8 +55,11 @@
     </script>
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased scanline-effect">
+    <!-- Skip Navigation (WCAG 2.4.1) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-white focus:rounded-lg focus:outline-none">Skip to content</a>
+
     <!-- Navigation -->
-    <nav x-data="{ mobileMenuOpen: false }" class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-700/50">
+    <nav x-data="{ mobileMenuOpen: false }" class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-700/50" aria-label="Main navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-2">
@@ -141,7 +144,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main id="main-content">
         {{ $slot }}
     </main>
 
@@ -200,6 +203,7 @@
                             @keydown.enter="handleEnter()"
                             type="text" 
                             placeholder="Type a command..."
+                            aria-label="Command palette input"
                             class="flex-1 bg-transparent border-none outline-none text-slate-200 font-mono text-sm placeholder-slate-500"
                         >
                     </div>
@@ -299,6 +303,9 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="chat-window-title"
             class="mb-4 w-[380px] sm:w-[440px] glass-card border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10"
         >
             <!-- Header -->
@@ -308,7 +315,7 @@
                         <i data-lucide="bot" class="w-4 h-4 text-white"></i>
                     </div>
                     <div>
-                        <div class="text-sm font-semibold text-white">AI Assistant</div>
+                        <div id="chat-window-title" class="text-sm font-semibold text-white">AI Assistant</div>
                         <div class="text-[10px] text-emerald-400 flex items-center space-x-1">
                             <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                             <span>Online</span>
@@ -325,6 +332,9 @@
                 x-ref="messagesContainer"
                 class="h-[450px] overflow-y-auto p-4 space-y-4 custom-scrollbar"
                 style="background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.85) 100%);"
+                aria-live="polite"
+                aria-relevant="additions"
+                role="log"
             >
                 <template x-for="(msg, i) in messages" :key="i">
                     <div :class="msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'">
@@ -381,6 +391,7 @@
                         type="text"
                         placeholder="Ask about my skills, experience..."
                         maxlength="500"
+                        aria-label="Chat message input"
                         class="flex-1 bg-slate-800/60 border border-slate-700/50 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
                         :disabled="isLoading"
                     >

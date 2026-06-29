@@ -112,4 +112,17 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Two-Factor Authentication Bypass
+    |--------------------------------------------------------------------------
+    |
+    | Set SKIP_2FA=true in .env ONLY during local development to bypass
+    | the two-factor authentication middleware. This should NEVER be true
+    | in production. Defaults to false for security.
+    |
+    */
+
+    'skip_2fa' => env('SKIP_2FA', false),
+
 ];

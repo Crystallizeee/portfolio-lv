@@ -62,4 +62,9 @@ return [
         'username' => env('GITHUB_USERNAME'),
     ],
 
+    'ai_security' => [
+        'max_fails' => (int) env('AI_CIRCUIT_BREAKER_MAX_FAILS', 5),
+        'block_seconds' => (int) env('AI_CIRCUIT_BREAKER_BLOCK_SECONDS', 300),
+    ],
+
 ];

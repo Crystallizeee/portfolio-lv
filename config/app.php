@@ -123,4 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | HTTPS & Proxy Configuration
+    |--------------------------------------------------------------------------
+    |
+    | force_https: Set to true in production to redirect all HTTP → HTTPS.
+    | trusted_proxies: Set to '*' or comma-separated proxy IPs when behind
+    | a reverse proxy (Nginx, Caddy, Cloudflare).
+    |
+    */
+
+    'force_https' => env('FORCE_HTTPS', false),
+
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
 ];
