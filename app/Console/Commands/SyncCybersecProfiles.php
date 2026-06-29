@@ -95,7 +95,7 @@ class SyncCybersecProfiles extends Command
         // 2. Try to scrape public profile for basic stats using Python Playwright
         try {
             $scriptPath = base_path('scripts/scrape_cybersec.py');
-            $result = Process::run("python {$scriptPath} --platform tryhackme --username {$profile->username}");
+            $result = Process::run(['python', $scriptPath, '--platform', 'tryhackme', '--username', $profile->username]);
 
             if ($result->successful()) {
                 $output = json_decode($result->output(), true);
@@ -127,7 +127,7 @@ class SyncCybersecProfiles extends Command
     {
         try {
             $scriptPath = base_path('scripts/scrape_cybersec.py');
-            $result = Process::run("python {$scriptPath} --platform letsdefend --username {$profile->username}");
+            $result = Process::run(['python', $scriptPath, '--platform', 'letsdefend', '--username', $profile->username]);
 
             if ($result->successful()) {
                 $output = json_decode($result->output(), true);
