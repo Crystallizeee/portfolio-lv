@@ -1,6 +1,9 @@
 <div class="flex items-center space-x-2">
     <button wire:click="toggleLike" 
             aria-pressed="{{ $hasLiked ? 'true' : 'false' }}"
+            wire:loading.attr="disabled"
+            wire:loading.class="opacity-50 cursor-not-allowed"
+            wire:target="toggleLike"
             class="group flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 {{ $hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-rose-400' }}"
             title="{{ $hasLiked ? 'Unlike' : 'Like' }}">
         <span class="sr-only">{{ $hasLiked ? 'Unlike post' : 'Like post' }}. Current likes: {{ $likesCount }}</span>
