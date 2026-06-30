@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Experience;
@@ -41,6 +42,16 @@ class BackupController extends Controller
 
     public function import(Request $request)
     {
+        $userId = Auth::id();
+        $throttleKey = 'backup-import:' . $userId;
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', "Too many restore attempts. Please try again in {$seconds} seconds.");
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $request->validate([
             'backup_file' => 'required|file|mimes:json|max:5120'
         ]);
