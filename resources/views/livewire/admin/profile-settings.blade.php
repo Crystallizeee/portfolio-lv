@@ -591,9 +591,21 @@
                         @endif
                         <button 
                             type="submit"
-                            class="py-2 px-6 bg-pink-500 hover:bg-pink-600 rounded-lg text-white font-medium transition-colors"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-not-allowed"
+                            wire:target="saveEducation"
+                            class="py-2 px-6 bg-pink-500 hover:bg-pink-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2"
                         >
-                            {{ $editingEducationId ? 'Update' : 'Add Education' }}
+                            <span wire:loading.remove wire:target="saveEducation">
+                                {{ $editingEducationId ? 'Update' : 'Add Education' }}
+                            </span>
+                            <span wire:loading wire:target="saveEducation" class="flex items-center space-x-2">
+                                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>{{ $editingEducationId ? 'Updating...' : 'Adding...' }}</span>
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -620,17 +632,19 @@
                                     <button 
                                         wire:click="editEducation({{ $edu['id'] }})"
                                         class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
-                                        title="Edit"
+                                        title="Edit {{ $edu['school'] }}"
+                                        aria-label="Edit education at {{ $edu['school'] }}"
                                     >
-                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                        <i data-lucide="pencil" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
                                     <button 
                                         wire:click="deleteEducation({{ $edu['id'] }})"
                                         wire:confirm="Are you sure you want to delete this education?"
                                         class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                                        title="Delete"
+                                        title="Delete {{ $edu['school'] }}"
+                                        aria-label="Delete education at {{ $edu['school'] }}"
                                     >
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
