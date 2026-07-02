@@ -621,16 +621,16 @@
                                         wire:click="editEducation({{ $edu['id'] }})"
                                         class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
                                         title="Edit"
-                                    >
-                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                     aria-label="Edit">
+                                        <i data-lucide="pencil" aria-hidden="true" class="w-4 h-4"></i>
                                     </button>
                                     <button 
                                         wire:click="deleteEducation({{ $edu['id'] }})"
                                         wire:confirm="Are you sure you want to delete this education?"
                                         class="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                                         title="Delete"
-                                    >
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                     aria-label="Delete">
+                                        <i data-lucide="trash-2" aria-hidden="true" class="w-4 h-4"></i>
                                     </button>
                                 </div>
                             </div>
