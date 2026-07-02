@@ -65,8 +65,8 @@
             <div class="absolute top-4 right-4 flex items-center space-x-2">
                 <button @click="navigator.clipboard.writeText($wire.coverLetter); alert('Copied to clipboard!')" 
                         class="p-2 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg transition-all"
-                        title="Copy to Clipboard">
-                    <i data-lucide="copy" class="w-4 h-4"></i>
+                        title="Copy to Clipboard" aria-label="Copy to Clipboard">
+                    <i data-lucide="copy" aria-hidden="true" class="w-4 h-4"></i>
                 </button>
             </div>
 

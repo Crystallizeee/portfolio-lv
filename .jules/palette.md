@@ -5,3 +5,6 @@
 **Learning:** Found that some buttons triggering async operations (like toggling a "Like" button in `post-like-button.blade.php`) lacked visual feedback, leading to potential duplicate submissions or confusion.
 **Action:** Added `wire:loading.attr="disabled"`, `wire:loading.class="opacity-50 cursor-not-allowed"`, and `wire:target="toggleLike"` to provide immediate feedback.
 ## 2024-05-24 - Standardized modal close buttons\n**Learning:** Crude text 'X' close buttons in modals are confusing for screen readers without labels, and look inconsistent visually.\n**Action:** Replaced text 'X' with lucide icons and added aria-label='Close modal' for a11y.
+## 2025-02-12 - Icon-only Button Accessibility
+**Learning:** Icon-only buttons using Lucide icons (`<i data-lucide="..."></i>`) often rely solely on `title` attributes for context, which are not reliably announced by screen readers, leading to poor accessibility. Also, the SVG icons themselves are sometimes announced as meaningless elements if not explicitly hidden.
+**Action:** When implementing or updating icon-only buttons, explicitly extract the `title` into an `aria-label` on the parent `<button>` element. Simultaneously, add `aria-hidden="true"` to the inner `<i>` tag containing the Lucide icon to prevent redundant or confusing screen reader announcements.
