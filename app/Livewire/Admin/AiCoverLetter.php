@@ -80,9 +80,12 @@ class AiCoverLetter extends Component
             }
 
             $result = $response->json();
-            $this->coverLetter = $result['choices'][0]['message']['content']
+            $rawCoverLetter = $result['choices'][0]['message']['content']
                               ?? $result['message']['content']
                               ?? 'Failed to generate cover letter.';
+
+            // 🛡️ Sentinel: Sanitize AI output to prevent XSS
+            $this->coverLetter = app(\App\Services\AiSecurityService::class)->sanitizeOutput($rawCoverLetter);
 
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
