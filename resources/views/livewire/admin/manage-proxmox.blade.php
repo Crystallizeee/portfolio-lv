@@ -259,13 +259,22 @@
                     <div class="flex items-center space-x-3 mt-8">
                         <button 
                             wire:click="saveAlias"
-                            class="flex-1 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-mono font-bold transition-all"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-wait"
+                            wire:target="saveAlias"
+                            class="flex-1 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-mono font-bold transition-all flex items-center justify-center space-x-2"
                         >
-                            Save Alias
+                            <span wire:loading.remove wire:target="saveAlias">Save Alias</span>
+                            <span wire:loading wire:target="saveAlias" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                <span>Saving...</span>
+                            </span>
                         </button>
                         <button 
                             wire:click="cancelEdit"
-                            class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-mono transition-all"
+                            wire:loading.attr="disabled"
+                            wire:target="saveAlias"
+                            class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Cancel
                         </button>
