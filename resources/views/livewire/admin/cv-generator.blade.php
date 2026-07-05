@@ -11,11 +11,14 @@
             <button
                 wire:click="generatePdf"
                 class="hidden md:flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/50 rounded-xl text-cyan-400 hover:from-cyan-500/30 hover:to-blue-500/30 hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-500/10"
-                wire:loading.class="opacity-50 cursor-wait"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-50 cursor-wait disabled:opacity-50 disabled:cursor-not-allowed"
+                wire:target="generatePdf"
             >
-                <i wire:loading.remove data-lucide="download" class="w-4 h-4"></i>
-                <i wire:loading data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
-                <span class="font-medium">Generate PDF</span>
+                <i wire:loading.remove wire:target="generatePdf" data-lucide="download" class="w-4 h-4"></i>
+                <i wire:loading wire:target="generatePdf" data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                <span class="font-medium" wire:loading.remove wire:target="generatePdf">Generate PDF</span>
+                <span class="font-medium" wire:loading wire:target="generatePdf">Generating...</span>
             </button>
             @error('generatePdf') <span class="text-red-400 text-xs mt-2 block">{{ $message }}</span> @enderror
         </div>
@@ -507,10 +510,19 @@
                     <div class="pt-4 mt-2 border-t border-slate-700/50">
                         <button 
                             wire:click="generatePdf"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-not-allowed disabled:opacity-50 disabled:cursor-not-allowed"
+                            wire:target="generatePdf"
                             class="w-full flex items-center justify-center space-x-2 px-5 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-bold hover:from-cyan-400 hover:to-blue-400 transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:scale-[1.02]"
                         >
-                            <i data-lucide="download" class="w-5 h-5"></i>
-                            <span>Generate CV</span>
+                            <span wire:loading.remove wire:target="generatePdf" class="flex items-center space-x-2">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                                <span>Generate CV</span>
+                            </span>
+                            <span wire:loading wire:target="generatePdf" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                                <span>Generating...</span>
+                            </span>
                         </button>
                         @error('generatePdf') <span class="text-red-400 text-xs mt-2 block text-center">{{ $message }}</span> @enderror
                     </div>
