@@ -50,6 +50,7 @@
     @livewireStyles
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased scanline-effect">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-white focus:rounded-lg focus:outline-none">Skip to content</a>
     <!-- Navigation -->
     <nav x-data="{ mobileMenuOpen: false }" class="fixed top-0 left-0 right-0 z-50 glass-card border-b border-slate-700/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,7 +134,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main id="main-content" tabindex="-1" class="focus:outline-none">
         {{ $slot }}
     </main>
 

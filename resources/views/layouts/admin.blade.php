@@ -36,6 +36,7 @@
     </script>
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased min-h-screen">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-white focus:rounded-lg focus:outline-none">Skip to content</a>
     <div class="flex h-screen bg-cyber-darker overflow-hidden font-sans selection:bg-cyan-500/30" 
          x-data="{ 
             sidebarOpen: false, 
@@ -202,7 +203,7 @@
             @endauth
             
             <!-- Scrollable Page Area -->
-            <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar scroll-smooth">
+            <main id="main-content" tabindex="-1" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar scroll-smooth focus:outline-none">
                 <div class="max-w-7xl mx-auto space-y-6">
                     <!-- Entrance Animation for Content -->
                     <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 50)" 

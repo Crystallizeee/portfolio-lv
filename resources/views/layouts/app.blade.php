@@ -145,7 +145,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main id="main-content">
+    <main id="main-content" tabindex="-1" class="focus:outline-none">
         {{ $slot }}
     </main>
 

@@ -11,3 +11,6 @@
 ## 2025-07-06 - Livewire Button Loading States Target
 **Learning:** In Livewire, when implementing loading states (spinners or text changes) on generic submit buttons, explicitly defining `wire:target="methodName"` is critical. Without it, global interactions on the page might inadvertently trigger the loading state of unrelated buttons, causing visual confusion.
 **Action:** Always pair `wire:loading` (and `wire:loading.attr="disabled"`) with a specific `wire:target="methodName"` when enhancing action buttons to isolate the loading feedback correctly.
+## 2026-07-06 - Add Skip to Content Links
+**Learning:** Implementing skip to content links for keyboard users requires the target <main> to have tabindex="-1" and focus:outline-none to properly receive focus without showing an ugly ring, while remaining hidden for mouse users.
+**Action:** Always ensure target element for skip links has appropriate focus management.
