@@ -63,3 +63,7 @@
 **Vulnerability:** The `confirmTwoFactor` method in `ProfileSettings.php` did not have rate limiting.
 **Learning:** This could allow an attacker to brute-force the 6-digit OTP code when a user is setting up 2FA.
 **Prevention:** Always use Laravel's `RateLimiter` facade to limit attempts on endpoints that verify codes or passwords.
+## 2026-07-07 - [Rate Limit Bypass via Validation]
+**Vulnerability:** In `AdminLogin.php` and `PostComments.php`, the rate limiter logic was placed after `$this->validate()` or after business logic. An attacker could bypass the rate limit by sending invalid requests that fail validation, but still consume server resources (CPU, memory, validation logic) and fill logs.
+**Learning:** Security controls like rate limiting must always evaluate the request before specific business logic or validation logic handles it. If placed after validation, an attacker can spam invalid payloads and consume server validation time, bypassing the rate limit lock entirely.
+**Prevention:** Always place rate limiting logic at the very beginning of the method, before any business logic or validation logic, to prevent bypass DoS attacks.

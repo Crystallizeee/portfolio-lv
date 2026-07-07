@@ -20,16 +20,19 @@ class AdminLogin extends Component
 
     public function login()
     {
-        $this->validate();
-
-        // 🛡️ Sentinel: Rate limit Livewire login component to prevent brute force attacks
-        $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        // 🛡️ Sentinel: Rate limit Livewire login component to prevent brute force attacks (checked before validation)
+        $emailString = is_string($this->email) ? $this->email : '';
+        $throttleKey = Str::transliterate(Str::lower($emailString).'|'.request()->ip());
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('email', "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.");
             return;
         }
+
+        RateLimiter::hit($throttleKey); // Hit before validation to prevent bypass DoS
+
+        $this->validate();
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($throttleKey);
@@ -51,7 +54,6 @@ class AdminLogin extends Component
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        RateLimiter::hit($throttleKey);
         $this->addError('email', 'Kredensial yang diberikan tidak cocok dengan data kami.');
     }
 
