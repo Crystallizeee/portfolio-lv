@@ -337,6 +337,15 @@ class ProfileSettings extends Component
 
     public function confirmTwoFactor()
     {
+        $user = Auth::user();
+        $throttleKey = 'confirm-2fa|' . $user->id . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('twoFactorConfirmCode', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
         $this->validate([
             'twoFactorConfirmCode' => 'required|digits:6',
         ], [
@@ -344,7 +353,6 @@ class ProfileSettings extends Component
             'twoFactorConfirmCode.digits' => 'Kode OTP harus 6 digit.',
         ]);
 
-        $user = Auth::user();
         $google2fa = new Google2FA();
 
         $valid = $google2fa->verifyKey(
@@ -354,9 +362,12 @@ class ProfileSettings extends Component
         );
 
         if (! $valid) {
+            RateLimiter::hit($throttleKey);
             $this->addError('twoFactorConfirmCode', 'Kode OTP tidak valid. Pastikan waktu perangkat kamu sudah sinkron.');
             return;
         }
+
+        RateLimiter::clear($throttleKey);
 
         // Generate 8 recovery codes
         $recoveryCodes = [];

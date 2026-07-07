@@ -59,3 +59,7 @@
 **Vulnerability:** The `import` method in `BackupController` processed large uploaded JSON backup files and executed bulk database transactions to restore multiple models without any rate limiting. An attacker or a compromised authenticated account could repeatedly upload large files, leading to severe resource exhaustion, database locking, and Denial of Service (DoS).
 **Learning:** Endpoints handling file uploads and heavy, transactional database operations (like full profile restorations) are prime targets for resource exhaustion attacks. The fact that the endpoint requires authentication is insufficient defense against account compromise or automated scripts triggered by a malicious insider.
 **Prevention:** Always implement explicit rate limiting (using Laravel's `RateLimiter` facade) on endpoints that handle bulk data imports, file processing, or heavy transactions. Ensure a strict limit (e.g., 5 attempts per user per minute) is enforced before processing the uploaded file.
+## 2026-07-07 - [Missing Rate Limiting on 2FA Confirmation]
+**Vulnerability:** The `confirmTwoFactor` method in `ProfileSettings.php` did not have rate limiting.
+**Learning:** This could allow an attacker to brute-force the 6-digit OTP code when a user is setting up 2FA.
+**Prevention:** Always use Laravel's `RateLimiter` facade to limit attempts on endpoints that verify codes or passwords.
