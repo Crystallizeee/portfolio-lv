@@ -14,3 +14,6 @@
 ## 2026-07-06 - Add Skip to Content Links
 **Learning:** Implementing skip to content links for keyboard users requires the target <main> to have tabindex="-1" and focus:outline-none to properly receive focus without showing an ugly ring, while remaining hidden for mouse users.
 **Action:** Always ensure target element for skip links has appropriate focus management.
+## 2026-07-08 - Added aria-hidden attributes to icon-only buttons
+**Learning:** Found that screen readers can sometimes awkwardly read out SVG content or meaningless strings for icon-only buttons relying on Lucide icons, even when the parent button has an `aria-label`. Additionally, expandable toggle widgets (like the chat window or mobile menus) require `aria-controls` and `aria-expanded` bindings on the trigger button to explicitly announce state changes to screen reader users.
+**Action:** Added `aria-hidden="true"` to the internal `<i data-lucide="...">` elements inside icon-only buttons across layouts. Also explicitly bound `:aria-expanded` and `aria-controls` to expanding toggle triggers like the chatbot and sidebar menus.
