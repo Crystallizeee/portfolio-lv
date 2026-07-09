@@ -20,3 +20,10 @@
 ## 2025-02-18 - Missing Livewire Pagination Trait Causes Full Reloads
 **Learning:** Replacing `get()` with `paginate()` in a Livewire component correctly limits queries, but if you forget to `use Livewire\WithPagination;` inside the class, Livewire will render standard HTML `href` links for pagination controls instead of handling them via AJAX. This causes full page reloads, destroying the internal state of interactive components (like open modals or unsaved form input).
 **Action:** When converting a query to use `paginate()` in a Livewire component for performance, always manually verify that the component class imports and uses the `Livewire\WithPagination` trait.
+## 2025-05-18 - Scope Caches for Dynamic Data
+**Learning:** Caching personalized or dynamic user records globally causes severe Stale Data and Data Leakage issues. For example, caching user CV data without appending the user ID will give everyone the same CV data and prevent data updates from immediately reflecting for an hour.
+**Action:** When caching personalized user content (e.g., dynamic CV data or AI context), always scope the cache key to the specific user (e.g., `Cache::remember('data_' . auth()->id(), ...)`). Using a global cache key for user-specific data causes severe stale data regressions and cross-user data leakage. Avoid using cache for frequently changing components unless paired with corresponding `Cache::forget` mechanisms on model events.
+
+## 2025-05-18 - Rate Limit Heavy Facades
+**Learning:** Even if an API endpoint requires a strict authorization token, it can still be vulnerable to resource exhaustion DoS attacks if it handles an incredibly heavy operation, like generating a PDF using `Pdf::loadHtml()`.
+**Action:** Always rate limit specific controller actions and endpoints that perform exceptionally heavy tasks (like generating PDFs, fetching enormous amounts of aggregated data, or firing bulk email chains), explicitly using Laravel's `RateLimiter` to protect system resources.

@@ -15,6 +15,7 @@ use App\Livewire\Admin\CvGenerator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\RateLimiter;
 
 class CvDownloadController extends Controller
 {
@@ -28,6 +29,14 @@ class CvDownloadController extends Controller
      */
     public function download(Request $request)
     {
+        // ⚡ Bolt Optimization: Implement explicit rate limiting to prevent Denial of Service (DoS)
+        // attacks via resource exhaustion from heavy PDF generation processes.
+        $throttleKey = 'api-cv-download:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return response()->json(['error' => 'Too many requests'], 429);
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         // Validate bearer token
         $token = $request->bearerToken();
         $expectedToken = config('services.cv_api.token');
