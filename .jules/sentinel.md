@@ -63,3 +63,7 @@
 **Vulnerability:** The `confirmTwoFactor` method in `ProfileSettings.php` did not have rate limiting.
 **Learning:** This could allow an attacker to brute-force the 6-digit OTP code when a user is setting up 2FA.
 **Prevention:** Always use Laravel's `RateLimiter` facade to limit attempts on endpoints that verify codes or passwords.
+## 2026-07-07 - Rate Limit Bypass via Validation Spam
+**Vulnerability:** In `app/Livewire/PostComments.php`, the `addComment()` method called `$this->validate()` before applying the rate limiter.
+**Learning:** This could allow an attacker to spam invalid payloads (e.g., bypassing validation), forcing the server to process validation rules (which may include expensive database checks like `exists` or `unique`) without ever incrementing the rate limit counter, potentially causing resource exhaustion (DoS) through repeated validation failures.
+**Prevention:** Always place security controls like rate limiting (e.g., `RateLimiter::tooManyAttempts()`) *before* any validation logic (e.g., `$this->validate()`), business logic, or early returns, so that even invalid or quickly-rejected requests are properly rate-limited.
