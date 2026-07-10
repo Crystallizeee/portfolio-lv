@@ -26,8 +26,6 @@ class PostComments extends Component
 
     public function addComment()
     {
-        $this->validate();
-
         $ipHash = IpAnonymizer::hashRequest();
 
         // Rate limiting: max 3 comments per IP per 10 minutes
@@ -58,6 +56,8 @@ class PostComments extends Component
             session()->flash('comment_pending', true);
             return;
         }
+
+        $this->validate();
 
         // Calculate spam score
         $spamScore = $this->calculateSpamScore($this->name, $this->content);
