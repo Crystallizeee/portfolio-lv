@@ -27,3 +27,6 @@
 ## 2025-05-18 - Rate Limit Heavy Facades
 **Learning:** Even if an API endpoint requires a strict authorization token, it can still be vulnerable to resource exhaustion DoS attacks if it handles an incredibly heavy operation, like generating a PDF using `Pdf::loadHtml()`.
 **Action:** Always rate limit specific controller actions and endpoints that perform exceptionally heavy tasks (like generating PDFs, fetching enormous amounts of aggregated data, or firing bulk email chains), explicitly using Laravel's `RateLimiter` to protect system resources.
+## $(date +%Y-%m-%d) - Prevent Memory Exhaustion with Pagination in Livewire
+**Learning:** Fetching unbounded records with `get()` in Livewire components (e.g., `Experience::orderBy('sort_order')->get()`) can cause memory exhaustion and slow load times as the dataset grows.
+**Action:** When converting a query to use `paginate()` in a Livewire component for performance, always manually verify that the component class imports and uses the `Livewire\WithPagination` trait.

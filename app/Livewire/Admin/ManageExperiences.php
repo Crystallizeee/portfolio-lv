@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Experience;
 
 class ManageExperiences extends Component
 {
+    use WithPagination;
+
     public bool $showModal = false;
     public bool $isEditing = false;
     public ?int $editingId = null;
@@ -105,7 +108,8 @@ class ManageExperiences extends Component
     public function render()
     {
         return view('livewire.admin.manage-experiences', [
-            'experiences' => Experience::orderBy('sort_order')->get(),
+            // ⚡ Bolt Optimization: Replace get() with paginate() to prevent memory exhaustion and slow load times
+            'experiences' => Experience::orderBy('sort_order')->paginate(10),
         ])->layout('layouts.admin', ['title' => 'Manage Experiences']);
     }
 }
