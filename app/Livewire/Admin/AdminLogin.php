@@ -20,8 +20,6 @@ class AdminLogin extends Component
 
     public function login()
     {
-        $this->validate();
-
         // 🛡️ Sentinel: Rate limit Livewire login component to prevent brute force attacks
         $throttleKey = Str::transliterate(Str::lower($this->email).'|'.request()->ip());
 
@@ -30,6 +28,8 @@ class AdminLogin extends Component
             $this->addError('email', "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik.");
             return;
         }
+
+        $this->validate();
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::clear($throttleKey);

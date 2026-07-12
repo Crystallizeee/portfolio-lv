@@ -26,8 +26,6 @@ class PostComments extends Component
 
     public function addComment()
     {
-        $this->validate();
-
         $ipHash = IpAnonymizer::hashRequest();
 
         // Rate limiting: max 3 comments per IP per 10 minutes
@@ -38,6 +36,8 @@ class PostComments extends Component
             return;
         }
         RateLimiter::hit($rateLimitKey, 600); // 10 minute window
+
+        $this->validate();
 
         // Honeypot check — bots fill hidden fields
         if (!empty($this->website)) {
