@@ -63,3 +63,8 @@
 **Vulnerability:** The `confirmTwoFactor` method in `ProfileSettings.php` did not have rate limiting.
 **Learning:** This could allow an attacker to brute-force the 6-digit OTP code when a user is setting up 2FA.
 **Prevention:** Always use Laravel's `RateLimiter` facade to limit attempts on endpoints that verify codes or passwords.
+
+## 2026-07-12 - [Rate Limiter Bypass due to Early Validation]
+**Vulnerability:** In multiple Livewire components (`AdminLogin.php`, `PostComments.php`), the `$this->validate()` call was placed *before* the rate limiting block (`RateLimiter::tooManyAttempts`).
+**Learning:** This allowed an attacker to bypass rate limiting completely by sending invalid payloads. Since `validate()` throws an exception on failure, the code execution stops before it hits the rate limiter check, meaning the rate limit token is never consumed. An attacker could flood the server with invalid requests without ever being rate limited.
+**Prevention:** Always place rate limiting logic at the absolute beginning of the method, *before* any validation, business logic, or early returns, to ensure all requests (valid or invalid) are throttled appropriately.
