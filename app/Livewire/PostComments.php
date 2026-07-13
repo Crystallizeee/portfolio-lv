@@ -161,16 +161,17 @@ class PostComments extends Component
     public function render()
     {
         $comments = $this->post->comments()->approved()->latest()->get();
-        $pendingCount = auth()->check() 
-            ? $this->post->comments()->pending()->count() 
-            : 0;
+
+        // ⚡ Bolt Optimization: Fetch pending comments first and use the collection's
+        // count() method to avoid executing a redundant DB COUNT() query.
+        $pendingComments = auth()->check()
+            ? $this->post->comments()->pending()->latest()->get()
+            : collect();
 
         return view('livewire.post-comments', [
             'comments' => $comments,
-            'pendingComments' => auth()->check() 
-                ? $this->post->comments()->pending()->latest()->get() 
-                : collect(),
-            'pendingCount' => $pendingCount,
+            'pendingComments' => $pendingComments,
+            'pendingCount' => $pendingComments->count(),
         ]);
     }
 }

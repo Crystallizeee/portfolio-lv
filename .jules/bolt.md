@@ -27,3 +27,6 @@
 ## 2025-05-18 - Rate Limit Heavy Facades
 **Learning:** Even if an API endpoint requires a strict authorization token, it can still be vulnerable to resource exhaustion DoS attacks if it handles an incredibly heavy operation, like generating a PDF using `Pdf::loadHtml()`.
 **Action:** Always rate limit specific controller actions and endpoints that perform exceptionally heavy tasks (like generating PDFs, fetching enormous amounts of aggregated data, or firing bulk email chains), explicitly using Laravel's `RateLimiter` to protect system resources.
+## $(date +%Y-%m-%d) - Eliminate Redundant DB COUNT() queries
+**Learning:** Livewire components rendering relational lists sometimes use an explicit database query (e.g., `count()`) to display a badge count, followed by a separate `get()` query to retrieve the actual models.
+**Action:** Always fetch the relational collection first, then use the collection's `count()` method in the frontend view to avoid executing a redundant aggregate COUNT database query.
