@@ -191,12 +191,12 @@ class CvGenerator extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'name' => 'required',
             'email' => 'required|email',
         ]);
-
-        RateLimiter::hit($throttleKey, 60);
 
         $data = [
             'personal' => [

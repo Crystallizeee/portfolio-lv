@@ -68,3 +68,7 @@
 **Vulnerability:** In multiple Livewire components (`AdminLogin.php`, `PostComments.php`), the `$this->validate()` call was placed *before* the rate limiting block (`RateLimiter::tooManyAttempts`).
 **Learning:** This allowed an attacker to bypass rate limiting completely by sending invalid payloads. Since `validate()` throws an exception on failure, the code execution stops before it hits the rate limiter check, meaning the rate limit token is never consumed. An attacker could flood the server with invalid requests without ever being rate limited.
 **Prevention:** Always place rate limiting logic at the absolute beginning of the method, *before* any validation, business logic, or early returns, to ensure all requests (valid or invalid) are throttled appropriately.
+## 2024-07-13 - [CRITICAL] Rate Limiter Bypass in CvGenerator via Validation Failure
+**Vulnerability:** In `app/Livewire/Admin/CvGenerator.php`, `RateLimiter::hit` was placed after `$this->validate()`. An attacker could bypass the lock by intentionally sending invalid data, causing validation to fail repeatedly while still consuming server resources to process the request up to that point without incrementing the throttle counter.
+**Learning:** The rate limit lock (calling `hit`) must always be engaged before validation logic in Livewire components.
+**Prevention:** Place `RateLimiter::hit()` directly after the `tooManyAttempts()` check and before any form validation (`$this->validate()`) or other business logic.
