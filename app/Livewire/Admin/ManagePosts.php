@@ -135,13 +135,14 @@ class ManagePosts extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         if (empty($this->title) && empty($this->content)) {
             $this->seoErrorMessage = 'Please fill in the post title or content first.';
             return;
         }
 
         $this->isGeneratingSeo = true;
-        RateLimiter::hit($throttleKey, 60);
         $this->seoErrorMessage = '';
 
         try {

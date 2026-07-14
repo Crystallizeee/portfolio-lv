@@ -43,6 +43,7 @@ class TwoFactorChallenge extends Component
 
     protected function verifyTotp($user, string $throttleKey): void
     {
+        RateLimiter::hit($throttleKey);
         $this->validateOnly('code', ['code' => 'required|digits:6']);
 
         $google2fa = new Google2FA();
@@ -54,7 +55,6 @@ class TwoFactorChallenge extends Component
         );
 
         if (! $valid) {
-            RateLimiter::hit($throttleKey);
             $this->addError('code', 'Kode OTP tidak valid atau sudah kedaluwarsa.');
             return;
         }
@@ -65,6 +65,7 @@ class TwoFactorChallenge extends Component
 
     protected function verifyRecoveryCode($user, string $throttleKey): void
     {
+        RateLimiter::hit($throttleKey);
         $this->validateOnly('recoveryCode', ['recoveryCode' => 'required|string']);
 
         $recoveryCodes = $user->two_factor_recovery_codes ?? [];
@@ -78,7 +79,6 @@ class TwoFactorChallenge extends Component
         }
 
         if ($matchedIndex === null) {
-            RateLimiter::hit($throttleKey);
             $this->addError('recoveryCode', 'Recovery code tidak valid.');
             return;
         }

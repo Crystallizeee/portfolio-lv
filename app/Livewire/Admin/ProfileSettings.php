@@ -276,13 +276,14 @@ class ProfileSettings extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey);
+
         $this->validate([
             'current_password' => 'required',
             'new_password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
         if (!Hash::check($this->current_password, $user->password)) {
-            RateLimiter::hit($throttleKey);
             $this->addError('current_password', 'The current password is incorrect.');
             return;
         }
@@ -346,6 +347,8 @@ class ProfileSettings extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey);
+
         $this->validate([
             'twoFactorConfirmCode' => 'required|digits:6',
         ], [
@@ -362,7 +365,6 @@ class ProfileSettings extends Component
         );
 
         if (! $valid) {
-            RateLimiter::hit($throttleKey);
             $this->addError('twoFactorConfirmCode', 'Kode OTP tidak valid. Pastikan waktu perangkat kamu sudah sinkron.');
             return;
         }
