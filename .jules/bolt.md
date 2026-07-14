@@ -27,3 +27,6 @@
 ## 2025-05-18 - Rate Limit Heavy Facades
 **Learning:** Even if an API endpoint requires a strict authorization token, it can still be vulnerable to resource exhaustion DoS attacks if it handles an incredibly heavy operation, like generating a PDF using `Pdf::loadHtml()`.
 **Action:** Always rate limit specific controller actions and endpoints that perform exceptionally heavy tasks (like generating PDFs, fetching enormous amounts of aggregated data, or firing bulk email chains), explicitly using Laravel's `RateLimiter` to protect system resources.
+## $(date +%Y-%m-%d) - Prevent N+1 queries using collection count
+**Learning:** Using `->count()` on an Eloquent relation after already fetching it via `->get()` triggers a completely redundant database query.
+**Action:** When a full collection is being retrieved anyway for rendering in a view, always assign it to a variable and use the collection's internal `->count()` method to derive totals rather than issuing a separate database `COUNT()` aggregate query.
