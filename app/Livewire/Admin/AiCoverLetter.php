@@ -33,6 +33,8 @@ class AiCoverLetter extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
             $this->errorMessage = 'Please provide either a job URL or a manual job description.';
             return;
@@ -41,8 +43,6 @@ class AiCoverLetter extends Component
         $this->isGenerating = true;
         $this->errorMessage = '';
         $this->coverLetter = '';
-
-        RateLimiter::hit($throttleKey, 60);
 
         try {
             $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');

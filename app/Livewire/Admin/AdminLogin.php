@@ -29,6 +29,8 @@ class AdminLogin extends Component
             return;
         }
 
+        RateLimiter::hit($throttleKey);
+
         $this->validate();
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
@@ -51,7 +53,6 @@ class AdminLogin extends Component
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        RateLimiter::hit($throttleKey);
         $this->addError('email', 'Kredensial yang diberikan tidak cocok dengan data kami.');
     }
 
