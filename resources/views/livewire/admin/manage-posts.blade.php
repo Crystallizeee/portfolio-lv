@@ -68,8 +68,8 @@
                             @endif
                         </td>
                         <td class="px-6 py-5 text-slate-300 text-sm w-32">
-                            <button wire:click="openCommentsModal({{ $post->id }})" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-700/50 transition-colors {{ $post->comments_count > 0 ? 'text-cyan-400 font-medium' : 'text-slate-500' }}">
-                                <i data-lucide="message-square" class="w-4 h-4"></i>
+                            <button wire:click="openCommentsModal({{ $post->id }})" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-700/50 transition-colors {{ $post->comments_count > 0 ? 'text-cyan-400 font-medium' : 'text-slate-500' }}" aria-label="View {{ $post->comments_count }} comments for {{ $post->title }}">
+                                <i data-lucide="message-square" class="w-4 h-4" aria-hidden="true"></i>
                                 <span>{{ $post->comments_count }}</span>
                             </button>
                         </td>
@@ -753,8 +753,8 @@
                                                 <p class="text-xs text-slate-400">{{ $comment->created_at->format('d M Y, H:i') }}</p>
                                             </div>
                                         </div>
-                                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Are you sure you want to permanently delete this comment?" class="text-slate-500 hover:text-red-400 p-1.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors" title="Delete Comment">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Are you sure you want to permanently delete this comment?" class="text-slate-500 hover:text-red-400 p-1.5 rounded bg-slate-800 hover:bg-slate-700 transition-colors" title="Delete Comment" aria-label="Delete comment from {{ $comment->name }}">
+                                            <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                     <div class="text-slate-300 text-sm mt-3 pl-11">
