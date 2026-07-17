@@ -32,7 +32,7 @@
                             </div>
                             <div>
                                 <h3 class="font-mono text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                                    <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="focus:outline-none">
+                                    <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:rounded">
                                         <span class="absolute inset-0"></span>
                                         {{ $project->title }}
                                     </a>
@@ -70,13 +70,13 @@
                     
                     <!-- Links -->
                     <div class="relative mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between z-10">
-                        <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors">
+                        <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:rounded">
                             <span>Read Case Study</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
                         </a>
 
                         @if($project->url)
-                            <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
+                            <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:rounded">
                                 <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
                                 Live Demo
                             </a>
