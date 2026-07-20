@@ -40,24 +40,24 @@
         <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
             <a 
                 href="#lab" 
-                class="inline-flex items-center justify-center px-8 py-4 glass-card glow-cyan text-cyan-400 font-mono font-medium hover:bg-cyan-400/10 transition-all duration-300 group"
+                class="inline-flex items-center justify-center px-8 py-4 glass-card glow-cyan text-cyan-400 font-mono font-medium hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all duration-300 group"
             >
-                <i data-lucide="server" class="w-5 h-5 mr-2"></i>
+                <i data-lucide="server" class="w-5 h-5 mr-2" aria-hidden="true"></i>
                 View Infrastructure
-                <i data-lucide="arrow-down" class="w-4 h-4 ml-2 group-hover:translate-y-1 transition-transform"></i>
+                <i data-lucide="arrow-down" class="w-4 h-4 ml-2 group-hover:translate-y-1 transition-transform" aria-hidden="true"></i>
             </a>
             
             <a 
                 href="#experience" 
-                class="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-300 font-mono font-medium hover:border-cyan-400 hover:text-cyan-400 transition-all duration-300 rounded-lg"
+                class="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-300 font-mono font-medium hover:border-cyan-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all duration-300 rounded-lg"
             >
-                <i data-lucide="briefcase" class="w-5 h-5 mr-2"></i>
+                <i data-lucide="briefcase" class="w-5 h-5 mr-2" aria-hidden="true"></i>
                 View Experience
             </a>
         </div>
         
         <!-- Scroll indicator -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
             <i data-lucide="chevrons-down" class="w-6 h-6 text-slate-500"></i>
         </div>
     </div>
