@@ -1,3 +1,7 @@
 ## 2024-03-21 - Icon-Only Buttons Missing ARIA Labels
 **Learning:** The application extensively uses Lucide icons (`<i data-lucide="..."></i>`) for key interactive elements like mobile menus, chat widgets, sidebar toggles, and scroll-to-top buttons. These buttons lack descriptive `aria-label` attributes, making them inaccessible to screen readers as there is no visible text.
 **Action:** Always verify icon-only buttons (`<button>` tags wrapping solely `<i data-lucide="..."></i>` or SVG elements) include explicit `aria-label` attributes describing their function, particularly in core layout components like `app.blade.php` and `admin.blade.php`.
+
+## 2024-05-15 - Explicit Focus-Visible States for Custom Interactive Elements
+**Learning:** The application features highly stylized interactive elements, such as `.glass-card` CTA links, which completely strip default browser focus rings without providing alternative keyboard focus indicators. This pattern renders the primary navigation and CTAs completely invisible to keyboard-only users navigating via the Tab key.
+**Action:** Whenever creating or modifying custom styled links and buttons (especially those overriding default borders and outlines like `.glass-card`), actively ensure that `focus:outline-none focus-visible:ring-2` (and an appropriate ring color like `focus-visible:ring-cyan-400`) are included to guarantee robust keyboard accessibility.
