@@ -1,7 +1,19 @@
 ## 2024-03-21 - Icon-Only Buttons Missing ARIA Labels
 **Learning:** The application extensively uses Lucide icons (`<i data-lucide="..."></i>`) for key interactive elements like mobile menus, chat widgets, sidebar toggles, and scroll-to-top buttons. These buttons lack descriptive `aria-label` attributes, making them inaccessible to screen readers as there is no visible text.
 **Action:** Always verify icon-only buttons (`<button>` tags wrapping solely `<i data-lucide="..."></i>` or SVG elements) include explicit `aria-label` attributes describing their function, particularly in core layout components like `app.blade.php` and `admin.blade.php`.
-
-## 2024-05-15 - Explicit Focus-Visible States for Custom Interactive Elements
-**Learning:** The application features highly stylized interactive elements, such as `.glass-card` CTA links, which completely strip default browser focus rings without providing alternative keyboard focus indicators. This pattern renders the primary navigation and CTAs completely invisible to keyboard-only users navigating via the Tab key.
-**Action:** Whenever creating or modifying custom styled links and buttons (especially those overriding default borders and outlines like `.glass-card`), actively ensure that `focus:outline-none focus-visible:ring-2` (and an appropriate ring color like `focus-visible:ring-cyan-400`) are included to guarantee robust keyboard accessibility.
+## 2025-02-23 - Add loading states for async operations
+**Learning:** Found that some buttons triggering async operations (like toggling a "Like" button in `post-like-button.blade.php`) lacked visual feedback, leading to potential duplicate submissions or confusion.
+**Action:** Added `wire:loading.attr="disabled"`, `wire:loading.class="opacity-50 cursor-not-allowed"`, and `wire:target="toggleLike"` to provide immediate feedback.
+## 2024-05-24 - Standardized modal close buttons\n**Learning:** Crude text 'X' close buttons in modals are confusing for screen readers without labels, and look inconsistent visually.\n**Action:** Replaced text 'X' with lucide icons and added aria-label='Close modal' for a11y.
+## 2025-02-12 - Icon-only Button Accessibility
+**Learning:** Icon-only buttons using Lucide icons (`<i data-lucide="..."></i>`) often rely solely on `title` attributes for context, which are not reliably announced by screen readers, leading to poor accessibility. Also, the SVG icons themselves are sometimes announced as meaningless elements if not explicitly hidden.
+**Action:** When implementing or updating icon-only buttons, explicitly extract the `title` into an `aria-label` on the parent `<button>` element. Simultaneously, add `aria-hidden="true"` to the inner `<i>` tag containing the Lucide icon to prevent redundant or confusing screen reader announcements.
+## 2025-07-06 - Livewire Button Loading States Target
+**Learning:** In Livewire, when implementing loading states (spinners or text changes) on generic submit buttons, explicitly defining `wire:target="methodName"` is critical. Without it, global interactions on the page might inadvertently trigger the loading state of unrelated buttons, causing visual confusion.
+**Action:** Always pair `wire:loading` (and `wire:loading.attr="disabled"`) with a specific `wire:target="methodName"` when enhancing action buttons to isolate the loading feedback correctly.
+## 2026-07-06 - Add Skip to Content Links
+**Learning:** Implementing skip to content links for keyboard users requires the target <main> to have tabindex="-1" and focus:outline-none to properly receive focus without showing an ugly ring, while remaining hidden for mouse users.
+**Action:** Always ensure target element for skip links has appropriate focus management.
+## 2026-07-08 - Added aria-hidden attributes to icon-only buttons
+**Learning:** Found that screen readers can sometimes awkwardly read out SVG content or meaningless strings for icon-only buttons relying on Lucide icons, even when the parent button has an `aria-label`. Additionally, expandable toggle widgets (like the chat window or mobile menus) require `aria-controls` and `aria-expanded` bindings on the trigger button to explicitly announce state changes to screen reader users.
+**Action:** Added `aria-hidden="true"` to the internal `<i data-lucide="...">` elements inside icon-only buttons across layouts. Also explicitly bound `:aria-expanded` and `aria-controls` to expanding toggle triggers like the chatbot and sidebar menus.
