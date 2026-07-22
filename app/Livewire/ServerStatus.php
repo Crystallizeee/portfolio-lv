@@ -85,8 +85,11 @@ class ServerStatus extends Component
                 'color' => 'green',
             ];
 
-            // Persist to DB for fallback
-            $service->updateCachedStatus($result);
+            // ⚡ Bolt Optimization: Throttle DB writes to at most once per 30 seconds globally.
+            // Prevents N+1 DB write bottleneck when multiple clients poll the dashboard.
+            if (\Illuminate\Support\Facades\Cache::add('service_update_' . $service->id, true, 30)) {
+                $service->updateCachedStatus($result);
+            }
             return $result;
         }
         return $this->fallbackStatus($service);
@@ -119,8 +122,11 @@ class ServerStatus extends Component
                 'color' => $isRunning ? 'green' : 'red',
             ];
 
-            // Persist to DB for fallback
-            $service->updateCachedStatus($result);
+            // ⚡ Bolt Optimization: Throttle DB writes to at most once per 30 seconds globally.
+            // Prevents N+1 DB write bottleneck when multiple clients poll the dashboard.
+            if (\Illuminate\Support\Facades\Cache::add('service_update_' . $service->id, true, 30)) {
+                $service->updateCachedStatus($result);
+            }
             return $result;
         }
         return $this->fallbackStatus($service);
@@ -153,8 +159,11 @@ class ServerStatus extends Component
                 'color' => $isRunning ? 'green' : 'red',
             ];
 
-            // Persist to DB for fallback
-            $service->updateCachedStatus($result);
+            // ⚡ Bolt Optimization: Throttle DB writes to at most once per 30 seconds globally.
+            // Prevents N+1 DB write bottleneck when multiple clients poll the dashboard.
+            if (\Illuminate\Support\Facades\Cache::add('service_update_' . $service->id, true, 30)) {
+                $service->updateCachedStatus($result);
+            }
             return $result;
         }
         return $this->fallbackStatus($service);
