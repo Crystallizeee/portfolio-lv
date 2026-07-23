@@ -82,7 +82,7 @@
                 <div class="flex items-center space-x-4">
                     <button 
                         @click="$dispatch('toggle-command-palette')"
-                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors"
                         aria-label="Open command palette"
                     >
                         <kbd class="font-mono">Ctrl</kbd>
@@ -93,7 +93,7 @@
                     <!-- Mobile Menu Button -->
                     <button 
                         @click="mobileMenuOpen = !mobileMenuOpen" 
-                        class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                        class="md:hidden p-2 text-slate-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors"
                         aria-label="Toggle mobile menu"
                         :aria-expanded="mobileMenuOpen.toString()"
                         aria-controls="mobile-menu"
@@ -324,7 +324,7 @@
                         </div>
                     </div>
                 </div>
-                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors" aria-label="Close chat window">
+                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors" aria-label="Close chat window">
                     <i data-lucide="x" class="w-4 h-4 text-slate-400" aria-hidden="true"></i>
                 </button>
             </div>
@@ -400,7 +400,7 @@
                     <button 
                         type="submit"
                         :disabled="isLoading || !userInput.trim()"
-                        class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Send message"
                     >
                         <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
@@ -413,7 +413,7 @@
         <!-- Floating Button -->
         <button 
             @click="toggleChat()"
-            class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
+            class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 transition-all duration-300 hover:scale-110 flex items-center justify-center"
             aria-label="Toggle chat"
             :aria-expanded="isOpen.toString()"
             aria-controls="chat-window"
@@ -427,7 +427,7 @@
     </div>
 
     <!-- Scroll to Top Button -->
-    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
+    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
         <i data-lucide="arrow-up" class="w-6 h-6" aria-hidden="true"></i>
     </button>
 </body>
