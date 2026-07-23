@@ -30,3 +30,6 @@
 ## $(date +%Y-%m-%d) - Prevent N+1 queries using collection count
 **Learning:** Using `->count()` on an Eloquent relation after already fetching it via `->get()` triggers a completely redundant database query.
 **Action:** When a full collection is being retrieved anyway for rendering in a view, always assign it to a variable and use the collection's internal `->count()` method to derive totals rather than issuing a separate database `COUNT()` aggregate query.
+## 2026-07-23 - [Livewire Polling N+1 Writes Optimization]
+**Learning:** Multiple clients polling a Livewire component that persists status updates to the database can cause severe N+1 write bottlenecks. Checking model timestamps is unreliable as they might be null or improperly cast.
+**Action:** Use Laravel's atomic `Cache::add()` with a throttle key and expiration time to reliably throttle recurring database writes in Livewire polling components and prevent concurrent write storms.
