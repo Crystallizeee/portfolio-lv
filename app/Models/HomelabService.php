@@ -38,13 +38,20 @@ class HomelabService extends Model
      */
     public function updateCachedStatus(array $data): void
     {
-        $this->update([
+        $this->fill([
             'cached_status' => $data['status'] ?? 'unknown',
             'cached_cpu' => $data['cpu'] ?? null,
             'cached_memory' => $data['memory'] ?? null,
             'cached_uptime' => $data['uptime'] ?? null,
-            'last_status_check' => now(),
         ]);
+
+        // ⚡ Bolt Optimization: Throttle DB writes to prevent N+1 write storms from concurrent clients.
+        // We only write if the core data actually changed (preventing lost status changes),
+        // OR if the 30-second throttle allows updating the last_status_check timestamp.
+        if ($this->isDirty() || \Illuminate\Support\Facades\Cache::add('homelab_status_throttle_' . $this->id, true, 30)) {
+            $this->last_status_check = now();
+            $this->save();
+        }
     }
 
     /**
