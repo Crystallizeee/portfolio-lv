@@ -88,8 +88,8 @@
                         class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
                         aria-label="Toggle mobile menu"
                     >
-                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
-                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
+                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen" aria-hidden="true"></i>
+                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -243,7 +243,7 @@
 
     <!-- Scroll to Top Button -->
     <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
-        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+        <i data-lucide="arrow-up" class="w-6 h-6" aria-hidden="true"></i>
     </button>
 
     <!-- AI Chatbot Widget -->
@@ -264,7 +264,7 @@
             <div class="flex items-center justify-between px-4 py-3 bg-slate-900/80 border-b border-slate-700/50">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
-                        <i data-lucide="bot" class="w-4 h-4 text-white"></i>
+                        <i data-lucide="bot" class="w-4 h-4 text-white" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="text-sm font-semibold text-white">AI Assistant</div>
@@ -275,7 +275,7 @@
                     </div>
                 </div>
                 <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors" aria-label="Close chat window">
-                    <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+                    <i data-lucide="x" class="w-4 h-4 text-slate-400" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -349,7 +349,7 @@
                         class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Send message"
                     >
-                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
                     </button>
                 </form>
                 <div class="text-[10px] text-slate-600 mt-1.5 text-center">Powered by AI · Responses may not always be accurate</div>
@@ -362,8 +362,8 @@
             class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
             aria-label="Toggle chat widget"
         >
-            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen"></i>
-            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak></i>
+            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen" aria-hidden="true"></i>
+            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak aria-hidden="true"></i>
             
             <!-- Notification dot -->
             <span x-show="!hasInteracted && !isOpen" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[var(--color-cyber-dark)] animate-pulse"></span>
