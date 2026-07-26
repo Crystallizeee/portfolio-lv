@@ -33,3 +33,6 @@
 ## 2026-07-23 - [Livewire Polling N+1 Writes Optimization]
 **Learning:** Multiple clients polling a Livewire component that persists status updates to the database can cause severe N+1 write bottlenecks. Checking model timestamps is unreliable as they might be null or improperly cast.
 **Action:** Use Laravel's atomic `Cache::add()` with a throttle key and expiration time to reliably throttle recurring database writes in Livewire polling components and prevent concurrent write storms.
+## $(date +%Y-%m-%d) - Optimize repeated collection initializations in templates
+**Learning:** Calling `collect($array)` repeatedly within the same Blade view to perform operations like `->where()->count()` causes redundant object allocations and loop iterations, increasing overhead for what could be a single collection instantiation.
+**Action:** To prevent redundant object instantiations and overhead in Blade templates or Livewire views, avoid repeatedly calling `collect($array)` on the same array to calculate statistics (like `count()`). Instead, instantiate the collection once (e.g., `@php $collection = collect($array); @endphp`) and reuse it.
