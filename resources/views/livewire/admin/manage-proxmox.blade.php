@@ -46,10 +46,11 @@
         <!-- Stats Row -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             @php
-                $total = count($resources);
-                $running = collect($resources)->where('is_running', true)->count();
-                $vms = collect($resources)->where('type', 'qemu')->count();
-                $lxcs = collect($resources)->where('type', 'lxc')->count();
+                $resCollection = collect($resources);
+                $total = $resCollection->count();
+                $running = $resCollection->where('is_running', true)->count();
+                $vms = $resCollection->where('type', 'qemu')->count();
+                $lxcs = $resCollection->where('type', 'lxc')->count();
             @endphp
             <div class="glass-card p-4 text-center">
                 <p class="text-2xl font-bold font-mono text-white">{{ $total }}</p>
