@@ -19,6 +19,16 @@ class BackupController extends Controller
 {
     public function export()
     {
+        $userId = Auth::id();
+        $throttleKey = 'backup-export:' . $userId;
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', "Too many export attempts. Please try again in {$seconds} seconds.");
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $user = Auth::user();
         
         $data = [
