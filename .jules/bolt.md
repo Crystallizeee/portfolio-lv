@@ -36,3 +36,6 @@
 ## $(date +%Y-%m-%d) - Optimize repeated collection initializations in templates
 **Learning:** Calling `collect($array)` repeatedly within the same Blade view to perform operations like `->where()->count()` causes redundant object allocations and loop iterations, increasing overhead for what could be a single collection instantiation.
 **Action:** To prevent redundant object instantiations and overhead in Blade templates or Livewire views, avoid repeatedly calling `collect($array)` on the same array to calculate statistics (like `count()`). Instead, instantiate the collection once (e.g., `@php $collection = collect($array); @endphp`) and reuse it.
+## 2026-07-28 - Cache Dashboard Aggregate Queries
+**Learning:** The AdminDashboard executes multiple synchronous `count()` queries during the `mount()` method, which can cause significant delays during page load if the tables are large.
+**Action:** Use `Cache::remember()` to cache aggregate queries like `Project::count()` in the dashboard for a reasonable time (e.g., 5 minutes) to drastically reduce database overhead on repeated page loads.

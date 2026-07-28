@@ -23,11 +23,15 @@ class AdminDashboard extends Component
 
     public function mount()
     {
-        $this->projectsCount = Project::count();
-        $this->onlineProjects = Project::where('status', 'online')->count();
-        $this->experiencesCount = Experience::count();
+        // ⚡ Bolt Optimization: Cache dashboard aggregate queries (counts) for 5 minutes (300s).
+        // This prevents 4 expensive sequential database COUNT() queries from executing every
+        // time the admin dashboard is loaded, significantly improving page render speed
+        // while trading off slight real-time accuracy for performance.
+        $this->projectsCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_projects_count', 300, fn() => Project::count());
+        $this->onlineProjects = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_online_projects_count', 300, fn() => Project::where('status', 'online')->count());
+        $this->experiencesCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_experiences_count', 300, fn() => Experience::count());
         $this->cvDownloads = Analytics::getTotal(Auth::id(), 'cv_download');
-        $this->profileViews = SiteVisit::count();
+        $this->profileViews = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_profile_views_count', 300, fn() => SiteVisit::count());
 
         $this->prepareChartData();
         $this->analyzeTraffic();
