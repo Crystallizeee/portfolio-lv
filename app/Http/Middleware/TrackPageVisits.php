@@ -38,6 +38,7 @@ class TrackPageVisits
         }
 
         $visitData = [
+            'ip_address' => $request->ip(),
             'ip_hash' => IpAnonymizer::hash($request->ip()),
             'url' => $request->fullUrl(),
             'user_agent' => substr($userAgent, 0, 255),
