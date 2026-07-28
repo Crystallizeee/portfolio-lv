@@ -17,3 +17,7 @@
 ## 2026-07-08 - Added aria-hidden attributes to icon-only buttons
 **Learning:** Found that screen readers can sometimes awkwardly read out SVG content or meaningless strings for icon-only buttons relying on Lucide icons, even when the parent button has an `aria-label`. Additionally, expandable toggle widgets (like the chat window or mobile menus) require `aria-controls` and `aria-expanded` bindings on the trigger button to explicitly announce state changes to screen reader users.
 **Action:** Added `aria-hidden="true"` to the internal `<i data-lucide="...">` elements inside icon-only buttons across layouts. Also explicitly bound `:aria-expanded` and `aria-controls` to expanding toggle triggers like the chatbot and sidebar menus.
+
+## 2024-07-28 - Icon Button Focus States & Inconsistent Translations
+**Learning:** Found instances where custom icon buttons (like "Copy Link" or "Like") lacked `focus-visible` styling, making keyboard navigation difficult to track. Additionally, some localized strings (e.g., "Salin Tautan") were hardcoded in otherwise English views, confusing screen readers.
+**Action:** Always verify `focus-visible` states for interactive elements, ensure `aria-hidden` is applied to decorative icons, and maintain consistent language strings within views.

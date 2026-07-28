@@ -65,8 +65,8 @@
 
             <!-- Footer -->
             <footer class="mt-16 pt-8 border-t border-slate-800 flex items-center justify-between">
-                <a href="{{ route('blog.index') }}" class="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group">
-                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                <a href="{{ route('blog.index') }}" class="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg px-2 py-1 -ml-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform" aria-hidden="true"></i>
                     <span>Back to Blog</span>
                 </a>
                 
@@ -80,12 +80,12 @@
                                 copied = true;
                                 setTimeout(() => copied = false, 2000);
                             "
-                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-colors" 
-                            title="Salin Tautan"
-                            aria-label="Salin Tautan">
+                            class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-cyan-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                            title="Copy Link"
+                            aria-label="Copy Link">
                             
-                            <div x-show="!copied"><i data-lucide="link" class="w-4 h-4"></i></div>
-                            <div x-cloak x-show="copied"><i data-lucide="check" class="w-4 h-4 text-green-400"></i></div>
+                            <div x-show="!copied"><i data-lucide="link" class="w-4 h-4" aria-hidden="true"></i></div>
+                            <div x-cloak x-show="copied"><i data-lucide="check" class="w-4 h-4 text-green-400" aria-hidden="true"></i></div>
                         </button>
                     </div>
                 </div>

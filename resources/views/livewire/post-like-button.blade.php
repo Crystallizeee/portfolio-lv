@@ -4,7 +4,7 @@
             wire:loading.attr="disabled"
             wire:loading.class="opacity-50 cursor-not-allowed"
             wire:target="toggleLike"
-            class="group flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 {{ $hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-rose-400' }}"
+            class="group flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 {{ $hasLiked ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-rose-400' }}"
             title="{{ $hasLiked ? 'Unlike' : 'Like' }}">
         <span class="sr-only">{{ $hasLiked ? 'Unlike post' : 'Like post' }}. Current likes: {{ $likesCount }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" 
