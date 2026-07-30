@@ -28,20 +28,21 @@ class ChatbotController extends Controller
      */
     public function chat(Request $request)
     {
-        // ── 1. Basic validation ──────────────────────────────────────────────
-        $request->validate([
-            'message' => 'required|string|max:500',
-        ]);
-
         $ip = $request->ip();
 
-        // ── 2. Circuit breaker (DoS defense) ────────────────────────────────
+        // ── 1. Circuit breaker (DoS defense) ────────────────────────────────
+        // Placed before validation to prevent validation-based resource exhaustion attacks
         if ($this->security->checkCircuitBreaker($ip)) {
             Log::warning('AI Security: Request blocked by circuit breaker', ['ip' => $ip]);
             return response()->json([
                 'reply' => 'The AI assistant is temporarily unavailable. Please try again in a few minutes.',
             ], 429);
         }
+
+        // ── 2. Basic validation ──────────────────────────────────────────────
+        $request->validate([
+            'message' => 'required|string|max:500',
+        ]);
 
         // ── 3. Input sanitization ────────────────────────────────────────────
         $userMessage = $this->security->sanitizeInput($request->input('message'));
