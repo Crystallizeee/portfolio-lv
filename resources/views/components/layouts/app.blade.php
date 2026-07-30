@@ -74,7 +74,7 @@
                 <div class="flex items-center space-x-4">
                     <button 
                         @click="$dispatch('toggle-command-palette')"
-                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 transition-colors"
+                        class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors"
                         aria-label="Open command palette"
                     >
                         <kbd class="font-mono">Ctrl</kbd>
@@ -85,11 +85,13 @@
                     <!-- Mobile Menu Button -->
                     <button 
                         @click="mobileMenuOpen = !mobileMenuOpen" 
-                        class="md:hidden p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                        class="md:hidden p-2 text-slate-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors"
                         aria-label="Toggle mobile menu"
+                        :aria-expanded="mobileMenuOpen.toString()"
+                        aria-controls="mobile-menu"
                     >
-                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen"></i>
-                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak></i>
+                        <i data-lucide="menu" class="w-6 h-6" x-show="!mobileMenuOpen" aria-hidden="true"></i>
+                        <i data-lucide="x" class="w-6 h-6" x-show="mobileMenuOpen" x-cloak aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -97,6 +99,7 @@
 
         <!-- Mobile Menu -->
         <div 
+            id="mobile-menu"
             x-show="mobileMenuOpen" 
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-2"
@@ -119,7 +122,7 @@
                 <div class="pt-4 border-t border-slate-700/50 mt-4">
                     <button 
                         @click="$dispatch('toggle-command-palette'); mobileMenuOpen = false"
-                        class="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-all"
+                        class="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all"
                     >
                         <span>Command Palette</span>
                         <div class="flex items-center space-x-1 text-xs text-slate-500">
@@ -201,7 +204,7 @@
                     <template x-for="suggestion in suggestions" :key="suggestion.name">
                         <button 
                             @click="execute(suggestion.name)"
-                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-700/50 transition-colors"
+                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-700/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-400 transition-colors"
                         >
                             <div class="flex items-center space-x-3">
                                 <span class="terminal-text font-mono text-sm" x-text="suggestion.name"></span>
@@ -242,14 +245,15 @@
     </script>
 
     <!-- Scroll to Top Button -->
-    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
-        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    <button id="scrollToTop" class="fixed bottom-8 right-28 z-40 p-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-full text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 transition-all duration-300 opacity-0 invisible backdrop-blur-sm" aria-label="Scroll to top">
+        <i data-lucide="arrow-up" class="w-6 h-6" aria-hidden="true"></i>
     </button>
 
     <!-- AI Chatbot Widget -->
     <div x-data="chatWidget" class="fixed bottom-8 right-8 z-50">
         <!-- Chat Window -->
         <div 
+            id="chat-window"
             x-show="isOpen"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
@@ -257,6 +261,9 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="chat-window-title"
             class="mb-4 w-[380px] sm:w-[440px] glass-card border border-slate-700/50 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10"
             x-cloak
         >
@@ -267,15 +274,15 @@
                         <i data-lucide="bot" class="w-4 h-4 text-white"></i>
                     </div>
                     <div>
-                        <div class="text-sm font-semibold text-white">AI Assistant</div>
+                        <div id="chat-window-title" class="text-sm font-semibold text-white">AI Assistant</div>
                         <div class="text-[10px] text-emerald-400 flex items-center space-x-1">
                             <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                             <span>Online</span>
                         </div>
                     </div>
                 </div>
-                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg transition-colors" aria-label="Close chat window">
-                    <i data-lucide="x" class="w-4 h-4 text-slate-400"></i>
+                <button @click="isOpen = false" class="p-1.5 hover:bg-slate-700/50 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors" aria-label="Close chat window">
+                    <i data-lucide="x" class="w-4 h-4 text-slate-400" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -284,6 +291,9 @@
                 x-ref="messagesContainer"
                 class="h-[450px] overflow-y-auto p-4 space-y-4 custom-scrollbar"
                 style="background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.85) 100%);"
+                aria-live="polite"
+                aria-relevant="additions"
+                role="log"
             >
                 <template x-for="(msg, i) in messages" :key="i">
                     <div :class="msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'">
@@ -326,7 +336,7 @@
                 ]" :key="chip">
                     <button
                         @click="userInput = chip; sendMessage()"
-                        class="px-2.5 py-1 text-[10px] bg-slate-800/70 border border-slate-700/60 rounded-full text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 hover:bg-slate-800 transition-all duration-200 leading-none"
+                        class="px-2.5 py-1 text-[10px] bg-slate-800/70 border border-slate-700/60 rounded-full text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all duration-200 leading-none"
                         x-text="chip"
                     ></button>
                 </template>
@@ -340,16 +350,17 @@
                         type="text"
                         placeholder="Ask about my skills, experience..."
                         maxlength="500"
+                        aria-label="Chat message input"
                         class="flex-1 bg-slate-800/60 border border-slate-700/50 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
                         :disabled="isLoading"
                     >
                     <button 
                         type="submit"
                         :disabled="isLoading || !userInput.trim()"
-                        class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        class="p-2.5 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-xl text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Send message"
                     >
-                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
                     </button>
                 </form>
                 <div class="text-[10px] text-slate-600 mt-1.5 text-center">Powered by AI · Responses may not always be accurate</div>
@@ -359,11 +370,13 @@
         <!-- Floating Button -->
         <button 
             @click="toggleChat()"
-            class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center"
+            class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 transition-all duration-300 hover:scale-110 flex items-center justify-center"
             aria-label="Toggle chat widget"
+            :aria-expanded="isOpen.toString()"
+            aria-controls="chat-window"
         >
-            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen"></i>
-            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak></i>
+            <i data-lucide="message-circle" class="w-6 h-6 text-white" x-show="!isOpen" aria-hidden="true"></i>
+            <i data-lucide="x" class="w-6 h-6 text-white" x-show="isOpen" x-cloak aria-hidden="true"></i>
             
             <!-- Notification dot -->
             <span x-show="!hasInteracted && !isOpen" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[var(--color-cyber-dark)] animate-pulse"></span>
