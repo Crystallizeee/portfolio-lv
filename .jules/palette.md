@@ -21,3 +21,6 @@
 ## 2024-07-28 - Icon Button Focus States & Inconsistent Translations
 **Learning:** Found instances where custom icon buttons (like "Copy Link" or "Like") lacked `focus-visible` styling, making keyboard navigation difficult to track. Additionally, some localized strings (e.g., "Salin Tautan") were hardcoded in otherwise English views, confusing screen readers.
 **Action:** Always verify `focus-visible` states for interactive elements, ensure `aria-hidden` is applied to decorative icons, and maintain consistent language strings within views.
+## 2026-07-29 - Focus States and ARIA attributes in Manage Languages
+**Learning:** Found that the icon buttons in the Manage Languages component lacked focus-visible states and their internal Lucide icons lacked `aria-hidden="true"`, causing poor keyboard navigation and screen reader confusion.
+**Action:** When updating or reviewing similar Livewire components, ensure all interactive buttons have `focus:outline-none focus-visible:ring-2` styling, and internal SVG/icon elements have `aria-hidden="true"` so they aren't incorrectly announced by screen readers.

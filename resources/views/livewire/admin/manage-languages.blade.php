@@ -9,9 +9,9 @@
         </div>
         <button 
             wire:click="openModal"
-            class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-xl text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400 transition-all duration-300"
+            class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-xl text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
-            <i data-lucide="plus" class="w-4 h-4"></i>
+            <i data-lucide="plus" aria-hidden="true" class="w-4 h-4"></i>
             <span class="font-medium">Add Language</span>
         </button>
     </div>
@@ -33,18 +33,18 @@
                     <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                             wire:click="edit({{ $lang['id'] }})"
-                            class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                            class="p-2 text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                             aria-label="Edit language"
                         >
-                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                            <i data-lucide="pencil" aria-hidden="true" class="w-4 h-4"></i>
                         </button>
                         <button 
                             wire:click="delete({{ $lang['id'] }})"
                             wire:confirm="Are you sure you want to delete this language?"
-                            class="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                            class="p-2 text-slate-400 hover:text-red-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                             aria-label="Delete language"
                         >
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <i data-lucide="trash-2" aria-hidden="true" class="w-4 h-4"></i>
                         </button>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                 <p class="text-slate-500 mb-4">Add languages you speak</p>
                 <button 
                     wire:click="openModal"
-                    class="px-4 py-2 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 hover:bg-green-500/30 transition-colors"
+                    class="px-4 py-2 bg-green-500/20 border border-green-500/50 rounded-lg text-green-400 hover:bg-green-500/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                     Add Your First Language
                 </button>
@@ -80,8 +80,8 @@
                     <h3 class="text-lg font-semibold text-white font-mono">
                         {{ $editingId ? 'Edit Language' : 'Add Language' }}
                     </h3>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors" aria-label="Close modal">
-                        <i data-lucide="x" class="w-5 h-5"></i>
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded" aria-label="Close modal">
+                        <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
                     </button>
                 </div>
 
@@ -117,13 +117,13 @@
                         <button 
                             type="button"
                             wire:click="closeModal"
-                            class="py-2 px-4 text-slate-400 hover:text-white transition-colors"
+                            class="py-2 px-4 text-slate-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                         >
                             Cancel
                         </button>
                         <button 
                             type="submit"
-                            class="py-2 px-6 bg-green-500 hover:bg-green-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2"
+                            class="py-2 px-6 bg-green-500 hover:bg-green-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-wait"
                             wire:target="save"
@@ -132,7 +132,7 @@
                                 {{ $editingId ? 'Update' : 'Add Language' }}
                             </span>
                             <span wire:loading wire:target="save" class="flex items-center space-x-2">
-                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                <i data-lucide="loader-2" aria-hidden="true" class="w-4 h-4 animate-spin"></i>
                                 <span>Saving...</span>
                             </span>
                         </button>
