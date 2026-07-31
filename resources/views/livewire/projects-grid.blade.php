@@ -25,9 +25,9 @@
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 rounded-lg bg-slate-700/50 flex items-center justify-center group-hover:bg-cyan-400/20 transition-colors">
                                 @if($project->type === 'Home Lab')
-                                    <i data-lucide="server" class="w-6 h-6 text-cyan-400"></i>
+                                    <i data-lucide="server" class="w-6 h-6 text-cyan-400" aria-hidden="true"></i>
                                 @else
-                                    <i data-lucide="code-2" class="w-6 h-6 text-cyan-400"></i>
+                                    <i data-lucide="code-2" class="w-6 h-6 text-cyan-400" aria-hidden="true"></i>
                                 @endif
                             </div>
                             <div>
@@ -72,12 +72,12 @@
                     <div class="relative mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between z-10">
                         <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors">
                             <span>Read Case Study</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2" aria-hidden="true"></i>
                         </a>
 
                         @if($project->url)
                             <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
-                                <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
+                                <i data-lucide="external-link" class="w-4 h-4 mr-2" aria-hidden="true"></i>
                                 Live Demo
                             </a>
                         @endif
