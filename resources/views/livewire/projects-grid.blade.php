@@ -76,9 +76,9 @@
                         </a>
 
                         @if($project->url)
-                            <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
-                                <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
-                                Live Demo
+                            <a href="{{ $project->url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 mr-2" aria-hidden="true"></i>
+                                Live Demo <span class="sr-only">(opens in a new tab)</span>
                             </a>
                         @endif
                     </div>
