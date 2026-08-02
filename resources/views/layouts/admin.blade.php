@@ -179,10 +179,11 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <a href="{{ url('/') }}" target="_blank" 
+                    <a href="{{ url('/') }}" target="_blank" rel="noopener noreferrer"
                        class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-cyan-400 hover:bg-white/10 hover:border-cyan-500/30 transition-all duration-300 text-sm font-medium group">
                         <i data-lucide="external-link" class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
                         <span>Live View</span>
+                        <span class="sr-only">(opens in a new tab)</span>
                     </a>
                     
                     <a href="{{ route('admin.clear-cache') }}" 

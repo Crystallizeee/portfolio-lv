@@ -93,7 +93,8 @@
                     </div>
                     @endif
                     @if($job->link)
-                    <a href="{{ $job->link }}" target="_blank" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 hover:underline transition-colors w-fit">
+                    <a href="{{ $job->link }}" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 hover:underline transition-colors w-fit">
+                        <span class="sr-only">(opens in a new tab)</span>
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         <span>Job Link</span>
                     </a>

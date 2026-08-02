@@ -88,6 +88,7 @@
                                 >
                                     <span>Verify Credential</span>
                                     <i data-lucide="external-link" class="w-4 h-4 ml-2 transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform"></i>
+                                    <span class="sr-only">(opens in a new tab)</span>
                                 </a>
                             @endif
                         </div>
