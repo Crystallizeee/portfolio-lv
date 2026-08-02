@@ -155,6 +155,7 @@
                            onmouseout="this.style.background='rgba({{ $platformColorRgb }}, 0.05)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.3)'; this.style.boxShadow='none';">
                             <span>View Profile</span>
                             <i data-lucide="external-link" class="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1"></i>
+                            <span class="sr-only">(opens in a new tab)</span>
                         </a>
                     </div>
                 </div>
