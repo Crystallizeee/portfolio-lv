@@ -75,10 +75,11 @@
                     <a 
                         href="{{ $cert['credential_url'] }}" 
                         target="_blank"
+                        rel="noopener noreferrer"
                         class="mt-3 inline-flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
                     >
                         <i data-lucide="external-link" class="w-3 h-3"></i>
-                        <span>View Credential</span>
+                        <span>View Credential <span class="sr-only">(opens in a new tab)</span></span>
                     </a>
                 @endif
             </div>

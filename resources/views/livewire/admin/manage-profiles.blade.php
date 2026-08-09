@@ -59,9 +59,10 @@
                             <div class="text-slate-300 text-sm truncate max-w-xs">{{ $profile->professional_title }}</div>
                         </td>
                         <td class="px-6 py-5">
-                            <a href="/p/{{ $profile->slug }}" target="_blank" class="flex items-center space-x-1.5 text-cyan-400 hover:text-cyan-300 text-sm transition-colors group/link">
+                            <a href="/p/{{ $profile->slug }}" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1.5 text-cyan-400 hover:text-cyan-300 text-sm transition-colors group/link">
                                 <span class="underline decoration-cyan-500/30 group-hover/link:decoration-cyan-400">/p/{{ $profile->slug }}</span>
                                 <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-50 group-hover/link:opacity-100"></i>
+                                <span class="sr-only">(opens in a new tab)</span>
                             </a>
                         </td>
                         <td class="px-6 py-5 text-center">
