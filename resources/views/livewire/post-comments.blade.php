@@ -29,11 +29,11 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button wire:click="approveComment({{ $pending->id }})" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui" aria-label="Setujui">
-                                        <i data-lucide="check" class="w-4 h-4"></i>
+                                    <button wire:click="approveComment({{ $pending->id }})" class="text-green-400 hover:text-green-500 p-1.5 rounded-lg hover:bg-green-500/10 transition-colors" title="Setujui komentar dari {{ $pending->name }}" aria-label="Setujui komentar dari {{ $pending->name }}">
+                                        <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
-                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus" aria-label="Hapus">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    <button wire:click="deleteComment({{ $pending->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus komentar dari {{ $pending->name }}" aria-label="Hapus komentar dari {{ $pending->name }}">
+                                        <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
@@ -119,8 +119,8 @@
                         </div>
                     </div>
                     @auth
-                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus Komentar" aria-label="Hapus Komentar">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <button wire:click="deleteComment({{ $comment->id }})" wire:confirm="Yakin ingin menghapus komentar ini?" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors" title="Hapus komentar dari {{ $comment->name }}" aria-label="Hapus komentar dari {{ $comment->name }}">
+                            <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     @endauth
                 </div>
