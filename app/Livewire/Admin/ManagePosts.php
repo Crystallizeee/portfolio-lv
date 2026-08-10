@@ -156,15 +156,18 @@ class ManagePosts extends Component
             }
 
             // Strip HTML tags from content for cleaner text
-            $plainContent    = strip_tags($this->content);
+            $sanitizedContent = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->content);
+            $plainContent    = strip_tags($sanitizedContent);
             $truncatedContent = Str::limit($plainContent, 2000);
+
+            $sanitizedTitle = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->title);
 
             $systemMsg = 'You are an expert SEO specialist. You ONLY respond with valid JSON objects — no markdown, no explanation, no code fences.';
 
             $userMsg = <<<MSG
 Based on this blog post, generate SEO metadata.
 
-POST TITLE: {$this->title}
+POST TITLE: {$sanitizedTitle}
 
 POST CONTENT:
 {$truncatedContent}
@@ -234,9 +237,14 @@ MSG;
                 throw new \Exception('AI returned an invalid response. Please try again.');
             }
 
-            $this->meta_title       = $seoData['meta_title'] ?? '';
-            $this->meta_description = $seoData['meta_description'] ?? '';
-            $this->tags             = is_array($seoData['tags']) ? $seoData['tags'] : [];
+            $this->meta_title       = app(\App\Services\AiSecurityService::class)->sanitizeOutput($seoData['meta_title'] ?? '');
+            $this->meta_description = app(\App\Services\AiSecurityService::class)->sanitizeOutput($seoData['meta_description'] ?? '');
+
+            $rawTags = is_array($seoData['tags']) ? $seoData['tags'] : [];
+            $this->tags = array_map(function($tag) {
+                return app(\App\Services\AiSecurityService::class)->sanitizeOutput($tag);
+            }, $rawTags);
+
             $this->tagsInput        = implode(', ', $this->tags);
 
         } catch (\Exception $e) {

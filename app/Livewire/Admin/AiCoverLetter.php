@@ -80,9 +80,11 @@ class AiCoverLetter extends Component
             }
 
             $result = $response->json();
-            $this->coverLetter = $result['choices'][0]['message']['content']
+            $rawContent = $result['choices'][0]['message']['content']
                               ?? $result['message']['content']
                               ?? 'Failed to generate cover letter.';
+
+            $this->coverLetter = app(\App\Services\AiSecurityService::class)->sanitizeOutput($rawContent);
 
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
@@ -108,7 +110,9 @@ class AiCoverLetter extends Component
 
     protected function constructPrompt($cvData)
     {
-        $jobContext = $this->manualJobDescription ?: "Job link: {$this->jobUrl}";
+        $sanitizedJobDescription = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->manualJobDescription);
+        $sanitizedJobUrl = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->jobUrl);
+        $jobContext = $sanitizedJobDescription ?: "Job link: {$sanitizedJobUrl}";
 
         return "
 You are a professional hiring consultant. Your task is to write a compelling cover letter based on the user's CV data and a job description (or link provided).
