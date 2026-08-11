@@ -25,14 +25,14 @@
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 rounded-lg bg-slate-700/50 flex items-center justify-center group-hover:bg-cyan-400/20 transition-colors">
                                 @if($project->type === 'Home Lab')
-                                    <i data-lucide="server" class="w-6 h-6 text-cyan-400"></i>
+                                    <i data-lucide="server" class="w-6 h-6 text-cyan-400" aria-hidden="true"></i>
                                 @else
-                                    <i data-lucide="code-2" class="w-6 h-6 text-cyan-400"></i>
+                                    <i data-lucide="code-2" class="w-6 h-6 text-cyan-400" aria-hidden="true"></i>
                                 @endif
                             </div>
                             <div>
                                 <h3 class="font-mono text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                                    <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="focus:outline-none">
+                                    <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-sm">
                                         <span class="absolute inset-0"></span>
                                         {{ $project->title }}
                                     </a>
@@ -70,15 +70,16 @@
                     
                     <!-- Links -->
                     <div class="relative mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between z-10">
-                        <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors">
+                        <a href="{{ route('projects.show', $project->slug ?? $project->id) }}" class="inline-flex items-center text-sm text-slate-300 hover:text-cyan-400 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-sm">
                             <span>Read Case Study</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2" aria-hidden="true"></i>
                         </a>
 
                         @if($project->url)
-                            <a href="{{ $project->url }}" target="_blank" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors">
-                                <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
+                            <a href="{{ $project->url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm text-cyan-400 hover:text-cyan-300 font-mono transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-sm">
+                                <i data-lucide="external-link" class="w-4 h-4 mr-2" aria-hidden="true"></i>
                                 Live Demo
+                                <span class="sr-only">(opens in a new tab)</span>
                             </a>
                         @endif
                     </div>
