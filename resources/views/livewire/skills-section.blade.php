@@ -10,7 +10,7 @@
             </h2>
         </div>
 
-        @if($skillsByCategory->count() > 0)
+        @if($skillsByCategory->isNotEmpty())
             <!-- Centered Flex Skills - Fixed width cards -->
             <div class="flex flex-wrap justify-center gap-2">
                 @foreach($skillsByCategory as $category => $skills)
