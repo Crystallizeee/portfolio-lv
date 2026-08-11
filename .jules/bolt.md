@@ -39,3 +39,6 @@
 ## 2026-07-28 - Cache Dashboard Aggregate Queries
 **Learning:** The AdminDashboard executes multiple synchronous `count()` queries during the `mount()` method, which can cause significant delays during page load if the tables are large.
 **Action:** Use `Cache::remember()` to cache aggregate queries like `Project::count()` in the dashboard for a reasonable time (e.g., 5 minutes) to drastically reduce database overhead on repeated page loads.
+## 2026-08-11 - [Use isEmpty/isNotEmpty on Laravel Collections]
+**Learning:** [Using isNotEmpty() and isEmpty() on Laravel Collections instead of explicitly checking count() > 0 or count() === 0 improves code readability and semantic clarity.]
+**Action:** [Use isNotEmpty() and isEmpty() for collection checks.]

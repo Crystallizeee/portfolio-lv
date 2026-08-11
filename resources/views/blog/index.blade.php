@@ -41,7 +41,7 @@
             </div>
 
             <!-- Featured Post (First Post) -->
-            @if ($posts->count() > 0)
+            @if ($posts->isNotEmpty())
                 @php $featured = $posts->first(); @endphp
                 <a href="{{ route('blog.show', $featured->slug) }}" class="group block mb-16">
                     <article class="relative rounded-2xl overflow-hidden border border-slate-700/50 hover:border-cyan-500/30 transition-all duration-500 bg-gradient-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm">
@@ -162,7 +162,7 @@
             @endif
 
             <!-- Empty State -->
-            @if ($posts->count() === 0)
+            @if ($posts->isEmpty())
                 <div class="text-center py-24">
                     <div class="w-24 h-24 mx-auto mb-8 rounded-3xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center">
                         <i data-lucide="pen-tool" class="w-12 h-12 text-slate-600"></i>
