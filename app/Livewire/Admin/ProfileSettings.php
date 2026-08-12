@@ -217,6 +217,17 @@ class ProfileSettings extends Component
 
     public function updateAvatar()
     {
+        $user = Auth::user();
+        $throttleKey = 'update-avatar|' . $user->id . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('newAvatar', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'newAvatar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
