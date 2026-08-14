@@ -43,9 +43,9 @@
 
                     @if($project->url)
                         <a href="{{ $project->url }}" target="_blank" rel="noopener noreferrer" 
-                           class="flex items-center justify-center w-full px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:from-cyan-400 hover:to-blue-400 transition-all shadow-lg shadow-cyan-500/25 group">
-                            <span>Visit Live Site</span>
-                            <i data-lucide="external-link" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                           class="flex items-center justify-center w-full px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold hover:from-cyan-400 hover:to-blue-400 transition-all shadow-lg shadow-cyan-500/25 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900">
+                            <span>Visit Live Site <span class="sr-only">(opens in a new tab)</span></span>
+                            <i data-lucide="external-link" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
                         </a>
                     @endif
                 </div>
