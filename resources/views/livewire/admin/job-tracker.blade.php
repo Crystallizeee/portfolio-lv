@@ -93,9 +93,9 @@
                     </div>
                     @endif
                     @if($job->link)
-                    <a href="{{ $job->link }}" target="_blank" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 hover:underline transition-colors w-fit">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                        <span>Job Link</span>
+                    <a href="{{ $job->link }}" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-cyan-400 hover:text-cyan-300 hover:underline transition-colors w-fit focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded">
+                        <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                        <span>Job Link <span class="sr-only">(opens in a new tab)</span></span>
                     </a>
                     @endif
                 </div>
