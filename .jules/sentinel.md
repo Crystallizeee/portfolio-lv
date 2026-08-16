@@ -12,3 +12,8 @@
 **Vulnerability:** The `updateAvatar` method in `ProfileSettings.php` lacked rate limiting, allowing an attacker to repeatedly upload 2MB image files. Since file uploads and image validation consume CPU and disk resources, this could lead to Denial of Service (DoS).
 **Learning:** Unrestricted file upload endpoints, especially those involving image validation, are prime targets for resource exhaustion attacks.
 **Prevention:** Always apply rate limiting to file upload endpoints, placing the rate limiter logic *before* the validation step to prevent attackers from using large, invalid payloads to bypass the rate limiter.
+
+## 2025-03-08 - [CSRF Vulnerability on State-Modifying Endpoints]
+**Vulnerability:** The `/admin/clear-cache` route, which invokes an Artisan command (`optimize:clear`) modifying the server state, was configured as a `Route::get`.
+**Learning:** Any state-modifying action accessible via a GET request is vulnerable to Cross-Site Request Forgery (CSRF) attacks, as it lacks CSRF token validation and can be triggered by external sites simply loading the URL (e.g., via an image tag or a link).
+**Prevention:** Ensure all routes that modify server state, perform sensitive actions, or invoke commands use `Route::post` (or PUT/PATCH/DELETE) and are accompanied by UI elements that use forms with the `@csrf` directive instead of simple anchor (`<a>`) links.
