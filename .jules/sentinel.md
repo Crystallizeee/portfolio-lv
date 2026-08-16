@@ -12,3 +12,8 @@
 **Vulnerability:** The `updateAvatar` method in `ProfileSettings.php` lacked rate limiting, allowing an attacker to repeatedly upload 2MB image files. Since file uploads and image validation consume CPU and disk resources, this could lead to Denial of Service (DoS).
 **Learning:** Unrestricted file upload endpoints, especially those involving image validation, are prime targets for resource exhaustion attacks.
 **Prevention:** Always apply rate limiting to file upload endpoints, placing the rate limiter logic *before* the validation step to prevent attackers from using large, invalid payloads to bypass the rate limiter.
+
+## 2024-05-18 - [Livewire Validation Rules Length Limits]
+**Vulnerability:** A Livewire component (`AiCoverLetter`) called `$this->validate()` to enforce constraints on user inputs. However, the `$rules` property only enforced `nullable|string` without length boundaries.
+**Learning:** Calling `$this->validate()` on unbounded strings provides no real protection against large payloads. An attacker can still send massive payloads that consume memory and cause resource exhaustion before the external API request even happens.
+**Prevention:** When adding validation to Livewire components to prevent DoS, ensure the `$rules` array explicitly defines length limits (e.g., `max:2000` or `max:5000`) for all string and URL inputs.
