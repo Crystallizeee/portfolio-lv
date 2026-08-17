@@ -53,7 +53,7 @@ return [
     'ollama' => [
         'key'      => env('OLLAMA_API_KEY'),
         'base_url' => env('OLLAMA_API_URL', 'https://ollama.com/v1'),
-        'model'    => env('OLLAMA_MODEL', 'gemma3:27b'),
+        'model'    => env('OLLAMA_MODEL', 'gemma4:31b'),
         'model_seo'=> env('OLLAMA_MODEL_SEO', 'gpt-oss:120b'),
     ],
 

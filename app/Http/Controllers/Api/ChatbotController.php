@@ -82,7 +82,7 @@ class ChatbotController extends Controller
         // ── 7. API key check ─────────────────────────────────────────────────
         $apiKey  = config('services.ollama.key');
         $baseUrl = config('services.ollama.base_url', 'https://ollama.com/v1');
-        $model   = config('services.ollama.model', 'gemma3:27b');
+        $model   = config('services.ollama.model', 'gemma4:31b');
 
         if (!$apiKey) {
             return response()->json(['reply' => 'Chatbot is currently unavailable.'], 503);
