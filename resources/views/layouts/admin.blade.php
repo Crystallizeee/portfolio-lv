@@ -185,12 +185,15 @@
                         <span>Live View</span>
                     </a>
                     
-                    <a href="{{ route('admin.clear-cache') }}" 
-                       class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-amber-400 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-300 text-sm font-medium group"
-                       onclick="return confirm('Are you sure you want to clear all system caches?');">
-                        <i data-lucide="trash-2" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
-                        <span>Clear Cache</span>
-                    </a>
+                    <form method="POST" action="{{ route('admin.clear-cache') }}" class="m-0 p-0 inline-block">
+                        @csrf
+                        <button type="submit"
+                           class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-amber-400 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-300 text-sm font-medium group cursor-pointer"
+                           onclick="return confirm('Are you sure you want to clear all system caches?');">
+                            <i data-lucide="trash-2" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
+                            <span>Clear Cache</span>
+                        </button>
+                    </form>
                     
                     <div class="h-8 w-px bg-white/5 hidden sm:block"></div>
                     
