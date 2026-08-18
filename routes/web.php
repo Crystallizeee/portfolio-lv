@@ -124,7 +124,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/profiles', \App\Livewire\Admin\ManageProfiles::class)->name('admin.profiles');
 
             // Cache Clearance
-            Route::get('/clear-cache', function () {
+            Route::post('/clear-cache', function () {
                 \Illuminate\Support\Facades\Artisan::call('optimize:clear');
                 return back()->with('message', 'System cache cleared successfully!');
             })->name('admin.clear-cache');
