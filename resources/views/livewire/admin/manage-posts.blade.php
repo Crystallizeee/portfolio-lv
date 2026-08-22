@@ -354,7 +354,7 @@
                                 class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-200"
                                 aria-label="Close modal"
                             >
-                                <i data-lucide="x" class="w-4 h-4"></i>
+                                <i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -559,7 +559,7 @@
                                                 <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-purple-500/15 border border-purple-500/30 rounded-full text-xs text-purple-300 font-medium">
                                                     <span>{{ $tag }}</span>
                                                     <button type="button" wire:click="removeTag({{ $idx }})" class="text-purple-400 hover:text-white transition-colors ml-1" aria-label="Remove tag {{ $idx + 1 }}">
-                                                        <i data-lucide="x" class="w-2.5 h-2.5"></i>
+                                                        <i data-lucide="x" class="w-2.5 h-2.5" aria-hidden="true"></i>
                                                     </button>
                                                 </span>
                                             @endforeach
@@ -734,7 +734,7 @@
                         <span>Comments on: <span class="text-cyan-400">{{ $currentPostTitle }}</span></span>
                     </h3>
                     <button wire:click="closeCommentsModal" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-colors" aria-label="Close comments modal">
-                        <i data-lucide="x" class="w-4 h-4"></i>
+                        <i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i>
                     </button>
                 </div>
                 
