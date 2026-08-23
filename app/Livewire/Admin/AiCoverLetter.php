@@ -19,8 +19,8 @@ class AiCoverLetter extends Component
     public $errorMessage = '';
 
     protected $rules = [
-        'jobUrl' => 'nullable|url',
-        'manualJobDescription' => 'nullable|string',
+        'jobUrl' => 'nullable|url|max:500',
+        'manualJobDescription' => 'nullable|string|max:2000',
     ];
 
     public function generate()
@@ -34,6 +34,8 @@ class AiCoverLetter extends Component
         }
 
         RateLimiter::hit($throttleKey, 60);
+
+        $this->validate();
 
         if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
             $this->errorMessage = 'Please provide either a job URL or a manual job description.';
