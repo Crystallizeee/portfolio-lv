@@ -17,3 +17,8 @@
 **Vulnerability:** A route modifying server state (`/admin/clear-cache` invoking `optimize:clear`) was defined as a `GET` route and triggered via an anchor tag.
 **Learning:** Any endpoint that changes server state (like clearing caches, deleting items, or triggering jobs) must not be accessible via `GET` requests, as this exposes the application to Cross-Site Request Forgery (CSRF) attacks.
 **Prevention:** Always use `Route::post` (or `PUT`/`DELETE`) for state-modifying actions, and update the corresponding frontend UI to use `<form method="POST">` with the `@csrf` directive instead of simple links.
+
+## 2025-03-08 - Missing Validation and Length Limits in Livewire Component
+**Vulnerability:** A Livewire component defined rules but never executed them, and the rules lacked length limits, allowing excessively large inputs to bypass checks.
+**Learning:** Defining rules without calling `$this->validate()` provides no security, and unbounded string rules (e.g., `nullable|string`) offer no protection against resource exhaustion attacks via large payloads.
+**Prevention:** Always ensure `$this->validate()` is explicitly called in Livewire actions, and always define explicit length limits (e.g., `max:5000`) in validation rules.
