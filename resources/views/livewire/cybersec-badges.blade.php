@@ -154,7 +154,8 @@
                            onmouseover="this.style.background='rgba({{ $platformColorRgb }}, 0.15)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.5)'; this.style.boxShadow='0 0 20px rgba({{ $platformColorRgb }}, 0.15)';"
                            onmouseout="this.style.background='rgba({{ $platformColorRgb }}, 0.05)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.3)'; this.style.boxShadow='none';">
                             <span>View Profile</span>
-                            <i data-lucide="external-link" class="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1"></i>
+                            <i data-lucide="external-link" class="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" aria-hidden="true"></i>
+                            <span class="sr-only">(opens in a new tab)</span>
                         </a>
                     </div>
                 </div>

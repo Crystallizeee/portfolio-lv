@@ -140,10 +140,12 @@
                     <div class="flex items-center justify-between mt-4">
                         <a href="https://github.com/{{ config('services.github.username') }}" 
                            target="_blank"
+                           rel="noopener noreferrer"
                            class="text-xs font-mono text-slate-500 hover:text-cyan-400 transition-colors flex items-center space-x-2">
-                            <i data-lucide="github" class="w-4 h-4"></i>
+                            <i data-lucide="github" class="w-4 h-4" aria-hidden="true"></i>
                             <span>{{ '@' . config('services.github.username') }}</span>
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            <i data-lucide="external-link" class="w-3 h-3" aria-hidden="true"></i>
+                            <span class="sr-only">(opens in a new tab)</span>
                         </a>
                         <div class="flex items-center space-x-2">
                             <span class="text-[10px] font-mono text-slate-500">Less</span>

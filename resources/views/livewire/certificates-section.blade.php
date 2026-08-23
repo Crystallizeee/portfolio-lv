@@ -87,7 +87,8 @@
                                     class="inline-flex items-center justify-center w-full px-4 py-2 bg-slate-800 hover:bg-yellow-500/20 text-slate-300 hover:text-yellow-400 border border-slate-700 hover:border-yellow-500/50 rounded-lg text-sm font-medium transition-all duration-300 group/btn"
                                 >
                                     <span>Verify Credential</span>
-                                    <i data-lucide="external-link" class="w-4 h-4 ml-2 transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform"></i>
+                                    <i data-lucide="external-link" class="w-4 h-4 ml-2 transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                    <span class="sr-only">(opens in a new tab)</span>
                                 </a>
                             @endif
                         </div>
