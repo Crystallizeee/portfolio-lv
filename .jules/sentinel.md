@@ -17,3 +17,8 @@
 **Vulnerability:** A route modifying server state (`/admin/clear-cache` invoking `optimize:clear`) was defined as a `GET` route and triggered via an anchor tag.
 **Learning:** Any endpoint that changes server state (like clearing caches, deleting items, or triggering jobs) must not be accessible via `GET` requests, as this exposes the application to Cross-Site Request Forgery (CSRF) attacks.
 **Prevention:** Always use `Route::post` (or `PUT`/`DELETE`) for state-modifying actions, and update the corresponding frontend UI to use `<form method="POST">` with the `@csrf` directive instead of simple links.
+
+## 2024-05-08 - Rate Limiting Added to Update Profile Method
+**Vulnerability:** Missing rate limiting on `updateProfile` method in `ProfileSettings.php`.
+**Learning:** `updateProfile` in the admin settings was missing the standard rate limiting found on other sensitive update methods like `updatePassword` and `updateAvatar`, potentially allowing abuse/spam.
+**Prevention:** Consistently apply rate limiting to all data-mutating component methods accessible to users, matching existing conventions on other similar methods within the same component.
