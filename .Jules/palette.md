@@ -17,3 +17,6 @@
 ## 2026-07-08 - Added aria-hidden attributes to icon-only buttons
 **Learning:** Found that screen readers can sometimes awkwardly read out SVG content or meaningless strings for icon-only buttons relying on Lucide icons, even when the parent button has an `aria-label`. Additionally, expandable toggle widgets (like the chat window or mobile menus) require `aria-controls` and `aria-expanded` bindings on the trigger button to explicitly announce state changes to screen reader users.
 **Action:** Added `aria-hidden="true"` to the internal `<i data-lucide="...">` elements inside icon-only buttons across layouts. Also explicitly bound `:aria-expanded` and `aria-controls` to expanding toggle triggers like the chatbot and sidebar menus.
+## 2026-07-09 - Screen Reader Context for Social External Links
+**Learning:** External link cards for social profiles (like LinkedIn and GitHub) often lack context for screen reader users and use SVG or Lucide icons that are incorrectly announced. Opening external tabs without a `noopener noreferrer` also misses a standard best practice.
+**Action:** When adding or maintaining social link cards, always append `<span class="sr-only">(opens in a new tab)</span>` to the visible heading/label, explicitly add `rel="noopener noreferrer"` to the `a` tags, and set `aria-hidden="true"` on any decorative internal `<svg>` or `<i>` tags.
