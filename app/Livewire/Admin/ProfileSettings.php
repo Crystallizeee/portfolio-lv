@@ -104,6 +104,16 @@ class ProfileSettings extends Component
 
     public function saveEducation()
     {
+        $throttleKey = 'save-education|' . Auth::id() . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('educationForm.school', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'educationForm.school' => 'required|string|max:255',
             'educationForm.degree' => 'required|string|max:255',
@@ -177,6 +187,16 @@ class ProfileSettings extends Component
 
     public function updateProfile()
     {
+        $throttleKey = 'update-profile|' . Auth::id() . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('name', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
