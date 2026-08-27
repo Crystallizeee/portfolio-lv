@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2025-02-24 - Admin Layout Keyboard Accessibility Focus States
+**Learning:** The interactive elements (buttons, navigation links) in the primary admin layout wrapper `admin.blade.php` did not have visible focus indicators (`focus-visible` styles) configured, which hampered keyboard accessibility for administrative users.
+**Action:** Added explicit `focus:outline-none` and appropriate `focus-visible:ring-2` styling (with colors matching the context, like cyan for generic actions, amber for cache clearing, and rose for logout) to all structural interactive elements in the admin layout. Always ensure core structural UI wrappers have robust keyboard focus states for all standard HTML interaction targets.
