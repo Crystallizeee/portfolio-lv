@@ -22,3 +22,8 @@
 **Vulnerability:** The `updateProfile` method in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods (e.g., `updateProfile`, `saveEducation`) before any validation logic.
+
+## 2024-05-18 - Rate Limiting on All Data-Mutating Methods
+**Vulnerability:** Several administrative Livewire components (`ManageCertificates`, `ManageExperiences`, `ManageLanguages`) lacked rate limiting on their `save()` methods, making them vulnerable to resource exhaustion or abuse.
+**Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
