@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageCertificates extends Component
 {
@@ -84,6 +85,16 @@ class ManageCertificates extends Component
 
     public function save()
     {
+        $throttleKey = 'save-certificate:' . Auth::id();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('form.name', "Too many requests. Please try again in {$seconds} seconds.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'form.name' => 'required|string|max:255',
             'form.issuer' => 'required|string|max:255',

@@ -22,3 +22,7 @@
 **Vulnerability:** The `updateProfile` method in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods (e.g., `updateProfile`, `saveEducation`) before any validation logic.
+## 2025-10-24 - Rate Limiting on All Data-Mutating Methods
+**Vulnerability:** The `save` method in `ManageCertificates.php` lacked rate limiting, while other methods in the admin panel were protected.
+**Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods (e.g., `updateProfile`, `saveEducation`, `save`) before any validation logic.
