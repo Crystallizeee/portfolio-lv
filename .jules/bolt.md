@@ -1,7 +1,7 @@
 ## 2025-02-18 - Cache AI System Prompt Generation
 **Learning:** Generating the system prompt dynamically inside the `ChatbotController` for every single request causes a significant bottleneck. Gathering portfolio data dynamically effectively executes 6+ queries against the database to fetch `User`, `Experience`, `Skill`, `Project`, `Certificate`, `Language`, and `Education` models on every single `/api/chatbot` interaction.
 **Action:** When building extensive contextual prompts from static database records, encapsulate the aggregation logic inside `Cache::remember()` to ensure that the heavy DB queries are bypassed for the duration of the cache, ensuring prompt generation responds immediately.
-## $(date +%Y-%m-%d) - Defer Synchronous Database Writes in Middleware
+## 2026-08-28 - Defer Synchronous Database Writes in Middleware
 **Learning:** In Laravel 11.x, performing synchronous database inserts (like tracking page visits in middleware) blocks the HTTP response, increasing TTFB and reducing perceived performance.
 **Action:** Use Laravel's `defer()` helper to push non-critical, synchronous database operations to a background task that executes after the response is sent to the client, improving page load times.
 ## 2026-06-03 - Defer Synchronous Database Writes in Middleware
@@ -27,13 +27,13 @@
 ## 2025-05-18 - Rate Limit Heavy Facades
 **Learning:** Even if an API endpoint requires a strict authorization token, it can still be vulnerable to resource exhaustion DoS attacks if it handles an incredibly heavy operation, like generating a PDF using `Pdf::loadHtml()`.
 **Action:** Always rate limit specific controller actions and endpoints that perform exceptionally heavy tasks (like generating PDFs, fetching enormous amounts of aggregated data, or firing bulk email chains), explicitly using Laravel's `RateLimiter` to protect system resources.
-## $(date +%Y-%m-%d) - Prevent N+1 queries using collection count
+## 2026-08-28 - Prevent N+1 queries using collection count
 **Learning:** Using `->count()` on an Eloquent relation after already fetching it via `->get()` triggers a completely redundant database query.
 **Action:** When a full collection is being retrieved anyway for rendering in a view, always assign it to a variable and use the collection's internal `->count()` method to derive totals rather than issuing a separate database `COUNT()` aggregate query.
 ## 2026-07-23 - [Livewire Polling N+1 Writes Optimization]
 **Learning:** Multiple clients polling a Livewire component that persists status updates to the database can cause severe N+1 write bottlenecks. Checking model timestamps is unreliable as they might be null or improperly cast.
 **Action:** Use Laravel's atomic `Cache::add()` with a throttle key and expiration time to reliably throttle recurring database writes in Livewire polling components and prevent concurrent write storms.
-## $(date +%Y-%m-%d) - Optimize repeated collection initializations in templates
+## 2026-08-28 - Optimize repeated collection initializations in templates
 **Learning:** Calling `collect($array)` repeatedly within the same Blade view to perform operations like `->where()->count()` causes redundant object allocations and loop iterations, increasing overhead for what could be a single collection instantiation.
 **Action:** To prevent redundant object instantiations and overhead in Blade templates or Livewire views, avoid repeatedly calling `collect($array)` on the same array to calculate statistics (like `count()`). Instead, instantiate the collection once (e.g., `@php $collection = collect($array); @endphp`) and reuse it.
 ## 2026-07-28 - Cache Dashboard Aggregate Queries
@@ -42,3 +42,6 @@
 ## 2026-08-11 - [Use isEmpty/isNotEmpty on Laravel Collections]
 **Learning:** [Using isNotEmpty() and isEmpty() on Laravel Collections instead of explicitly checking count() > 0 or count() === 0 improves code readability and semantic clarity.]
 **Action:** [Use isNotEmpty() and isEmpty() for collection checks.]
+## 2026-08-28 - Optimize repeated calculations in blade loops
+**Learning:** Performing functions like `max()` or `count()` directly inside a Blade `@foreach` loop interpolation string causes the function to execute on every iteration. For small arrays this is negligible, but for larger datasets it acts as an O(N) hidden multiplier, creating unnecessary processing overhead.
+**Action:** When a calculation applies to an entire array and doesn't change during iteration, calculate it once using `@php` before the loop and reuse the variable inside.
