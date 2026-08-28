@@ -108,6 +108,7 @@
                 <h2 class="text-lg font-semibold text-white">Top Browsers</h2>
             </div>
             <div class="space-y-3">
+                @php $maxBrowsers = count($topBrowsers) > 0 ? max($topBrowsers) : 1; @endphp
                 @foreach($topBrowsers as $browser => $count)
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
@@ -115,7 +116,7 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <div class="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                            <div class="h-full bg-cyan-500" style="width: {{ ($count / (count($topBrowsers) > 0 ? max($topBrowsers) : 1)) * 100 }}%"></div>
+                            <div class="h-full bg-cyan-500" style="width: {{ ($count / $maxBrowsers) * 100 }}%"></div>
                         </div>
                         <span class="text-xs font-mono text-slate-500 w-8 text-right">{{ $count }}</span>
                     </div>
@@ -134,6 +135,7 @@
                 <h2 class="text-lg font-semibold text-white">Top Devices / OS</h2>
             </div>
             <div class="space-y-3">
+                @php $maxDevices = count($topDevices) > 0 ? max($topDevices) : 1; @endphp
                 @foreach($topDevices as $device => $count)
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-2">
@@ -141,7 +143,7 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <div class="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                            <div class="h-full bg-purple-500" style="width: {{ ($count / (count($topDevices) > 0 ? max($topDevices) : 1)) * 100 }}%"></div>
+                            <div class="h-full bg-purple-500" style="width: {{ ($count / $maxDevices) * 100 }}%"></div>
                         </div>
                         <span class="text-xs font-mono text-slate-500 w-8 text-right">{{ $count }}</span>
                     </div>
