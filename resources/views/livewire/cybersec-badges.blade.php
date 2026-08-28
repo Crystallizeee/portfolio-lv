@@ -149,12 +149,13 @@
                         <a href="{{ $profile->profile_url ?? $profile->generated_profile_url }}" 
                            target="_blank" 
                            rel="noopener noreferrer"
-                           class="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-mono font-medium border transition-all duration-300 group/btn"
+                           class="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-mono font-medium border transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 group/btn"
                            style="color: {{ $platformColor }}; border-color: rgba({{ $platformColorRgb }}, 0.3); background: rgba({{ $platformColorRgb }}, 0.05);"
                            onmouseover="this.style.background='rgba({{ $platformColorRgb }}, 0.15)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.5)'; this.style.boxShadow='0 0 20px rgba({{ $platformColorRgb }}, 0.15)';"
                            onmouseout="this.style.background='rgba({{ $platformColorRgb }}, 0.05)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.3)'; this.style.boxShadow='none';">
                             <span>View Profile</span>
-                            <i data-lucide="external-link" class="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1"></i>
+                            <i data-lucide="external-link" class="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" aria-hidden="true"></i>
+                            <span class="sr-only">(opens in a new tab)</span>
                         </a>
                     </div>
                 </div>
