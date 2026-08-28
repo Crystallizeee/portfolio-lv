@@ -295,8 +295,15 @@
                         <button 
                             type="submit"
                             class="py-2 px-6 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-wait"
+                            wire:target="updateProfile"
                         >
-                            Save Profile
+                            <span wire:loading.remove wire:target="updateProfile">Save Profile</span>
+                            <span wire:loading.flex wire:target="updateProfile" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" aria-hidden="true" class="w-4 h-4 animate-spin"></i>
+                                <span>Saving...</span>
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -353,8 +360,15 @@
                         <button 
                             type="submit"
                             class="py-2 px-6 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-medium transition-colors"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-wait"
+                            wire:target="updatePassword"
                         >
-                            Update Password
+                            <span wire:loading.remove wire:target="updatePassword">Update Password</span>
+                            <span wire:loading.flex wire:target="updatePassword" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" aria-hidden="true" class="w-4 h-4 animate-spin"></i>
+                                <span>Saving...</span>
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -592,8 +606,15 @@
                         <button 
                             type="submit"
                             class="py-2 px-6 bg-pink-500 hover:bg-pink-600 rounded-lg text-white font-medium transition-colors"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-wait"
+                            wire:target="saveEducation"
                         >
-                            {{ $editingEducationId ? 'Update' : 'Add Education' }}
+                            <span wire:loading.remove wire:target="saveEducation">{{ $editingEducationId ? 'Update' : 'Add Education' }}</span>
+                            <span wire:loading.flex wire:target="saveEducation" class="flex items-center space-x-2">
+                                <i data-lucide="loader-2" aria-hidden="true" class="w-4 h-4 animate-spin"></i>
+                                <span>Saving...</span>
+                            </span>
                         </button>
                     </div>
                 </form>
