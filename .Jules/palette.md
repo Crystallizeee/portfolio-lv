@@ -17,3 +17,6 @@
 ## 2026-07-08 - Added aria-hidden attributes to icon-only buttons
 **Learning:** Found that screen readers can sometimes awkwardly read out SVG content or meaningless strings for icon-only buttons relying on Lucide icons, even when the parent button has an `aria-label`. Additionally, expandable toggle widgets (like the chat window or mobile menus) require `aria-controls` and `aria-expanded` bindings on the trigger button to explicitly announce state changes to screen reader users.
 **Action:** Added `aria-hidden="true"` to the internal `<i data-lucide="...">` elements inside icon-only buttons across layouts. Also explicitly bound `:aria-expanded` and `aria-controls` to expanding toggle triggers like the chatbot and sidebar menus.
+## 2024-03-24 - External Links Accessibility
+**Learning:** Found that external links (`target="_blank"`) often lack security attributes (`rel="noopener noreferrer"`) and screen reader notifications indicating that the link opens in a new tab.
+**Action:** Always add `rel="noopener noreferrer"` for security and `<span class="sr-only">(opens in a new tab)</span>` for accessibility to any link with `target="_blank"`.
