@@ -93,7 +93,7 @@ class ManagePosts extends Component
 
     public function openEditModal($id)
     {
-        $post = Post::where('user_id', Auth::id())->findOrFail($id);
+        $post = Post::where('user_id', auth()->id())->findOrFail($id);
 
         $this->editingId = $id;
         $this->title = $post->title;
@@ -129,13 +129,13 @@ class ManagePosts extends Component
     {
         // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the external API endpoint
         $throttleKey = 'ai-seo-tags:' . auth()->id();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             $this->seoErrorMessage = "Too many requests. Please try again in {$seconds} seconds.";
             return;
         }
 
-        RateLimiter::hit($throttleKey, 60);
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         if (empty($this->title) && empty($this->content)) {
             $this->seoErrorMessage = 'Please fill in the post title or content first.';
@@ -279,6 +279,14 @@ MSG;
 
     public function save()
     {
+        $throttleKey = 'save-post|' . auth()->id() . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         // Sync tags from input before saving
@@ -291,7 +299,7 @@ MSG;
         }
 
         $data = [
-            'user_id' => Auth::id(),
+            'user_id' => auth()->id(),
             'title' => $this->title,
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
@@ -319,7 +327,7 @@ MSG;
         }
 
         if ($this->isEditing && $this->editingId) {
-            Post::where('user_id', Auth::id())->findOrFail($this->editingId)->update($data);
+            Post::where('user_id', auth()->id())->findOrFail($this->editingId)->update($data);
             session()->flash('message', 'Post updated successfully!');
         } else {
             Post::create($data);
@@ -331,7 +339,7 @@ MSG;
 
     public function delete($id)
     {
-        $post = Post::where('user_id', Auth::id())->findOrFail($id);
+        $post = Post::where('user_id', auth()->id())->findOrFail($id);
 
         // Delete image if exists
         if ($post->featured_image) {
@@ -348,7 +356,7 @@ MSG;
     // --- Comments Management ---
     public function openCommentsModal($postId)
     {
-        $post = Post::with('comments')->where('user_id', Auth::id())->findOrFail($postId);
+        $post = Post::with('comments')->where('user_id', auth()->id())->findOrFail($postId);
         $this->currentPostIdForComments = $post->id;
         $this->currentPostTitle = $post->title;
         $this->postComments = $post->comments()->latest()->get();
@@ -366,7 +374,7 @@ MSG;
     public function deleteComment($commentId)
     {
         \App\Models\Comment::whereHas('post', function($q) {
-            $q->where('user_id', Auth::id());
+            $q->where('user_id', auth()->id());
         })->findOrFail($commentId)->delete();
         // Refresh comments list
         if ($this->currentPostIdForComments) {
