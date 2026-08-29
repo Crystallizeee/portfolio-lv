@@ -8,6 +8,7 @@ use Livewire\WithFileUploads;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageProjects extends Component
 {
@@ -134,6 +135,14 @@ class ManageProjects extends Component
 
     public function save()
     {
+        $throttleKey = 'save-project|' . \Illuminate\Support\Facades\Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
         
         // Handle new gallery uploads

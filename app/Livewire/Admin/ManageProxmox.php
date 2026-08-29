@@ -7,6 +7,7 @@ use App\Services\ProxmoxService;
 use App\Models\Project;
 use App\Models\HomelabService;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageProxmox extends Component
 {
@@ -133,6 +134,14 @@ class ManageProxmox extends Component
 
     public function saveAlias()
     {
+        $throttleKey = 'save-proxmox-alias|' . \Illuminate\Support\Facades\Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $service = HomelabService::where('vmid', $this->editingVmid)->first();
         if ($service) {
             $service->update(['alias' => $this->newAlias]);
