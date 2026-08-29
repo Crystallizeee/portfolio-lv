@@ -27,3 +27,8 @@
 **Vulnerability:** Several administrative Livewire components (`ManageCertificates`, `ManageExperiences`, `ManageLanguages`) lacked rate limiting on their `save()` methods, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
+
+## 2025-05-18 - Rate Limiting on File Upload Endpoints
+**Vulnerability:** Several administrative Livewire components (`ManagePosts`, `ManageProjects`) lacked rate limiting on their `save()` methods, making them vulnerable to resource exhaustion or abuse, especially with file uploads.
+**Learning:** File upload endpoints without rate limits can be easily abused to consume disk and CPU resources.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods, particularly those handling file uploads, before any validation logic.
