@@ -27,3 +27,8 @@
 **Vulnerability:** Several administrative Livewire components (`ManageCertificates`, `ManageExperiences`, `ManageLanguages`) lacked rate limiting on their `save()` methods, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
+
+## 2024-05-18 - Rate Limiting on All Data-Mutating Methods
+**Vulnerability:** Several administrative Livewire components (`JobTracker`, `ManageProjects`, `ManageProfiles`, `ManageCybersecProfiles`, `ManageProxmox`, `ManageSkills`, `SeoManager`) lacked rate limiting on their `save()` methods, making them vulnerable to resource exhaustion or abuse.
+**Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
