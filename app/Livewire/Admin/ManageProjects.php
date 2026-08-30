@@ -8,6 +8,8 @@ use Livewire\WithFileUploads;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Auth;
 
 class ManageProjects extends Component
 {
@@ -134,6 +136,14 @@ class ManageProjects extends Component
 
     public function save()
     {
+        $throttleKey = 'manage-projects-save-' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
         
         // Handle new gallery uploads
@@ -188,6 +198,14 @@ class ManageProjects extends Component
 
     public function delete(int $id)
     {
+        $throttleKey = 'manage-projects-delete-' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $project = Project::findOrFail($id);
         
         // Delete gallery images
