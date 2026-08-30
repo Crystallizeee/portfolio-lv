@@ -75,11 +75,11 @@
                     <span class="terminal-text font-mono text-base tracking-tighter truncate transition-all duration-300" x-show="!sidebarCollapsed" x-transition:enter="delay-200">ADMIN PANEL</span>
                 </div>
                 <!-- Desktop Minimize Toggle -->
-                <button type="button" @click="toggleCollapse()" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 transition-colors" aria-label="Toggle sidebar collapse">
+                <button type="button" @click="toggleCollapse()" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg transition-colors" aria-label="Toggle sidebar collapse">
                     <i data-lucide="chevron-left" class="w-4 h-4 transition-transform duration-500" :class="sidebarCollapsed ? 'rotate-180' : ''" aria-hidden="true"></i>
                 </button>
                 <!-- Mobile Close Button -->
-                <button type="button" @click="sidebarOpen = false" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white transition-all hover:rotate-90 cursor-pointer" aria-label="Close sidebar">
+                <button type="button" @click="sidebarOpen = false" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg transition-all hover:rotate-90 cursor-pointer" aria-label="Close sidebar">
                     <i data-lucide="x" class="w-6 h-6" aria-hidden="true"></i>
                 </button>
             </div>
@@ -109,7 +109,7 @@
 
                 @foreach($navItems as $item)
                     <a href="{{ route($item['route']) }}" 
-                       class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 {{ request()->routeIs($item['route']) ? 'bg-cyan-500/15 text-cyan-400 shadow-[inset_0_0_12px_rgba(34,211,238,0.1)]' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200' }}"
+                       class="group flex items-center px-4 py-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all duration-300 {{ request()->routeIs($item['route']) ? 'bg-cyan-500/15 text-cyan-400 shadow-[inset_0_0_12px_rgba(34,211,238,0.1)]' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200' }}"
                        :class="sidebarCollapsed ? 'justify-center space-x-0 px-0' : 'space-x-3 px-4'">
                         <i data-lucide="{{ $item['icon'] }}" class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 shrink-0"></i>
                         <span class="font-medium text-[0.925rem] truncate transition-all duration-300" x-show="!sidebarCollapsed" x-transition:enter="delay-200">{{ $item['label'] }}</span>
@@ -123,7 +123,7 @@
             <!-- Footer/Profile Section -->
             <div class="p-4 border-t border-white/5 bg-white/[0.02] rounded-b-xl shrink-0 overflow-hidden">
                 <div class="flex items-center group transition-all duration-300" :class="sidebarCollapsed ? 'justify-center space-x-0' : 'space-x-3'">
-                    <a href="{{ route('admin.profile') }}" class="relative flex-shrink-0">
+                    <a href="{{ route('admin.profile') }}" class="relative flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-xl">
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-800 flex items-center justify-center border border-white/10 transition-all" :class="sidebarCollapsed ? 'w-8 h-8' : 'w-10 h-10'">
                             <i data-lucide="user" class="w-5 h-5 text-slate-300 transition-all" :class="sidebarCollapsed ? 'w-4 h-4' : 'w-5 h-5'"></i>
                         </div>
@@ -135,7 +135,7 @@
                     </div>
                     <form action="{{ route('admin.logout') }}" method="POST" class="shrink-0" x-show="!sidebarCollapsed">
                         @csrf
-                        <button type="submit" class="p-2 text-slate-500 hover:text-rose-400 transition-all hover:scale-110 cursor-pointer" aria-label="Logout">
+                        <button type="submit" class="p-2 text-slate-500 hover:text-rose-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg transition-all hover:scale-110 cursor-pointer" aria-label="Logout">
                             <i data-lucide="log-out" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     </form>
@@ -144,7 +144,7 @@
                 <div class="mt-4 flex justify-center" x-show="sidebarCollapsed">
                     <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="p-1.5 text-slate-600 hover:text-rose-400 transition-colors cursor-pointer" aria-label="Logout">
+                        <button type="submit" class="p-1.5 text-slate-600 hover:text-rose-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg transition-colors cursor-pointer" aria-label="Logout">
                             <i data-lucide="log-out" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     </form>
@@ -160,13 +160,13 @@
             <header class="h-16 mx-4 mt-4 glass-card flex items-center justify-between px-6 z-30 transition-all duration-500">
                 <div class="flex items-center space-x-4">
                     <!-- Mobile Burger -->
-                    <button type="button" @click="sidebarOpen = true" class="md:hidden p-2 text-slate-400 hover:text-white transition-all bg-white/5 rounded-lg active:scale-95" aria-label="Open menu" :aria-expanded="sidebarOpen.toString()" aria-controls="admin-sidebar">
+                    <button type="button" @click="sidebarOpen = true" class="md:hidden p-2 text-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all bg-white/5 rounded-lg active:scale-95" aria-label="Open menu" :aria-expanded="sidebarOpen.toString()" aria-controls="admin-sidebar">
                         <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
                     </button>
                     
                     <div class="flex space-x-2 items-center">
                         <!-- Mobile/Tablet Toggle Collapse (Hidden on very small mobile if preferred, but useful for tablet) -->
-                        <button type="button" @click="toggleCollapse()" class="p-1.5 text-slate-500 hover:text-cyan-400 transition-colors rounded-lg bg-white/5 md:hidden" aria-label="Toggle sidebar width">
+                        <button type="button" @click="toggleCollapse()" class="p-1.5 text-slate-500 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors rounded-lg bg-white/5 md:hidden" aria-label="Toggle sidebar width">
                             <i data-lucide="maximize-2" class="w-4 h-4" x-show="sidebarCollapsed" aria-hidden="true"></i>
                             <i data-lucide="minimize-2" class="w-4 h-4" x-show="!sidebarCollapsed" aria-hidden="true"></i>
                         </button>
@@ -180,7 +180,7 @@
 
                 <div class="flex items-center space-x-4">
                     <a href="{{ url('/') }}" target="_blank" 
-                       class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-cyan-400 hover:bg-white/10 hover:border-cyan-500/30 transition-all duration-300 text-sm font-medium group">
+                       class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-cyan-400 hover:bg-white/10 hover:border-cyan-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-all duration-300 text-sm font-medium group">
                         <i data-lucide="external-link" class="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
                         <span>Live View</span>
                     </a>
@@ -188,7 +188,7 @@
                     <form action="{{ route('admin.clear-cache') }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to clear all system caches?');">
                         @csrf
                         <button type="submit"
-                           class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-amber-400 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-300 text-sm font-medium group">
+                           class="hidden sm:flex items-center space-x-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-slate-300 hover:text-amber-400 hover:bg-white/10 hover:border-amber-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 transition-all duration-300 text-sm font-medium group">
                             <i data-lucide="trash-2" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
                             <span>Clear Cache</span>
                         </button>
