@@ -57,7 +57,8 @@
 
     {{-- Quick Add Buttons --}}
     @php
-        $existingPlatforms = collect($profiles)->pluck('platform')->toArray();
+        $profilesCollection = collect($profiles);
+        $existingPlatforms = $profilesCollection->pluck('platform')->toArray();
     @endphp
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -78,7 +79,7 @@
                     </div>
                 </div>
                 @if(in_array('tryhackme', $existingPlatforms))
-                    @php $thmProfile = collect($profiles)->firstWhere('platform', 'tryhackme'); @endphp
+                    @php $thmProfile = $profilesCollection->firstWhere('platform', 'tryhackme'); @endphp
                     <button wire:click="edit({{ $thmProfile['id'] }})" 
                             class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
                             style="background: rgba(136, 204, 20, 0.1); color: #88cc14; border: 1px solid rgba(136, 204, 20, 0.3);">
@@ -113,7 +114,7 @@
                     </div>
                 </div>
                 @if(in_array('letsdefend', $existingPlatforms))
-                    @php $ldProfile = collect($profiles)->firstWhere('platform', 'letsdefend'); @endphp
+                    @php $ldProfile = $profilesCollection->firstWhere('platform', 'letsdefend'); @endphp
                     <button wire:click="edit({{ $ldProfile['id'] }})" 
                             class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
                             style="background: rgba(30, 136, 229, 0.1); color: #1e88e5; border: 1px solid rgba(30, 136, 229, 0.3);">
