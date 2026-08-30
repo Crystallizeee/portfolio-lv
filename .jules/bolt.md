@@ -42,3 +42,6 @@
 ## 2026-08-11 - [Use isEmpty/isNotEmpty on Laravel Collections]
 **Learning:** [Using isNotEmpty() and isEmpty() on Laravel Collections instead of explicitly checking count() > 0 or count() === 0 improves code readability and semantic clarity.]
 **Action:** [Use isNotEmpty() and isEmpty() for collection checks.]
+## 2026-08-11 - Optimize repeated collection initializations in templates
+**Learning:** Calling `collect($array)` repeatedly within the same Blade view (like checking properties inside loops or conditionals) causes redundant object allocations and loop iterations, increasing overhead for what could be a single collection instantiation.
+**Action:** To prevent redundant object instantiations and overhead in Blade templates or Livewire views, avoid repeatedly calling `collect($array)` on the same array to manipulate or query data. Instead, instantiate the collection once (e.g., `@php $collection = collect($array); @endphp`) and reuse it across the view.
