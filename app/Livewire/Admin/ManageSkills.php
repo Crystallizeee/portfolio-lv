@@ -4,6 +4,8 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Skill;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Auth;
 
 class ManageSkills extends Component
 {
@@ -59,6 +61,16 @@ class ManageSkills extends Component
 
     public function save()
     {
+        $throttleKey = 'save-skill|' . Auth::id() . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('name', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         $data = [
