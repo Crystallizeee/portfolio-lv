@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use App\Models\JobApplication;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class JobTracker extends Component
 {
@@ -91,6 +93,16 @@ class JobTracker extends Component
 
     public function save()
     {
+        $throttleKey = 'save-job-tracker|' . Auth::id() . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('company', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         $data = [
