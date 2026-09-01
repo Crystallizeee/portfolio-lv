@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\CybersecProfile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageCybersecProfiles extends Component
 {
@@ -70,6 +71,14 @@ class ManageCybersecProfiles extends Component
 
     public function save()
     {
+        $throttleKey = 'save-cybersec|' . Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'form.platform' => 'required|in:tryhackme,letsdefend',
             'form.username' => 'required|string|max:255',
