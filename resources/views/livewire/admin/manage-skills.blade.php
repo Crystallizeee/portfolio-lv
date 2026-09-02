@@ -9,9 +9,9 @@
         </div>
         <button 
             wire:click="openCreateModal"
-            class="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-xl text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400 transition-all duration-300 shadow-lg shadow-green-500/10"
+            class="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-xl text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400 transition-all duration-300 shadow-lg shadow-green-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
-            <i data-lucide="plus" class="w-4 h-4"></i>
+            <i data-lucide="plus" aria-hidden="true" class="w-4 h-4"></i>
             <span class="font-medium">Tambah Skill</span>
         </button>
     </div>
@@ -66,13 +66,15 @@
                         <td class="px-6 py-5 text-right">
                                 <button 
                                     wire:click="openEditModal({{ $skill->id }})"
-                                    class="px-3 py-1.5 text-xs text-green-400 hover:bg-green-500/20 rounded-lg transition-all duration-200 border border-green-500/30"
+                                    class="px-3 py-1.5 text-xs text-green-400 hover:bg-green-500/20 rounded-lg transition-all duration-200 border border-green-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                                    aria-label="Edit skill {{ $skill->name }}"
                                 >
                                     Edit
                                 </button>
                                 <button 
                                     @click="deleteId = {{ $skill->id }}; showDeleteModal = true"
-                                    class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30"
+                                    class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                                    aria-label="Delete skill {{ $skill->name }}"
                                 >
                                     Delete
                                 </button>
@@ -139,10 +141,10 @@
                             </div>
                             <button 
                                 wire:click="closeModal" 
-                                class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200"
+                                class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600/50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                                 aria-label="Close modal"
                             >
-                                <i data-lucide="x" class="w-4 h-4"></i>
+                                <i data-lucide="x" aria-hidden="true" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
@@ -257,18 +259,18 @@
                                 <button 
                                     type="button"
                                     wire:click="closeModal"
-                                    class="px-5 py-2.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200"
+                                    class="px-5 py-2.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                                 >
                                     Batal
                                 </button>
                                 <button 
                                     type="submit"
-                                    class="px-6 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-medium hover:from-green-400 hover:to-emerald-400 transition-all duration-200 shadow-lg shadow-green-500/25 flex items-center space-x-2"
+                                    class="px-6 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-medium hover:from-green-400 hover:to-emerald-400 transition-all duration-200 shadow-lg shadow-green-500/25 flex items-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                                     wire:loading.attr="disabled"
                                     wire:loading.class="opacity-50 cursor-wait"
                                 >
                                     <span wire:loading.remove class="flex items-center space-x-2">
-                                        <i data-lucide="{{ $isEditing ? 'check' : 'plus' }}" class="w-4 h-4"></i>
+                                        <i data-lucide="{{ $isEditing ? 'check' : 'plus' }}" aria-hidden="true" class="w-4 h-4"></i>
                                         <span>{{ $isEditing ? 'Update Skill' : 'Simpan Skill' }}</span>
                                     </span>
                                     <span wire:loading class="flex items-center space-x-2">
@@ -299,13 +301,13 @@
             <div class="flex justify-center space-x-2">
                 <button 
                     @click="showDeleteModal = false" 
-                    class="px-4 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded transition-all"
+                    class="px-4 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                     Batal
                 </button>
                 <button 
                     @click="$wire.delete(deleteId); showDeleteModal = false" 
-                    class="px-4 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-all"
+                    class="px-4 py-1.5 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                     Hapus
                 </button>

@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-03-22 - Focus States and ARIA attributes in Manage Experiences & Skills
+**Learning:** Found that the action buttons (Edit, Delete, Tambah) in the Manage Experiences and Manage Skills components lacked focus-visible states and their internal Lucide icons lacked `aria-hidden="true"`, causing poor keyboard navigation and screen reader confusion. Missing labels like `aria-label="Edit experience {{ $experience->company }}"` were also omitted.
+**Action:** When updating or reviewing similar Livewire components, ensure all interactive buttons have `focus:outline-none focus-visible:ring-2` styling, and internal SVG/icon elements have `aria-hidden="true"`. Also always apply contextual labels to dynamic buttons.
