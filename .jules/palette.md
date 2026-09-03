@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-08-03 - Added missing focus rings to main navigation links
+**Learning:** Main navigation anchor links that rely purely on hover colors (`hover:text-cyan-400`) might completely lack visible focus indicators for keyboard navigation (`Tab`) if `focus-visible` classes aren't explicitly added. This is a subtle but critical accessibility flaw in many custom Tailwind navigation implementations.
+**Action:** Always verify that interactive elements, especially custom-styled anchors and buttons, have explicit `focus-visible` utility classes (e.g., `focus:outline-none focus-visible:ring-2`) to ensure a proper visual indicator for keyboard users.
