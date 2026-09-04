@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2025-05-15 - Focus Indicators and ARIA Hidden in Component Loops
+**Learning:** Decorative icons and toggle buttons inside `foreach` component loops (like certificates-section.blade.php) frequently miss `focus-visible` styling and `aria-hidden` tags.
+**Action:** Always verify `focus-visible` states for interactive elements (like expand buttons) and apply `aria-hidden="true"` to decorative icons within structural loops, ensuring a11y standards persist across all generated elements.

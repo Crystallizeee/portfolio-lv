@@ -28,7 +28,7 @@
                             >
                         @else
                             <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-700 ease-out">
-                                <i data-lucide="award" class="w-16 h-16 text-yellow-500/50"></i>
+                                <i data-lucide="award" class="w-16 h-16 text-yellow-500/50" aria-hidden="true"></i>
                             </div>
                         @endif
                         <!-- Subtle gradient overlay to blend image with content -->
@@ -61,7 +61,7 @@
                                     <button @click="expanded = !expanded"
                                             :aria-expanded="expanded"
                                             aria-controls="cert-desc-{{ $cert->id }}"
-                                            class="text-xs text-yellow-500 hover:text-yellow-400 mt-1.5 font-medium transition-colors">
+                                            class="text-xs text-yellow-500 hover:text-yellow-400 mt-1.5 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 rounded">
                                         <span x-text="expanded ? 'Show less' : 'Read more...'"></span>
                                     </button>
                                 @endif
@@ -74,7 +74,7 @@
                         <div class="mt-auto pt-4 border-t border-slate-700/50 flex flex-col space-y-3">
                             @if($cert->credential_id)
                                 <div class="flex items-center text-xs text-slate-500">
-                                    <i data-lucide="hash" class="w-3.5 h-3.5 mr-1.5"></i>
+                                    <i data-lucide="hash" class="w-3.5 h-3.5 mr-1.5" aria-hidden="true"></i>
                                     <span class="font-mono">{{ $cert->credential_id }}</span>
                                 </div>
                             @endif
@@ -87,7 +87,7 @@
                                     class="inline-flex items-center justify-center w-full px-4 py-2 bg-slate-800 hover:bg-yellow-500/20 text-slate-300 hover:text-yellow-400 border border-slate-700 hover:border-yellow-500/50 rounded-lg text-sm font-medium transition-all duration-300 group/btn"
                                 >
                                     <span>Verify Credential</span>
-                                    <i data-lucide="external-link" class="w-4 h-4 ml-2 transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform"></i>
+                                    <i data-lucide="external-link" class="w-4 h-4 ml-2 transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </div>
