@@ -31,3 +31,7 @@
 **Vulnerability:** File upload methods in Livewire administrative components were missing rate limits before validation logic.
 **Learning:** Placing rate limiting before validation in components that handle file uploads prevents validation-based DoS attacks, although it may accidentally penalize users for minor validation errors.
 **Prevention:** Consider UX when placing rate limits, but prioritize preventing resource exhaustion for endpoints parsing large payloads.
+## 2024-09-04 - Rate Limiting on Admin Mutation Endpoints
+**Vulnerability:** The ManageSkills Livewire component lacked rate limiting on its `save` and `delete` methods, exposing the system to potential Denial of Service (DoS) through rapid, repeated requests.
+**Learning:** Administrative interfaces that perform database mutations must consistently implement rate limits, even for authenticated users, to prevent resource exhaustion and brute-force manipulation.
+**Prevention:** Always apply `RateLimiter::tooManyAttempts()` checks at the very beginning of state-mutating Livewire component methods before validation or execution.

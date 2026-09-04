@@ -4,6 +4,8 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Skill;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageSkills extends Component
 {
@@ -59,6 +61,16 @@ class ManageSkills extends Component
 
     public function save()
     {
+        // 🛡️ Sentinel: Add explicit rate limiting to prevent Denial of Service (DoS)
+        // through resource exhaustion or brute-force manipulation of the database.
+        $throttleKey = 'manage-skills-save-' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         $data = [
@@ -82,6 +94,16 @@ class ManageSkills extends Component
 
     public function delete(int $id)
     {
+        // 🛡️ Sentinel: Implement rate limiting to protect administrative deletion
+        // endpoints from automated abuse and potential data loss scripts.
+        $throttleKey = 'manage-skills-delete-' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         Skill::findOrFail($id)->delete();
         session()->flash('message', 'Skill berhasil dihapus!');
     }
