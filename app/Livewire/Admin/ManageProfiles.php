@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\JobProfile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class ManageProfiles extends Component
@@ -51,6 +52,14 @@ class ManageProfiles extends Component
 
     public function saveProfile()
     {
+        $throttleKey = 'save-profile|' . Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'name' => 'required|string|max:255',
             'professional_title' => 'required|string|max:255',
@@ -92,6 +101,14 @@ class ManageProfiles extends Component
 
     public function deleteProfile($id)
     {
+        $throttleKey = 'delete-profile|' . Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $profile = JobProfile::where('user_id', Auth::id())->findOrFail($id);
         if ($profile->is_landing_page) {
             session()->flash('error', 'Cannot delete the active landing page profile.');
@@ -104,6 +121,14 @@ class ManageProfiles extends Component
 
     public function setAsLandingPage($id)
     {
+        $throttleKey = 'set-landing-page|' . Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         // Set all to false
         JobProfile::where('user_id', Auth::id())->update(['is_landing_page' => false]);
         
