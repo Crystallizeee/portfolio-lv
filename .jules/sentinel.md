@@ -31,3 +31,8 @@
 **Vulnerability:** File upload methods in Livewire administrative components were missing rate limits before validation logic.
 **Learning:** Placing rate limiting before validation in components that handle file uploads prevents validation-based DoS attacks, although it may accidentally penalize users for minor validation errors.
 **Prevention:** Consider UX when placing rate limits, but prioritize preventing resource exhaustion for endpoints parsing large payloads.
+
+## 2025-05-18 - Rate Limiting on JobProfile Methods
+**Vulnerability:** The `saveProfile`, `deleteProfile`, and `setAsLandingPage` methods in `ManageProfiles.php` lacked rate limiting.
+**Learning:** Missing rate limits on profile creation, deletion, and active landing page toggles can lead to excessive database operations and potential resource exhaustion.
+**Prevention:** Ensure all data-mutating methods, including deletions and status toggles, have rate limits applied before performing any operations.
