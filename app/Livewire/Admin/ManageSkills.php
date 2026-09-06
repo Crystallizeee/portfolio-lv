@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Skill;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageSkills extends Component
 {
@@ -59,6 +60,17 @@ class ManageSkills extends Component
 
     public function save()
     {
+        // 🛡️ Sentinel: Rate limit Livewire component to prevent resource exhaustion
+        $throttleKey = 'manage-skills-save:' . auth()->id();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         $data = [
@@ -82,6 +94,17 @@ class ManageSkills extends Component
 
     public function delete(int $id)
     {
+        // 🛡️ Sentinel: Rate limit Livewire component to prevent resource exhaustion
+        $throttleKey = 'manage-skills-delete:' . auth()->id();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         Skill::findOrFail($id)->delete();
         session()->flash('message', 'Skill berhasil dihapus!');
     }
