@@ -31,3 +31,8 @@
 **Vulnerability:** File upload methods in Livewire administrative components were missing rate limits before validation logic.
 **Learning:** Placing rate limiting before validation in components that handle file uploads prevents validation-based DoS attacks, although it may accidentally penalize users for minor validation errors.
 **Prevention:** Consider UX when placing rate limits, but prioritize preventing resource exhaustion for endpoints parsing large payloads.
+
+## 2025-03-08 - Rate Limiting Added to Post Save
+**Vulnerability:** The `save` method in `ManagePosts.php` lacked rate limiting, allowing an attacker to repeatedly upload files or large content payloads, leading to resource exhaustion.
+**Learning:** All data-mutating methods, especially those handling complex payloads like images and tags, must implement rate limiting before validation logic.
+**Prevention:** Ensure rate limits are consistently applied to all methods that mutate state or handle file uploads to prevent Denial of Service (DoS) attacks.

@@ -279,6 +279,15 @@ MSG;
 
     public function save()
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent resource exhaustion
+        $throttleKey = 'manage-posts-save-' . auth()->id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         // Sync tags from input before saving
