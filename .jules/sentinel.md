@@ -31,3 +31,8 @@
 **Vulnerability:** File upload methods in Livewire administrative components were missing rate limits before validation logic.
 **Learning:** Placing rate limiting before validation in components that handle file uploads prevents validation-based DoS attacks, although it may accidentally penalize users for minor validation errors.
 **Prevention:** Consider UX when placing rate limits, but prioritize preventing resource exhaustion for endpoints parsing large payloads.
+
+## 2024-05-18 - Missing Rate Limiting on Cybersec Profiles Admin
+**Vulnerability:** The save method in `ManageCybersecProfiles` Livewire component lacked rate limiting, potentially allowing resource exhaustion or denial of service via rapid, repeated form submissions.
+**Learning:** It is crucial to consistently enforce rate limiting across all administrative actions that mutate state, as omission in newer or secondary components can leave the system vulnerable to automated spam or DoS.
+**Prevention:** Ensure that a standardized rate limiting snippet (`RateLimiter::tooManyAttempts(...)`) is universally applied before any validation or state mutation in all Livewire component action methods.
