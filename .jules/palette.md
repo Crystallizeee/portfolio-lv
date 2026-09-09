@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-03-22 - Focus States and External Links in Certificates Grid
+**Learning:** Found that the "Verify Credential" external link within the certificates grid lacked visual focus states for keyboard navigation and screen reader text indicating it opens in a new tab, as well as an `aria-hidden` attribute on the external link icon.
+**Action:** Always add explicit `focus-visible` utility classes to interactive elements for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"`, include `<span class="sr-only">(opens in a new tab)</span>`, and hide decorative icons using `aria-hidden="true"`.
