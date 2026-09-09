@@ -1,5 +1,5 @@
 <div class="mt-16 pt-8 border-t border-slate-800">
-    <h3 class="text-2xl font-bold text-white mb-8">Komentar ({{ $comments->count() }})</h3>
+    <h3 class="text-2xl font-bold text-white mb-8">Komentar ({{ $comments->total() }})</h3>
 
     {{-- Admin: Pending Comments --}}
     @auth
@@ -133,5 +133,9 @@
                 <p class="text-slate-400">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
             </div>
         @endforelse
+    </div>
+
+    <div class="mt-8">
+        {{ $comments->links() }}
     </div>
 </div>

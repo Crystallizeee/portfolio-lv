@@ -42,3 +42,6 @@
 ## 2026-08-11 - [Use isEmpty/isNotEmpty on Laravel Collections]
 **Learning:** [Using isNotEmpty() and isEmpty() on Laravel Collections instead of explicitly checking count() > 0 or count() === 0 improves code readability and semantic clarity.]
 **Action:** [Use isNotEmpty() and isEmpty() for collection checks.]
+## 2025-02-18 - Implement Pagination for Comments
+**Learning:** Fetching all comments at once using `->get()` can cause memory exhaustion and slow down the page rendering when a post accumulates a large number of comments.
+**Action:** Replace `->get()` with `->paginate()` in Livewire components when dealing with lists that can grow large, such as comments, and ensure `Livewire\WithPagination` is used to prevent full page reloads.

@@ -3,12 +3,15 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\Comment;
 use App\Services\IpAnonymizer;
 use Illuminate\Support\Facades\RateLimiter;
 
 class PostComments extends Component
 {
+    use WithPagination;
+
     public $post;
     public $name = '';
     public $content = '';
@@ -160,7 +163,7 @@ class PostComments extends Component
 
     public function render()
     {
-        $comments = $this->post->comments()->approved()->latest()->get();
+        $comments = $this->post->comments()->approved()->latest()->paginate(10);
 
         // ⚡ Bolt Optimization: Fetch the pending comments collection first and use its internal count()
         // method instead of executing a separate SQL count() query to prevent redundant DB roundtrips.
