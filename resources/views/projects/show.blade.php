@@ -110,7 +110,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 @foreach($project->gallery as $image)
                                     <div class="group relative aspect-video rounded-xl overflow-hidden border border-slate-700/50 cursor-zoom-in hover:border-cyan-500/50 transition-colors">
-                                        <img src="{{ trim($image) }}" alt="Project screenshot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                        <img src="{{ trim($image) }}" alt="Project screenshot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
                                         <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <i data-lucide="maximize-2" class="w-8 h-8 text-white"></i>
                                         </div>
