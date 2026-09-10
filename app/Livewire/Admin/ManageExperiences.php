@@ -96,6 +96,15 @@ class ManageExperiences extends Component
 
     public function delete(int $id)
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse and resource exhaustion on the delete endpoint.
+        $throttleKey = 'delete-experience|' . \Illuminate\Support\Facades\Auth::id() . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         Experience::findOrFail($id)->delete();
         session()->flash('message', 'Experience berhasil dihapus!');
     }
