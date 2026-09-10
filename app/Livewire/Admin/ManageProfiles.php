@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\JobProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageProfiles extends Component
 {
@@ -51,6 +52,15 @@ class ManageProfiles extends Component
 
     public function saveProfile()
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent DoS via resource exhaustion
+        $throttleKey = 'save-profile|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'name' => 'required|string|max:255',
             'professional_title' => 'required|string|max:255',
