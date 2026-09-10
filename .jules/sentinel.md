@@ -36,3 +36,8 @@
 **Vulnerability:** The `save` method in `ManageSkills` lacked rate limiting, making it vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
+
+## 2025-03-08 - Rate Limiting on Delete Methods
+**Vulnerability:** The `delete` method in the `ManageExperiences` Livewire component lacked rate limiting, while the `save` method was protected. This leaves the deletion endpoint vulnerable to abuse or resource exhaustion.
+**Learning:** Administrative actions like deletions are also susceptible to abuse. Protecting only creation/update endpoints is insufficient.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods, including deletions, across administrative components.
