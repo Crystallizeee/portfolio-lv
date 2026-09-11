@@ -30,7 +30,7 @@ class AdminDashboard extends Component
         $this->projectsCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_projects_count', 300, fn() => Project::count());
         $this->onlineProjects = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_online_projects_count', 300, fn() => Project::where('status', 'online')->count());
         $this->experiencesCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_experiences_count', 300, fn() => Experience::count());
-        $this->cvDownloads = Analytics::getTotal(Auth::id(), 'cv_download');
+        $this->cvDownloads = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_cv_downloads_' . Auth::id(), 300, fn() => Analytics::getTotal(Auth::id(), 'cv_download'));
         $this->profileViews = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_profile_views_count', 300, fn() => SiteVisit::count());
 
         $this->prepareChartData();
@@ -92,18 +92,25 @@ class AdminDashboard extends Component
         $startDate = now()->subDays(6)->startOfDay();
         $endDate = now()->endOfDay();
 
-        // ⚡ Bolt Optimization: Group by date instead of querying inside loop to avoid N+1 queries
-        $viewsData = SiteVisit::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('date(created_at) as date, count(*) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date');
+        // ⚡ Bolt Optimization: Cache chart aggregate queries for 5 minutes (300s).
+        // This prevents 2 expensive group-by queries from executing on every
+        // dashboard load, further improving performance for the admin view.
+        $userId = Auth::id();
+        $viewsData = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_views_data', 300, function () use ($startDate, $endDate) {
+            return SiteVisit::whereBetween('created_at', [$startDate, $endDate])
+                ->selectRaw('date(created_at) as date, count(*) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date');
+        });
 
-        $downloadsData = Analytics::where('user_id', Auth::id())
-            ->where('type', 'cv_download')
-            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-            ->selectRaw('date, sum(count) as count')
-            ->groupBy('date')
-            ->pluck('count', 'date');
+        $downloadsData = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_downloads_data_' . $userId, 300, function () use ($userId, $startDate, $endDate) {
+            return Analytics::where('user_id', $userId)
+                ->where('type', 'cv_download')
+                ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->selectRaw('date, sum(count) as count')
+                ->groupBy('date')
+                ->pluck('count', 'date');
+        });
 
         $views = [];
         $downloads = [];

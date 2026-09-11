@@ -45,3 +45,6 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+## 2026-10-10 - Cache Chart Data Aggregate Queries
+**Learning:** Even if individual queries are grouped to prevent N+1 issues in loops, running multiple un-cached aggregate queries (`SUM`, `GROUP BY`) on the admin dashboard causes noticeable delay on load. We had partially cached the scalar count queries but missed the chart data queries and one `SUM` query, causing unnecessary DB load on every render.
+**Action:** Always audit all queries on dashboard components. Aggregate queries for charts should be cached alongside scalar aggregates, especially since date-based grouping changes infrequently (e.g., daily boundaries).
