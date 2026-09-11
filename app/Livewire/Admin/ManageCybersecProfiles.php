@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\CybersecProfile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageCybersecProfiles extends Component
 {
@@ -70,6 +71,14 @@ class ManageCybersecProfiles extends Component
 
     public function save()
     {
+        $throttleKey = 'cybersec-save|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'form.platform' => 'required|in:tryhackme,letsdefend',
             'form.username' => 'required|string|max:255',
@@ -122,6 +131,14 @@ class ManageCybersecProfiles extends Component
 
     public function delete($id)
     {
+        $throttleKey = 'cybersec-delete|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         CybersecProfile::where('user_id', Auth::id())->find($id)?->delete();
         $this->loadProfiles();
         session()->flash('success', 'Profile deleted successfully!');
@@ -129,6 +146,14 @@ class ManageCybersecProfiles extends Component
 
     public function toggleVisibility($id)
     {
+        $throttleKey = 'cybersec-toggle|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $profile = CybersecProfile::where('user_id', Auth::id())->find($id);
         if ($profile) {
             $profile->update(['is_visible' => !$profile->is_visible]);
@@ -155,6 +180,14 @@ class ManageCybersecProfiles extends Component
 
     public function syncNow()
     {
+        $throttleKey = 'cybersec-sync|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         \Illuminate\Support\Facades\Artisan::call('cybersec:sync');
         $this->loadProfiles();
         session()->flash('success', 'Sync completed! Badge images refreshed. Stats still require manual update (no public API available).');
