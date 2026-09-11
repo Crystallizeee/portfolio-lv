@@ -94,8 +94,15 @@
                             <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-700/50 flex items-center justify-center">
                                 <i data-lucide="folder-open" class="w-8 h-8 opacity-50"></i>
                             </div>
-                            <p class="text-lg font-medium mb-1">Belum ada project</p>
-                            <p class="text-sm">Klik "Tambah Project" untuk memulai.</p>
+                            <p class="text-lg font-medium mb-1 text-slate-300">Belum ada project</p>
+                            <p class="text-sm text-slate-400 mb-4">Tambahkan project pertama Anda untuk memulai.</p>
+                            <button
+                                wire:click="openCreateModal"
+                                class="inline-flex items-center space-x-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                            >
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Tambah Project</span>
+                            </button>
                         </td>
                     </tr>
                 @endforelse
