@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2026-08-11 - Add Actionable Empty States
+**Learning:** Users encounter friction when presented with a list's empty state that instructs them to click a button located far away (e.g., at the top of the page).
+**Action:** Always provide an explicit, styled call-to-action (CTA) button directly within the empty state itself, ensuring it uses appropriate focus visible styles for accessibility.
