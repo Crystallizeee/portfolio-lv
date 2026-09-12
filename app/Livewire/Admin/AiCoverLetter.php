@@ -33,6 +33,8 @@ class AiCoverLetter extends Component
             return;
         }
 
+        $this->validate();
+
         RateLimiter::hit($throttleKey, 60);
 
         if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
