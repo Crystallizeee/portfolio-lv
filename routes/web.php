@@ -51,8 +51,7 @@ if (app()->environment('local')) {
     if ($host && $tokenId && $tokenSecret) {
         try {
             // Test node status
-            $response = \Illuminate\Support\Facades\Http::withoutVerifying()
-                ->withHeaders([
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
                     'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
                 ])
                 ->timeout(5)
@@ -61,8 +60,7 @@ if (app()->environment('local')) {
             $result['node_api_status'] = $response->status();
             
             // Test Nextcloud VM 106 (QEMU)
-            $containerResponse = \Illuminate\Support\Facades\Http::withoutVerifying()
-                ->withHeaders([
+            $containerResponse = \Illuminate\Support\Facades\Http::withHeaders([
                     'Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"
                 ])
                 ->timeout(5)

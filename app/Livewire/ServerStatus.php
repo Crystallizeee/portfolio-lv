@@ -43,8 +43,7 @@ class ServerStatus extends Component
         return Cache::remember("proxmox_bulk_{$type}_{$node}", 30, function () use ($type, $host, $node, $tokenId, $tokenSecret) {
             try {
                 $endpoint = $type === 'node' ? "/nodes/{$node}/status" : "/nodes/{$node}/{$type}";
-                $response = Http::withoutVerifying()
-                    ->withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
+                $response = Http::withHeaders(['Authorization' => "PVEAPIToken={$tokenId}={$tokenSecret}"])
                     ->timeout(5)
                     ->get("https://{$host}:8006/api2/json{$endpoint}");
 
