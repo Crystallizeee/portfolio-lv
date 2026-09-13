@@ -9,9 +9,9 @@
         </div>
         <button 
             wire:click="openModal"
-            class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/50 rounded-xl text-yellow-400 hover:from-yellow-500/30 hover:to-orange-500/30 hover:border-yellow-400 transition-all duration-300"
+            class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/50 rounded-xl text-yellow-400 hover:from-yellow-500/30 hover:to-orange-500/30 hover:border-yellow-400 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
-            <i data-lucide="plus" class="w-4 h-4"></i>
+            <i data-lucide="plus" class="w-4 h-4" aria-hidden="true"></i>
             <span class="font-medium">Add Certificate</span>
         </button>
     </div>
@@ -37,18 +37,18 @@
                     <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                             wire:click="edit({{ $cert['id'] }})"
-                            class="p-2 text-slate-400 hover:text-cyan-400 transition-colors"
+                            class="p-2 text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                             aria-label="Edit certificate"
                         >
-                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                            <i data-lucide="pencil" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                         <button 
                             wire:click="delete({{ $cert['id'] }})"
                             wire:confirm="Are you sure you want to delete this certificate?"
-                            class="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                            class="p-2 text-slate-400 hover:text-red-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                             aria-label="Delete certificate"
                         >
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <i data-lucide="trash-2" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -75,9 +75,9 @@
                     <a 
                         href="{{ $cert['credential_url'] }}" 
                         target="_blank"
-                        class="mt-3 inline-flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
+                        class="mt-3 inline-flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                     >
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                        <i data-lucide="external-link" class="w-3 h-3" aria-hidden="true"></i>
                         <span>View Credential</span>
                     </a>
                 @endif
@@ -89,7 +89,7 @@
                 <p class="text-slate-500 mb-4">Start adding your professional certifications</p>
                 <button 
                     wire:click="openModal"
-                    class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-yellow-400 hover:bg-yellow-500/30 transition-colors"
+                    class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-yellow-400 hover:bg-yellow-500/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                     Add Your First Certificate
                 </button>
@@ -108,8 +108,8 @@
                     <h3 class="text-lg font-semibold text-white font-mono">
                         {{ $editingId ? 'Edit Certificate' : 'Add Certificate' }}
                     </h3>
-                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors" aria-label="Close modal">
-                        <i data-lucide="x" class="w-5 h-5"></i>
+                    <button wire:click="closeModal" class="text-slate-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded" aria-label="Close modal">
+                        <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -206,13 +206,13 @@
                         <button 
                             type="button"
                             wire:click="closeModal"
-                            class="py-2 px-4 text-slate-400 hover:text-white transition-colors"
+                            class="py-2 px-4 text-slate-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded"
                         >
                             Cancel
                         </button>
                         <button 
                             type="submit"
-                            class="py-2 px-6 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2"
+                            class="py-2 px-6 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-medium transition-colors flex items-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-wait"
                             wire:target="save"
@@ -221,7 +221,7 @@
                                 {{ $editingId ? 'Update' : 'Add Certificate' }}
                             </span>
                             <span wire:loading wire:target="save" class="flex items-center space-x-2">
-                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                                <i data-lucide="loader-2" class="w-4 h-4 animate-spin" aria-hidden="true"></i>
                                 <span>Saving...</span>
                             </span>
                         </button>
