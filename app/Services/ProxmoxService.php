@@ -177,8 +177,7 @@ class ProxmoxService
      */
     protected function apiGet(string $endpoint): \Illuminate\Http\Client\Response
     {
-        return Http::withoutVerifying()
-            ->withHeaders([
+        return Http::withHeaders([
                 'Authorization' => "PVEAPIToken={$this->tokenId}={$this->tokenSecret}"
             ])
             ->timeout(5)

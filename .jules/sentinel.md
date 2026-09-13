@@ -36,3 +36,8 @@
 **Vulnerability:** The `save` method in `ManageSkills` lacked rate limiting, making it vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation logic.
+
+## 2024-05-18 - Removed insecure TLS verification bypass
+**Vulnerability:** The application was skipping TLS certificate verification via `Http::withoutVerifying()` for Proxmox API calls, exposing it to Man-in-the-Middle (MitM) attacks.
+**Learning:** Disabling SSL verification on external HTTP requests is insecure. It bypasses the integrity and confidentiality guarantees of TLS.
+**Prevention:** Avoid using `withoutVerifying()` in production code. Ensure valid certificates are used or properly configure CA bundles if necessary.
