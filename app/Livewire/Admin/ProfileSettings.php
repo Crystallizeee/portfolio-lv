@@ -158,6 +158,14 @@ class ProfileSettings extends Component
 
     public function deleteEducation($id)
     {
+        $throttleKey = 'delete-education|' . Auth::id() . '|' . request()->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         Education::where('user_id', Auth::id())->findOrFail($id)->delete();
         $this->loadEducations();
         session()->flash('education_success', 'Education deleted successfully!');

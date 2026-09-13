@@ -41,3 +41,8 @@
 **Vulnerability:** The application was skipping TLS certificate verification via `Http::withoutVerifying()` for Proxmox API calls, exposing it to Man-in-the-Middle (MitM) attacks.
 **Learning:** Disabling SSL verification on external HTTP requests is insecure. It bypasses the integrity and confidentiality guarantees of TLS.
 **Prevention:** Avoid using `withoutVerifying()` in production code. Ensure valid certificates are used or properly configure CA bundles if necessary.
+
+## 2024-05-18 - Rate Limiting Added to deleteEducation Method in ProfileSettings
+**Vulnerability:** The data-mutating method `deleteEducation` in `ProfileSettings.php` lacked rate limiting.
+**Learning:** Assuming component-level protection or only protecting update/save methods leaves other critical methods vulnerable to resource exhaustion or DoS attacks.
+**Prevention:** Consistently implement rate limiting on all data-mutating or security-sensitive methods before any logic execution.
