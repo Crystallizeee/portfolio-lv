@@ -45,3 +45,6 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+## 2025-02-18 - Extract repeated complex array operations outside loops
+**Learning:** Performing functions like `count()` and `max()` on arrays within a `@foreach` loop in Blade templates redundantly re-calculates the same value on every iteration, leading to unnecessary CPU cycles and rendering overhead.
+**Action:** When a static array value (like `max()` or `count()`) is required inside a loop for calculations (e.g., progress bar width), extract the computation to a `@php` block *before* the loop and reference the single variable inside the loop.
