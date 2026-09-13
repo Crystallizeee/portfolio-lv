@@ -337,6 +337,16 @@ class ProfileSettings extends Component
     public function enableTwoFactor()
     {
         $user = Auth::user();
+
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the 2FA enable process
+        $throttleKey = 'enable-2fa|' . $user->id . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $google2fa = new Google2FA();
 
         // Generate a new secret key
@@ -431,6 +441,15 @@ class ProfileSettings extends Component
     {
         $user = Auth::user();
 
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the 2FA disable process
+        $throttleKey = 'disable-2fa|' . $user->id . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $user->update([
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
@@ -449,6 +468,15 @@ class ProfileSettings extends Component
     public function regenerateRecoveryCodes()
     {
         $user = Auth::user();
+
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the recovery codes generation process
+        $throttleKey = 'regen-2fa-codes|' . $user->id . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         if (! $user->hasTwoFactorEnabled()) {
             return;
