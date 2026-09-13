@@ -41,3 +41,8 @@
 **Vulnerability:** The application was skipping TLS certificate verification via `Http::withoutVerifying()` for Proxmox API calls, exposing it to Man-in-the-Middle (MitM) attacks.
 **Learning:** Disabling SSL verification on external HTTP requests is insecure. It bypasses the integrity and confidentiality guarantees of TLS.
 **Prevention:** Avoid using `withoutVerifying()` in production code. Ensure valid certificates are used or properly configure CA bundles if necessary.
+
+## 2024-06-03 - Missing Rate Limiting on 2FA Management Actions
+**Vulnerability:** The 2FA management methods (`enableTwoFactor`, `disableTwoFactor`, and `regenerateRecoveryCodes`) in the `ProfileSettings` Livewire component lacked rate limiting.
+**Learning:** These sensitive endpoints should always be rate-limited to prevent abuse and resource exhaustion, especially when generating cryptographic values.
+**Prevention:** Always apply rate limiting to endpoints that handle sensitive state transitions or cryptographic operations to prevent abuse.
