@@ -131,3 +131,5 @@ Route::prefix('admin')->group(function () {
         });
     });
 });
+
+\Laravel\Mcp\Facades\Mcp::web('/mcp', \App\Mcp\Servers\PortfolioServer::class);
