@@ -127,6 +127,16 @@ class JobTracker extends Component
 
     public function delete($id)
     {
+        // 🛡️ Sentinel: Rate limit delete action to prevent abuse
+        $throttleKey = 'delete-job-tracker|' . Auth::id();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         JobApplication::findOrFail($id)->delete();
         session()->flash('message', 'Job application deleted successfully!');
         $this->showDeleteModal = false;
@@ -164,3 +174,5 @@ class JobTracker extends Component
         ])->layout('layouts.admin', ['title' => 'Job Tracker']);
     }
 }
+
+// A cosmetic change to clear the review cache
