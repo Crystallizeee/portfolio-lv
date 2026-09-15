@@ -46,3 +46,7 @@
 **Vulnerability:** The 2FA management methods (`enableTwoFactor`, `disableTwoFactor`, and `regenerateRecoveryCodes`) in the `ProfileSettings` Livewire component lacked rate limiting.
 **Learning:** These sensitive endpoints should always be rate-limited to prevent abuse and resource exhaustion, especially when generating cryptographic values.
 **Prevention:** Always apply rate limiting to endpoints that handle sensitive state transitions or cryptographic operations to prevent abuse.
+## 2025-10-25 - Rate Limiting on SeoManager::save()
+**Vulnerability:** The `save` method in the `SeoManager` Livewire component lacked rate limiting.
+**Learning:** Even singletons or global settings pages can be targeted for resource exhaustion if their form submission endpoints lack rate limiting.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods, including those managing global settings.
