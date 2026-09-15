@@ -75,11 +75,11 @@
                     <span class="terminal-text font-mono text-base tracking-tighter truncate transition-all duration-300" x-show="!sidebarCollapsed" x-transition:enter="delay-200">ADMIN PANEL</span>
                 </div>
                 <!-- Desktop Minimize Toggle -->
-                <button type="button" @click="toggleCollapse()" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 transition-colors" aria-label="Toggle sidebar collapse">
+                <button type="button" @click="toggleCollapse()" class="hidden md:flex ml-auto p-1.5 text-slate-500 hover:text-cyan-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg" aria-label="Toggle sidebar collapse">
                     <i data-lucide="chevron-left" class="w-4 h-4 transition-transform duration-500" :class="sidebarCollapsed ? 'rotate-180' : ''" aria-hidden="true"></i>
                 </button>
                 <!-- Mobile Close Button -->
-                <button type="button" @click="sidebarOpen = false" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white transition-all hover:rotate-90 cursor-pointer" aria-label="Close sidebar">
+                <button type="button" @click="sidebarOpen = false" class="md:hidden ml-auto p-2 text-slate-400 hover:text-white transition-all hover:rotate-90 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg" aria-label="Close sidebar">
                     <i data-lucide="x" class="w-6 h-6" aria-hidden="true"></i>
                 </button>
             </div>
@@ -135,7 +135,7 @@
                     </div>
                     <form action="{{ route('admin.logout') }}" method="POST" class="shrink-0" x-show="!sidebarCollapsed">
                         @csrf
-                        <button type="submit" class="p-2 text-slate-500 hover:text-rose-400 transition-all hover:scale-110 cursor-pointer" aria-label="Logout">
+                        <button type="submit" class="p-2 text-slate-500 hover:text-rose-400 transition-all hover:scale-110 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 rounded-lg" aria-label="Logout">
                             <i data-lucide="log-out" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     </form>
@@ -144,7 +144,7 @@
                 <div class="mt-4 flex justify-center" x-show="sidebarCollapsed">
                     <form action="{{ route('admin.logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="p-1.5 text-slate-600 hover:text-rose-400 transition-colors cursor-pointer" aria-label="Logout">
+                        <button type="submit" class="p-1.5 text-slate-600 hover:text-rose-400 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 rounded-lg" aria-label="Logout">
                             <i data-lucide="log-out" class="w-4 h-4" aria-hidden="true"></i>
                         </button>
                     </form>

@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-03-22 - Admin Layout Buttons Missing Focus States
+**Learning:** Core navigation and action buttons (like sidebar toggles and logout buttons) in the admin layout lacked `focus-visible` utility classes, making keyboard navigation difficult or impossible for screen reader and keyboard-only users.
+**Action:** Always ensure interactive elements, particularly structural UI components like layout toggles, have explicit `focus:outline-none focus-visible:ring-2` styling for proper keyboard accessibility.
