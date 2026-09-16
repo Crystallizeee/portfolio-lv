@@ -1,10 +1,16 @@
 import requests
 import json
+import os
+import sys
 
 ACCOUNT_ID = "29aa5035a6f089ec1b9bd6f9bd4b94d4"
 TUNNEL_ID = "769a95dc-29b1-489a-ba65-aff0f74f8c31"
-API_KEY = "9e9e5e898693fbdbc15c548d3fa54f53c2bef"
+API_KEY = os.environ.get("CLOUDFLARE_API_KEY")
 EMAIL = "Blood.last54@gmail.com"
+
+if not API_KEY:
+    print("Error: CLOUDFLARE_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 
 API_URL = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/cfd_tunnel/{TUNNEL_ID}/configurations"
 
