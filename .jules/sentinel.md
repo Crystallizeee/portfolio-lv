@@ -51,3 +51,8 @@
 **Vulnerability:** The `SeoManager` component lacked rate limiting on the `save` method.
 **Learning:** Inconsistent application of rate limiting across admin components can leave isolated endpoints vulnerable to DoS attacks via resource exhaustion.
 **Prevention:** Ensure all data-mutating endpoints, especially in Livewire components (which are easy to script), have appropriate rate limits applied based on the authenticated user ID.
+
+## 2025-05-15 - Dependency version issues in composer.lock across different PHP versions
+**Vulnerability:** Although not a direct vulnerability in the code, the `composer.lock` file was resolving versions of certain packages (like `symfony/clock` or `symfony/css-selector`) that required a higher PHP version (e.g., PHP 8.4) than the CI testing matrix supported (e.g., PHP 8.2 and 8.3). This causes automated pipelines and build environments to fail, creating operational disruption.
+**Learning:** `composer update` operations can sometimes silently upgrade deeply-nested packages to versions requiring higher platform requirements if `--ignore-platform-reqs` is not used carefully or if the `composer.json` platform config is not strictly defined to the lowest supported version.
+**Prevention:** In libraries or projects targeting multiple PHP versions (like `^8.2`), ensure `composer update` is run with `--ignore-platform-reqs` or consider setting `config.platform.php` in `composer.json` to the minimum supported version (e.g., `8.2.0`) so the lockfile always resolves compatible packages.
