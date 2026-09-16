@@ -46,3 +46,8 @@
 **Vulnerability:** The 2FA management methods (`enableTwoFactor`, `disableTwoFactor`, and `regenerateRecoveryCodes`) in the `ProfileSettings` Livewire component lacked rate limiting.
 **Learning:** These sensitive endpoints should always be rate-limited to prevent abuse and resource exhaustion, especially when generating cryptographic values.
 **Prevention:** Always apply rate limiting to endpoints that handle sensitive state transitions or cryptographic operations to prevent abuse.
+
+## 2024-05-18 - Hardcoded Secrets in Python Automation Scripts
+**Vulnerability:** A critical API key (Cloudflare `X-Auth-Key`) was hardcoded in a Python deployment/configuration script (`scripts/configure_tunnel_api.py`).
+**Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
+**Prevention:** Always use environment variables (`os.environ.get`) or secure configuration management tools to supply secrets to automation scripts, rather than hardcoding them in the source.
