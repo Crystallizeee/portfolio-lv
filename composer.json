@@ -16,8 +16,16 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.7",
         "mews/purifier": "^3.4",
+        "openspout/openspout": "<4.31.0",
         "pragmarx/google2fa-laravel": "^3.0",
-        "spatie/laravel-sitemap": "^7.3"
+        "spatie/laravel-sitemap": "^7.3",
+        "symfony/clock": "<8.1.0",
+        "symfony/css-selector": "<8.1.0",
+        "symfony/dom-crawler": "<8.1.0",
+        "symfony/event-dispatcher": "<8.1.0",
+        "symfony/string": "<8.1.0",
+        "symfony/translation": "<8.1.0",
+        "symfony/yaml": "<8.1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -88,6 +96,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "audit": {
+            "block-insecure": false
         }
     },
     "minimum-stability": "stable",
