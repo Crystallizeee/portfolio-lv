@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-03-22 - External Links Accessibility and Security in Contact Form
+**Learning:** The external links in the contact form (LinkedIn, GitHub) were missing `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab. This is a security, performance, and accessibility issue for `target="_blank"` links.
+**Action:** Always ensure external links with `target="_blank"` include `rel="noopener noreferrer"` and `<span class="sr-only">(opens in a new tab)</span>`.
