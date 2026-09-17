@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use App\Models\SeoMetadata;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Auth;
 
 class SeoManager extends Component
 {
@@ -34,6 +36,16 @@ class SeoManager extends Component
 
     public function save()
     {
+        $throttleKey = 'seo-manager-save|' . Auth::id();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('title', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
         $this->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
