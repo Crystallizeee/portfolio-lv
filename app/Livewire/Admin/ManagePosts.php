@@ -129,13 +129,13 @@ class ManagePosts extends Component
     {
         // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the external API endpoint
         $throttleKey = 'ai-seo-tags:' . auth()->id();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             $this->seoErrorMessage = "Too many requests. Please try again in {$seconds} seconds.";
             return;
         }
 
-        RateLimiter::hit($throttleKey, 60);
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         if (empty($this->title) && empty($this->content)) {
             $this->seoErrorMessage = 'Please fill in the post title or content first.';
@@ -279,6 +279,14 @@ MSG;
 
     public function save()
     {
+        $throttleKey = 'manage-posts-save-' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('message', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->validate();
 
         // Sync tags from input before saving
@@ -331,6 +339,14 @@ MSG;
 
     public function delete($id)
     {
+        $throttleKey = 'manage-posts-delete-' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('message', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $post = Post::where('user_id', Auth::id())->findOrFail($id);
 
         // Delete image if exists
@@ -365,6 +381,14 @@ MSG;
 
     public function deleteComment($commentId)
     {
+        $throttleKey = 'manage-posts-delete-comment-' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('message', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         \App\Models\Comment::whereHas('post', function($q) {
             $q->where('user_id', Auth::id());
         })->findOrFail($commentId)->delete();
@@ -374,6 +398,7 @@ MSG;
         }
         session()->flash('message', 'Komentar berhasil dihapus!');
     }
+
 
     public function resetForm()
     {

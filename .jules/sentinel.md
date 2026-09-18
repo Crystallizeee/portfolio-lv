@@ -51,3 +51,8 @@
 **Vulnerability:** A critical API key (Cloudflare `X-Auth-Key`) was hardcoded in a Python deployment/configuration script (`scripts/configure_tunnel_api.py`).
 **Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
 **Prevention:** Always use environment variables (`os.environ.get`) or secure configuration management tools to supply secrets to automation scripts, rather than hardcoding them in the source.
+
+## 2024-06-03 - Missing Rate Limiting on Posts Management Actions
+**Vulnerability:** The posts management methods (`save`, `delete`, and `deleteComment`) in the `ManagePosts` Livewire component lacked rate limiting.
+**Learning:** These sensitive endpoints should always be rate-limited to prevent abuse and resource exhaustion, especially when uploading images.
+**Prevention:** Always apply rate limiting to endpoints that handle sensitive state transitions or file uploads to prevent abuse.
