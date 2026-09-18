@@ -67,15 +67,15 @@
         @endif
 
         <div class="mb-4">
-            <label for="name" class="block mb-2 text-sm font-medium text-slate-300">Nama</label>
-            <input type="text" id="name" wire:model="name" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-slate-500" placeholder="Masukkan nama Anda" required>
-            @error('name') <span class="text-rose-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+            <label for="name" class="block mb-2 text-sm font-medium text-slate-300">Nama <span class="text-rose-500" aria-hidden="true">*</span></label>
+            <input type="text" id="name" wire:model="name" class="bg-slate-800 border text-white text-sm rounded-lg focus:ring-1 block w-full p-2.5 placeholder-slate-500 @error('name') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @else border-slate-700 focus:border-cyan-500 focus:ring-cyan-500 @enderror" placeholder="Masukkan nama Anda" required @error('name') aria-invalid="true" aria-describedby="name-error" @enderror>
+            @error('name') <span id="name-error" class="text-rose-500 text-sm mt-1.5 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-1.5" aria-hidden="true"></i> {{ $message }}</span> @enderror
         </div>
         
         <div class="mb-4">
-            <label for="content" class="block mb-2 text-sm font-medium text-slate-300">Komentar</label>
-            <textarea id="content" wire:model="content" rows="4" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-slate-500" placeholder="Tulis komentar Anda di sini..." required></textarea>
-            @error('content') <span class="text-rose-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+            <label for="content" class="block mb-2 text-sm font-medium text-slate-300">Komentar <span class="text-rose-500" aria-hidden="true">*</span></label>
+            <textarea id="content" wire:model="content" rows="4" class="bg-slate-800 border text-white text-sm rounded-lg focus:ring-1 block w-full p-2.5 placeholder-slate-500 @error('content') border-rose-500 focus:border-rose-500 focus:ring-rose-500 @else border-slate-700 focus:border-cyan-500 focus:ring-cyan-500 @enderror" placeholder="Tulis komentar Anda di sini..." required @error('content') aria-invalid="true" aria-describedby="content-error" @enderror></textarea>
+            @error('content') <span id="content-error" class="text-rose-500 text-sm mt-1.5 flex items-center"><i data-lucide="alert-circle" class="w-4 h-4 mr-1.5" aria-hidden="true"></i> {{ $message }}</span> @enderror
         </div>
 
         {{-- Honeypot: hidden field to trap bots --}}

@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2023-10-27 - Form Validation UX and Accessibility
+**Learning:** Basic form validation errors (text below inputs) are often missed by users, and lack semantic ties for screen readers. Inputs retaining their standard border colors during error states reduce visual feedback.
+**Action:** When implementing forms, always explicitly link validation errors to inputs using `aria-describedby` and `aria-invalid="true"`. Additionally, enhance the visual feedback by dynamically altering the input's border color to an error state (e.g., `border-rose-500`) and prepending error messages with an alert icon.
