@@ -51,3 +51,8 @@
 **Vulnerability:** A critical API key (Cloudflare `X-Auth-Key`) was hardcoded in a Python deployment/configuration script (`scripts/configure_tunnel_api.py`).
 **Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
 **Prevention:** Always use environment variables (`os.environ.get`) or secure configuration management tools to supply secrets to automation scripts, rather than hardcoding them in the source.
+
+## 2024-05-18 - Rate Limiter Placement Vulnerability in AiCoverLetter
+**Vulnerability:** Rate limit token consumption (`RateLimiter::hit()`) was placed after validation logic in `AiCoverLetter.php`.
+**Learning:** Failed validations throw exceptions and bypass rate limit consumption, allowing attackers to spam invalid requests without consuming tokens. This can lead to validation-based DoS.
+**Prevention:** Always place rate limiting token consumption (`RateLimiter::hit()`) before any validation logic in Livewire components.
