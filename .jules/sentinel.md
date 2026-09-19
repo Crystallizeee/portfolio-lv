@@ -51,3 +51,7 @@
 **Vulnerability:** A critical API key (Cloudflare `X-Auth-Key`) was hardcoded in a Python deployment/configuration script (`scripts/configure_tunnel_api.py`).
 **Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
 **Prevention:** Always use environment variables (`os.environ.get`) or secure configuration management tools to supply secrets to automation scripts, rather than hardcoding them in the source.
+## 2025-03-08 - Rate Limiting on Destructive Methods
+**Vulnerability:** The `removeAvatar` and `deleteEducation` methods in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
+**Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even destructive methods (like deletes) should have basic rate limiting if they trigger database operations or file system changes.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods (including deletes).
