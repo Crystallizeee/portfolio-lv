@@ -158,6 +158,15 @@ class ProfileSettings extends Component
 
     public function deleteEducation($id)
     {
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse
+        $throttleKey = 'delete-education|' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         Education::where('user_id', Auth::id())->findOrFail($id)->delete();
         $this->loadEducations();
         session()->flash('education_success', 'Education deleted successfully!');
@@ -280,6 +289,15 @@ class ProfileSettings extends Component
     public function removeAvatar()
     {
         $user = Auth::user();
+
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse
+        $throttleKey = 'remove-avatar|' . $user->id;
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         if ($user->avatar) {
             $oldPath = str_replace('/storage/', '', $user->avatar);
