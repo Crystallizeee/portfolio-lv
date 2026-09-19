@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2025-09-19 - Focus States and ARIA attributes in Manage Certificates
+**Learning:** Similar to Manage Languages, the icon buttons in the Manage Certificates component lacked focus-visible states and their internal Lucide icons lacked `aria-hidden="true"`, causing poor keyboard navigation and screen reader confusion.
+**Action:** Added `focus:outline-none focus-visible:ring-2` to all interactive buttons in the component for keyboard accessibility and added `aria-hidden="true"` to internal Lucide icons.
