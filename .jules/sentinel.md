@@ -55,3 +55,8 @@
 **Vulnerability:** The `removeAvatar` and `deleteEducation` methods in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even destructive methods (like deletes) should have basic rate limiting if they trigger database operations or file system changes.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods (including deletes).
+
+## 2025-03-08 - Validation-Based Rate Limit Bypass in AiCoverLetter
+**Vulnerability:** In `AiCoverLetter.php`, `RateLimiter::hit()` was called after `$this->validate()`.
+**Learning:** If a request fails validation, an exception is thrown, bypassing the rate limiter token consumption. This allows attackers to spam invalid requests, defeating the rate limit's protection against DoS.
+**Prevention:** Always place rate limiting token consumption (`RateLimiter::hit()`) before any validation logic to ensure tokens are consumed regardless of validation outcome.
