@@ -55,3 +55,8 @@
 **Vulnerability:** The `removeAvatar` and `deleteEducation` methods in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even destructive methods (like deletes) should have basic rate limiting if they trigger database operations or file system changes.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods (including deletes).
+
+## 2023-10-04 - Missing Rate Limiting on Destructive Actions
+**Vulnerability:** Found multiple destructive `delete` actions across Livewire components without rate limiting.
+**Learning:** Destructive actions can be abused if not rate-limited, leading to potential data loss or service disruption.
+**Prevention:** Always apply rate limiting to destructive operations using `RateLimiter::tooManyAttempts` scoped to `Auth::id()`.
