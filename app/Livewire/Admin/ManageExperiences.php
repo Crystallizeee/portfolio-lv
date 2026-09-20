@@ -64,13 +64,13 @@ class ManageExperiences extends Component
 
     public function save()
     {
-        $throttleKey = 'save-experience|' . Auth::id() . '|' . request()->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            $seconds = RateLimiter::availableIn($throttleKey);
+        $throttleKey = 'save-experience|' . auth()->id() . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
             return;
         }
-        RateLimiter::hit($throttleKey, 60);
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
 
         $this->validate();
 
@@ -96,6 +96,15 @@ class ManageExperiences extends Component
 
     public function delete(int $id)
     {
+        // 🛡️ Sentinel: Apply rate limiting to destructive actions to prevent abuse
+        $throttleKey = 'delete-experience|' . auth()->id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         Experience::findOrFail($id)->delete();
         session()->flash('message', 'Experience berhasil dihapus!');
     }
