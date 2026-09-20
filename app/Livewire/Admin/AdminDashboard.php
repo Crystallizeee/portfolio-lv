@@ -30,7 +30,7 @@ class AdminDashboard extends Component
         $this->projectsCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_projects_count', 300, fn() => Project::count());
         $this->onlineProjects = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_online_projects_count', 300, fn() => Project::where('status', 'online')->count());
         $this->experiencesCount = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_experiences_count', 300, fn() => Experience::count());
-        $this->cvDownloads = Analytics::getTotal(Auth::id(), 'cv_download');
+        $this->cvDownloads = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_cv_downloads_count_' . Auth::id(), 300, fn() => Analytics::getTotal(Auth::id(), 'cv_download'));
         $this->profileViews = \Illuminate\Support\Facades\Cache::remember('admin_dashboard_profile_views_count', 300, fn() => SiteVisit::count());
 
         $this->prepareChartData();
