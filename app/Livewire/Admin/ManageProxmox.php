@@ -7,6 +7,7 @@ use App\Services\ProxmoxService;
 use App\Models\Project;
 use App\Models\HomelabService;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ManageProxmox extends Component
 {
@@ -51,6 +52,14 @@ class ManageProxmox extends Component
 
     public function refreshList()
     {
+        $throttleKey = 'proxmox-refresh|' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         \Illuminate\Support\Facades\Cache::forget('proxmox_vms_list');
         \Illuminate\Support\Facades\Cache::forget('proxmox_lxc_list');
         $this->loadResources();
@@ -59,6 +68,14 @@ class ManageProxmox extends Component
 
     public function toggleLanding(int $vmid, string $name, string $typeLabel)
     {
+        $throttleKey = 'proxmox-toggle-landing|' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $project = Project::where('proxmox_vmid', $vmid)->first();
 
         if ($project) {
@@ -87,6 +104,14 @@ class ManageProxmox extends Component
 
     public function toggleHomelab(int $vmid, string $name, string $typeLabel)
     {
+        $throttleKey = 'proxmox-toggle-homelab|' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $service = HomelabService::where('vmid', $vmid)->first();
 
         if ($service) {
@@ -133,6 +158,14 @@ class ManageProxmox extends Component
 
     public function saveAlias()
     {
+        $throttleKey = 'proxmox-save-alias|' . auth()->id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $service = HomelabService::where('vmid', $this->editingVmid)->first();
         if ($service) {
             $service->update(['alias' => $this->newAlias]);
