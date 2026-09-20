@@ -33,3 +33,6 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+## 2024-03-22 - Auth Form Accessibility & Loading Isolation
+**Learning:** Even critical path forms like admin login can lack proper keyboard focus indicators (`focus-visible`) on submit buttons and links. Furthermore, omitting `wire:target` on the login button's loading state can cause it to trigger inadvertently.
+**Action:** Always ensure critical auth forms have clear keyboard focus states on all interactive elements (buttons, return links) and that submit button loading states are strictly isolated using `wire:target`.
