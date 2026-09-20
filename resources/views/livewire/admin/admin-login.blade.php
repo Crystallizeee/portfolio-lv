@@ -68,9 +68,10 @@
                 <!-- Submit Button -->
                 <button 
                     type="submit"
-                    class="w-full py-3 px-4 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 font-medium hover:bg-cyan-500/30 hover:border-cyan-400 transition-all duration-200 font-mono flex items-center justify-center space-x-2"
+                    class="w-full py-3 px-4 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 font-medium hover:bg-cyan-500/30 hover:border-cyan-400 transition-all duration-200 font-mono flex items-center justify-center space-x-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-50 cursor-not-allowed"
+                    wire:target="login"
                 >
                     <span wire:loading.remove>
                         <span class="text-slate-500">$</span> login --execute
@@ -87,7 +88,7 @@
 
             <!-- Back Link -->
             <div class="mt-6 text-center">
-                <a href="{{ url('/') }}" class="text-slate-500 hover:text-cyan-400 text-sm transition-colors">
+                <a href="{{ url('/') }}" class="text-slate-500 hover:text-cyan-400 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-sm">
                     ← Kembali ke Portfolio
                 </a>
             </div>
