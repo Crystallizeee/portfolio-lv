@@ -45,3 +45,6 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+## 2026-07-28 - Cache Dashboard Aggregate Queries (Continued)
+**Learning:** Even a single missing cached aggregate query like `Analytics::getTotal()` mixed with other cached counts in a dashboard `mount()` method can cause a synchronous database bottleneck during page load.
+**Action:** Always ensure all statistical aggregate queries on dashboards use `Cache::remember()`, paying special attention to helper methods that execute database queries internally, and scope them by user ID where applicable.
