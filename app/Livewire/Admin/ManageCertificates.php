@@ -143,6 +143,15 @@ class ManageCertificates extends Component
 
     public function delete($id)
     {
+        // 🛡️ Sentinel: Rate limit delete actions to prevent DoS
+        $throttleKey = 'delete-certificate|' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $cert = Certificate::where('user_id', Auth::id())->findOrFail($id);
         if ($cert->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($cert->image)) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($cert->image);

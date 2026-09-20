@@ -55,3 +55,8 @@
 **Vulnerability:** The `removeAvatar` and `deleteEducation` methods in `ProfileSettings.php` lacked rate limiting, while other methods in the same component were protected.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even destructive methods (like deletes) should have basic rate limiting if they trigger database operations or file system changes.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods (including deletes).
+
+## 2024-05-24 - Missing Rate Limiting on Destructive Delete Methods
+**Vulnerability:** The `delete` method in `ManageCertificates.php` lacked rate limiting, making it vulnerable to resource exhaustion or abuse.
+**Learning:** Even destructive methods (like deletes) should have basic rate limiting if they trigger database operations or file system changes, especially in administrative components.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods (including deletes).
