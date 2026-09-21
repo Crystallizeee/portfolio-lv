@@ -279,6 +279,14 @@ MSG;
 
     public function save()
     {
+        $throttleKey = 'manage-posts-save-' . \Illuminate\Support\Facades\Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey);
+
         $this->validate();
 
         // Sync tags from input before saving
