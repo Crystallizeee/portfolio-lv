@@ -45,3 +45,6 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+## 2025-10-25 - Reuse Collections in Views
+**Learning:** Initializing `collect()` redundantly within a `@foreach` loop or a separate modal block in Blade views (like in `manage-proxmox.blade.php`) creates unnecessary memory allocations and CPU overhead on each render, especially if the array is already converted to a collection elsewhere in the file.
+**Action:** When a collection is initialized in a `@php` block at the top of a Blade view (e.g., `$resCollection = collect($resources)`), reuse that variable throughout the view instead of calling `collect($resources)` again.

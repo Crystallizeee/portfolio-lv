@@ -34,7 +34,11 @@
         <span>Fetching data from Proxmox API...</span>
     </div>
 
-    @if(empty($resources))
+    @php
+        $resCollection = collect($resources);
+    @endphp
+
+    @if($resCollection->isEmpty())
         <!-- Empty State -->
         <div class="glass-card p-12 text-center">
             <i data-lucide="server-off" class="w-16 h-16 text-slate-600 mx-auto mb-4"></i>
@@ -46,7 +50,6 @@
         <!-- Stats Row -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             @php
-                $resCollection = collect($resources);
                 $total = $resCollection->count();
                 $running = $resCollection->where('is_running', true)->count();
                 $vms = $resCollection->where('type', 'qemu')->count();
@@ -238,7 +241,7 @@
                     <div>
                         <label class="block text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Original Name</label>
                         <div class="p-3 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-400 font-mono">
-                            {{ collect($resources)->firstWhere('vmid', $editingVmid)['name'] ?? 'N/A' }}
+                            {{ $resCollection->firstWhere('vmid', $editingVmid)['name'] ?? 'N/A' }}
                         </div>
                     </div>
 
