@@ -1,6 +1,8 @@
 import paramiko
 import json
 import time
+import os
+import sys
 from config import HOST, USERNAME, PASSWORD, REMOTE_DIR
 SERVER = HOST
 USER = USERNAME
@@ -8,7 +10,11 @@ GATEWAY_IP = HOST
 
 TUNNEL_ID = "769a95dc-29b1-489a-ba65-aff0f74f8c31"
 ACCOUNT_TAG = "29aa5035a6f089ec1b9bd6f9bd4b94d4"
-TUNNEL_SECRET = "+8QN6071gVIBZi/+uO8WTtG9OkVPYJhilxfMuj3Gjz0="
+TUNNEL_SECRET = os.environ.get("CLOUDFLARE_TUNNEL_SECRET")
+
+if not TUNNEL_SECRET:
+    print("Error: CLOUDFLARE_TUNNEL_SECRET environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 
 # Credentials file for locally managed tunnel
 CREDENTIALS = json.dumps({
