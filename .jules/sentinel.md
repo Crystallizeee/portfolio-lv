@@ -59,3 +59,7 @@
 **Vulnerability:** The state-modifying methods (`refreshList`, `toggleLanding`, `toggleHomelab`, and `saveAlias`) in `ManageProxmox` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple cache clearing or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+## 2024-05-18 - Rate Limiting on Destructive Methods (ManagePosts)
+**Vulnerability:** The `delete` and `deleteComment` methods in `ManagePosts` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
+**Learning:** Destructive operations like deletes (especially those that trigger file system operations like deleting images or cascade database deletes) should have rate limiting, just like other data-mutating operations.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods, including destructive actions like `delete`.

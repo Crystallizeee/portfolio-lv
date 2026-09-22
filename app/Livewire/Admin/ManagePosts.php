@@ -339,6 +339,14 @@ MSG;
 
     public function delete($id)
     {
+        $throttleKey = 'delete-post|' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $post = Post::where('user_id', Auth::id())->findOrFail($id);
 
         // Delete image if exists
@@ -373,6 +381,14 @@ MSG;
 
     public function deleteComment($commentId)
     {
+        $throttleKey = 'delete-comment|' . Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         \App\Models\Comment::whereHas('post', function($q) {
             $q->where('user_id', Auth::id());
         })->findOrFail($commentId)->delete();
