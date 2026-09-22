@@ -59,3 +59,8 @@
 **Vulnerability:** The state-modifying methods (`refreshList`, `toggleLanding`, `toggleHomelab`, and `saveAlias`) in `ManageProxmox` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple cache clearing or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+
+## 2025-03-08 - Hardcoded Cloudflare Tunnel Secret in Python Script
+**Vulnerability:** A critical secret (`TUNNEL_SECRET`) was hardcoded in a Python deployment script (`scripts/setup_local_tunnel.py`).
+**Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
+**Prevention:** Always use environment variables (`os.environ.get`) to supply secrets to automation scripts, rather than hardcoding them in the source.
