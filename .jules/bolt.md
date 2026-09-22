@@ -45,3 +45,6 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+## 2026-10-25 - Avoid redundant collection instantiation in Blade
+**Learning:** In Blade templates, repeatedly calling `collect($array)` inside UI blocks causes unnecessary object allocations and overhead.
+**Action:** Instantiate the collection once at the top of the block (`$collection = collect($array);`) and reuse it throughout the template to improve render times.
