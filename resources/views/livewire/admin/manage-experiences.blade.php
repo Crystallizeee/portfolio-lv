@@ -9,7 +9,7 @@
         </div>
         <button 
             wire:click="openCreateModal"
-            class="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/50 rounded-xl text-purple-400 hover:from-purple-500/30 hover:to-pink-500/30 hover:border-purple-400 transition-all duration-300 shadow-lg shadow-purple-500/10"
+            class="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/50 rounded-xl text-purple-400 hover:from-purple-500/30 hover:to-pink-500/30 hover:border-purple-400 transition-all duration-300 shadow-lg shadow-purple-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span class="font-medium">Tambah Experience</span>
@@ -66,13 +66,13 @@
                             <div class="flex items-center justify-end space-x-2">
                                 <button 
                                     wire:click="openEditModal({{ $experience->id }})"
-                                    class="px-3 py-1.5 text-xs text-purple-400 hover:bg-purple-500/20 rounded-lg transition-all duration-200 border border-purple-500/30"
+                                    class="px-3 py-1.5 text-xs text-purple-400 hover:bg-purple-500/20 rounded-lg transition-all duration-200 border border-purple-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
                                 >
                                     Edit
                                 </button>
                                 <button 
                                     @click="deleteId = {{ $experience->id }}; showDeleteModal = true"
-                                    class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30"
+                                    class="px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-200 border border-red-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                                 >
                                     Delete
                                 </button>
