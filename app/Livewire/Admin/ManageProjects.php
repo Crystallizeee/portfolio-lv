@@ -117,6 +117,14 @@ class ManageProjects extends Component
     
     public function removeGalleryImage($index)
     {
+        $throttleKey = 'remove-gallery-image|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         if (isset($this->gallery[$index])) {
             // Optional: Delete file from storage if you want to clean up immediately
             // But usually safer to keep until save, or just remove from array

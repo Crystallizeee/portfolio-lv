@@ -98,9 +98,11 @@ class AiCoverLetter extends Component
 
     protected function gatherCvData()
     {
-        $experiences = Experience::orderBy('sort_order')->get()->map(fn($e) => "- {$e->role} at {$e->company}: {$e->description}")->implode("\n");
-        $skills = Skill::orderBy('level', 'desc')->get()->map(fn($s) => "- {$s->name} ({$s->level}%)")->implode(", ");
-        $projects = Project::where('status', 'online')->get()->map(fn($p) => "- {$p->title}: {$p->description}")->implode("\n");
+        // ⚡ Bolt Optimization: Only select the required columns instead of loading the entire models into memory. 
+        // This dramatically reduces memory usage, especially since Projects have large text fields (challenge, solution, results) and JSON galleries.
+        $experiences = Experience::orderBy('sort_order')->get(['role', 'company', 'description'])->map(fn($e) => "- {$e->role} at {$e->company}: {$e->description}")->implode("\n");
+        $skills = Skill::orderBy('level', 'desc')->get(['name', 'level'])->map(fn($s) => "- {$s->name} ({$s->level}%)")->implode(", ");
+        $projects = Project::where('status', 'online')->get(['title', 'description'])->map(fn($p) => "- {$p->title}: {$p->description}")->implode("\n");
 
         return [
             'name' => auth()->user()->name,

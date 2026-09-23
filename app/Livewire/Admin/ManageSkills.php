@@ -93,6 +93,14 @@ class ManageSkills extends Component
 
     public function delete(int $id)
     {
+        $throttleKey = 'delete-skill|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         Skill::findOrFail($id)->delete();
         session()->flash('message', 'Skill berhasil dihapus!');
     }

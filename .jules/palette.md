@@ -33,3 +33,7 @@
 ## 2026-08-01 - Focus States and External Links in Projects Grid
 **Learning:** Found that links within the project grid (title link, "Read Case Study", "Live Demo") lacked visual focus states for keyboard navigation. Additionally, external links lacked `rel="noopener noreferrer"` and screen reader text indicating they open in a new tab.
 **Action:** Always add explicit `focus-visible` utility classes to interactive elements like links and buttons for keyboard accessibility. Ensure external links use `rel="noopener noreferrer"` and include `<span class="sr-only">(opens in a new tab)</span>`.
+
+## 2026-09-23 - ARIA Roles for Custom Toggle Switches
+**Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
+**Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.

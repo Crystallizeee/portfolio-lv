@@ -116,55 +116,135 @@ class CvGenerator extends Component
 
     public function addEducation()
     {
+        $throttleKey = 'cv-add-education|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->educations[] = ['school' => '', 'degree' => '', 'year' => '', 'thesis' => ''];
     }
 
     public function removeEducation($index)
     {
+        $throttleKey = 'cv-remove-education|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->educations[$index]);
         $this->educations = array_values($this->educations);
     }
 
     public function addCertification()
     {
+        $throttleKey = 'cv-add-certification|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->certifications[] = ['name' => '', 'issuer' => '', 'year' => '', 'description' => ''];
     }
 
     public function removeCertification($index)
     {
+        $throttleKey = 'cv-remove-certification|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->certifications[$index]);
         $this->certifications = array_values($this->certifications);
     }
     
     public function addManualLanguage() // Added
     {
+        $throttleKey = 'cv-add-language|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->manualLanguages[] = ['name' => '', 'level' => ''];
     }
 
     public function removeManualLanguage($index) // Added
     {
+        $throttleKey = 'cv-remove-language|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->manualLanguages[$index]);
         $this->manualLanguages = array_values($this->manualLanguages);
     }
 
     public function addManualExperience()
     {
+        $throttleKey = 'cv-add-experience|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->manualExperiences[] = ['company' => '', 'role' => '', 'date_range' => '', 'description' => ''];
     }
 
     public function removeManualExperience($index)
     {
+        $throttleKey = 'cv-remove-experience|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->manualExperiences[$index]);
         $this->manualExperiences = array_values($this->manualExperiences);
     }
 
     public function addManualSkill()
     {
+        $throttleKey = 'cv-add-skill|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->manualSkills[] = ['name' => ''];
     }
 
     public function removeManualSkill($index)
     {
+        $throttleKey = 'cv-remove-skill|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->manualSkills[$index]);
         $this->manualSkills = array_values($this->manualSkills);
     }

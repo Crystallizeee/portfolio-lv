@@ -45,3 +45,7 @@
 ## 2026-09-10 - Defer Loading for Below-the-Fold Images
 **Learning:** Image-heavy components, such as project galleries, can severely degrade initial page load times and Time to Interactive (TTI) if images are loaded synchronously.
 **Action:** Always append `loading="lazy" decoding="async"` to `<img>` tags that appear below the fold to ensure they do not block the main thread and are deferred until they enter the viewport.
+
+## 2026-09-23 - Pluck Specific Columns for Large Models
+**Learning:** Loading entire Eloquent models into memory (e.g., `Project::get()`) just to map a few fields (like `title` and `description`) for AI prompts or simple lists creates a massive memory footprint, especially if the models contain large text blobs or JSON fields (like `challenge`, `solution`, `gallery`).
+**Action:** Always pass an array of required columns to the `get()` method (e.g., `Project::get(['title', 'description'])`) when building aggregates or simple text mappings to drastically reduce memory usage and database transport time.

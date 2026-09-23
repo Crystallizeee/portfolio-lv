@@ -34,6 +34,14 @@ class ManageProfiles extends Component
 
     public function createProfile()
     {
+        $throttleKey = 'create-profile|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $this->resetForm();
         $this->isModalOpen = true;
     }
@@ -102,6 +110,14 @@ class ManageProfiles extends Component
 
     public function deleteProfile($id)
     {
+        $throttleKey = 'delete-profile|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $profile = JobProfile::where('user_id', Auth::id())->findOrFail($id);
         if ($profile->is_landing_page) {
             session()->flash('error', 'Cannot delete the active landing page profile.');

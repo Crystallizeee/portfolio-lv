@@ -69,3 +69,8 @@
 **Vulnerability:** A critical secret (`TOKEN` for Cloudflare Tunnel) was hardcoded in Python setup and revert scripts (`scripts/install_tunnel.py`, `scripts/revert_tunnel.py`, `scripts/setup_tunnel_config.py`).
 **Learning:** Hardcoding credentials inside automation scripts that manage infrastructure or services creates a huge risk if they are committed to version control.
 **Prevention:** Always use environment variables (e.g. `os.environ.get`) to supply authentication tokens to scripts dynamically.
+
+## 2026-09-23 - XSS Vulnerability in JSON-LD Rendering
+**Vulnerability:** Blade templates (`jsonld-project.blade.php`, `jsonld-person.blade.php`, `jsonld-blogposting.blade.php`) rendered JSON inside `<script type="application/ld+json">` tags using `{!! json_encode(...) !!}` without escaping HTML characters. An attacker controlling fields like project description or blog excerpt could inject `</script><script>alert(1)</script>` to execute arbitrary JS.
+**Learning:** `json_encode` does not escape HTML characters like `<` and `>` by default. When outputting JSON in HTML contexts (especially unescaped with `{!! !!}`), this allows XSS payloads to break out of the script tag.
+**Prevention:** Always include `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP` in `json_encode` when rendering inside HTML script tags, or use Laravel's `@json` directive which handles this automatically.

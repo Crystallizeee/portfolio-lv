@@ -127,6 +127,14 @@ class JobTracker extends Component
 
     public function delete($id)
     {
+        $throttleKey = 'job-tracker-delete|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         JobApplication::findOrFail($id)->delete();
         session()->flash('message', 'Job application deleted successfully!');
         $this->showDeleteModal = false;

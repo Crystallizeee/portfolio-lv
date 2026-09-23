@@ -417,6 +417,9 @@
                                 </div>
                                 <button 
                                     type="button"
+                                    role="switch"
+                                    aria-checked="{{ $show_on_landing ? 'true' : 'false' }}"
+                                    aria-label="Show on Landing Page"
                                     wire:click="$toggle('show_on_landing')"
                                     class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-900
                                         {{ $show_on_landing ? 'bg-cyan-500' : 'bg-slate-700' }}"

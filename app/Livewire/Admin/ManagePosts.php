@@ -260,6 +260,14 @@ MSG;
      */
     public function removeTag($index)
     {
+        $throttleKey = 'remove-tag|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         unset($this->tags[$index]);
         $this->tags = array_values($this->tags);
         $this->tagsInput = implode(', ', $this->tags);
@@ -339,6 +347,14 @@ MSG;
 
     public function delete($id)
     {
+        $throttleKey = 'delete-post|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $post = Post::where('user_id', Auth::id())->findOrFail($id);
 
         // Delete image if exists
@@ -373,6 +389,14 @@ MSG;
 
     public function deleteComment($commentId)
     {
+        $throttleKey = 'delete-comment|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         \App\Models\Comment::whereHas('post', function($q) {
             $q->where('user_id', Auth::id());
         })->findOrFail($commentId)->delete();

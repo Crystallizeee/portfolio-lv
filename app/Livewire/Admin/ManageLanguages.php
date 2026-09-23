@@ -100,6 +100,14 @@ class ManageLanguages extends Component
 
     public function delete($id)
     {
+        $throttleKey = 'delete-language|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         Language::where('user_id', Auth::id())->findOrFail($id)->delete();
         $this->loadLanguages();
         session()->flash('success', 'Language deleted successfully!');
