@@ -160,7 +160,7 @@ class ChatbotController extends Controller
         $website  = $this->security->sanitizePromptData($owner?->website  ?? '');
 
         // --- Experiences ---
-        $experiences = Experience::orderBy('sort_order')->get()
+        $experiences = Experience::orderBy('sort_order')->get(['role', 'company', 'date_range', 'description'])
             ->map(function ($e) {
                 $role    = $this->security->sanitizePromptData($e->role ?? '');
                 $company = $this->security->sanitizePromptData($e->company ?? '');
@@ -172,7 +172,7 @@ class ChatbotController extends Controller
             ->implode("\n") ?: 'Not specified.';
 
         // --- Skills ---
-        $skills = Skill::orderBy('level', 'desc')->get()
+        $skills = Skill::orderBy('level', 'desc')->get(['name', 'level'])
             ->map(function ($s) {
                 $name  = $this->security->sanitizePromptData($s->name ?? '');
                 $level = (int) $s->level; // Cast to int — no injection possible
@@ -183,7 +183,7 @@ class ChatbotController extends Controller
         // --- Projects ---
         $projects = 'Not specified.';
         if (class_exists(\App\Models\Project::class)) {
-            $list = Project::where('status', 'online')->get()
+            $list = Project::where('status', 'online')->get(['title', 'description', 'tech_stack'])
                 ->map(function ($p) {
                     $title = $this->security->sanitizePromptData($p->title ?? '');
                     $desc  = $this->security->sanitizePromptData($p->description ?? '');
@@ -203,7 +203,7 @@ class ChatbotController extends Controller
         // --- Certificates ---
         $certificates = 'Not specified.';
         if (class_exists(\App\Models\Certificate::class)) {
-            $list = Certificate::orderBy('sort_order')->get()
+            $list = Certificate::orderBy('sort_order')->get(['name', 'issuer', 'year'])
                 ->map(function ($c) {
                     $name   = $this->security->sanitizePromptData($c->name ?? '');
                     $issuer = isset($c->issuer) ? $this->security->sanitizePromptData($c->issuer) : '';
@@ -232,7 +232,7 @@ class ChatbotController extends Controller
         // --- Education ---
         $education = 'Not specified.';
         if (class_exists(\App\Models\Education::class)) {
-            $list = Education::orderBy('sort_order')->get()
+            $list = Education::orderBy('sort_order')->get(['degree', 'school', 'year'])
                 ->map(function ($e) {
                     $degree = $this->security->sanitizePromptData($e->degree ?? '');
                     $school = $this->security->sanitizePromptData($e->school ?? '');
