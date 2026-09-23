@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2026-10-24 - Missing Focus States on Admin Action Buttons
+**Learning:** Found that primary add buttons and table action buttons (like Edit/Delete) in Livewire admin components (`manage-experiences.blade.php`) lacked explicit `focus-visible` utility classes. This makes keyboard navigation through administrative lists difficult as users cannot easily see which record or action is currently focused.
+**Action:** When creating or maintaining admin data tables and actions, always add explicit focus states (`focus:outline-none focus-visible:ring-2`) to all interactive buttons.
