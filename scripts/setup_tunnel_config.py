@@ -1,3 +1,5 @@
+import os
+import sys
 import paramiko
 from config import HOST, USERNAME, PASSWORD, REMOTE_DIR
 SERVER = HOST
@@ -5,7 +7,10 @@ USER = USERNAME
 GATEWAY_IP = HOST
 
 TUNNEL_ID = "769a95dc-29b1-489a-ba65-aff0f74f8c31"
-TOKEN = "eyJhIjoiMjlhYTUwMzVhNmYwODllYzFiOWJkNmY5YmQ0Yjk0ZDQiLCJ0IjoiNzY5YTk1ZGMtMjliMS00ODlhLWJhNjUtYWZmMGY3NGY4YzMxIiwicyI6Iis4UU42MDcxZ1ZJQlppLyt1TzhXVHRHOU9rVlBZSmhpbHhmTXVqM0dqNzA9In0="
+TOKEN = os.environ.get("CLOUDFLARE_TUNNEL_TOKEN")
+if not TOKEN:
+    print("Error: CLOUDFLARE_TUNNEL_TOKEN environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 
 # Config with ingress rules for both domains
 CONFIG_CONTENT = f"""tunnel: {TUNNEL_ID}

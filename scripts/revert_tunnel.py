@@ -1,3 +1,5 @@
+import os
+import sys
 import paramiko
 import time
 from config import HOST, USERNAME, PASSWORD, REMOTE_DIR
@@ -5,7 +7,10 @@ SERVER = HOST
 USER = USERNAME
 GATEWAY_IP = HOST
 
-TOKEN = "eyJhIjoiMjlhYTUwMzVhNmYwODllYzFiOWJkNmY5YmQ0Yjk0ZDQiLCJ0IjoiNzY5YTk1ZGMtMjliMS00ODlhLWJhNjUtYWZmMGY3NGY4YzMxIiwicyI6Iis4UU42MDcxZ1ZJQlppLyt1TzhXVHRHOU9rVlBZSmhpbHhmTXVqM0dqNzA9In0="
+TOKEN = os.environ.get("CLOUDFLARE_TUNNEL_TOKEN")
+if not TOKEN:
+    print("Error: CLOUDFLARE_TUNNEL_TOKEN environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 
 # Revert to remotely managed (token-based) service
 SERVICE = f"""[Unit]

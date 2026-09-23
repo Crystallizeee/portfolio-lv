@@ -64,3 +64,8 @@
 **Vulnerability:** A critical secret (`TUNNEL_SECRET`) was hardcoded in a Python deployment script (`scripts/setup_local_tunnel.py`).
 **Learning:** Automation and configuration scripts are frequently overlooked during security audits but are prime vectors for credential leakage if checked into version control.
 **Prevention:** Always use environment variables (`os.environ.get`) to supply secrets to automation scripts, rather than hardcoding them in the source.
+
+## 2026-09-23 - Hardcoded Cloudflare Tunnel Tokens in Python Scripts
+**Vulnerability:** A critical secret (`TOKEN` for Cloudflare Tunnel) was hardcoded in Python setup and revert scripts (`scripts/install_tunnel.py`, `scripts/revert_tunnel.py`, `scripts/setup_tunnel_config.py`).
+**Learning:** Hardcoding credentials inside automation scripts that manage infrastructure or services creates a huge risk if they are committed to version control.
+**Prevention:** Always use environment variables (e.g. `os.environ.get`) to supply authentication tokens to scripts dynamically.
