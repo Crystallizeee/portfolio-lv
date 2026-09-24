@@ -33,9 +33,9 @@ class AiCoverLetter extends Component
             return;
         }
 
-        $this->validate();
-
         RateLimiter::hit($throttleKey, 60);
+
+        $this->validate();
 
         if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
             $this->errorMessage = 'Please provide either a job URL or a manual job description.';
