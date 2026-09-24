@@ -74,3 +74,8 @@
 **Vulnerability:** Blade templates (`jsonld-project.blade.php`, `jsonld-person.blade.php`, `jsonld-blogposting.blade.php`) rendered JSON inside `<script type="application/ld+json">` tags using `{!! json_encode(...) !!}` without escaping HTML characters. An attacker controlling fields like project description or blog excerpt could inject `</script><script>alert(1)</script>` to execute arbitrary JS.
 **Learning:** `json_encode` does not escape HTML characters like `<` and `>` by default. When outputting JSON in HTML contexts (especially unescaped with `{!! !!}`), this allows XSS payloads to break out of the script tag.
 **Prevention:** Always include `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP` in `json_encode` when rendering inside HTML script tags, or use Laravel's `@json` directive which handles this automatically.
+
+## 2026-09-23 - Validation-Based Resource Exhaustion in AiCoverLetter
+**Vulnerability:** The `generate` method in `AiCoverLetter` placed the `RateLimiter::hit` call *after* `$this->validate()`.
+**Learning:** An attacker could spam payloads larger than the validation limits. Validation triggers an exception, aborting the request before the rate limiter triggers. This consumes server resources repeatedly, bypassing the rate limiter logic.
+**Prevention:** Always place rate limiting token consumption (`RateLimiter::hit`) strictly *before* any validation logic to properly consume rate limits on every request.
