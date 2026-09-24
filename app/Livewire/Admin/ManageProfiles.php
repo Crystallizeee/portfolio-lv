@@ -130,6 +130,14 @@ class ManageProfiles extends Component
 
     public function setAsLandingPage($id)
     {
+        $throttleKey = 'set-landing-page|' . Auth::id();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         // Set all to false
         JobProfile::where('user_id', Auth::id())->update(['is_landing_page' => false]);
         

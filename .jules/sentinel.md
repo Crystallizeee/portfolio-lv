@@ -79,3 +79,8 @@
 **Vulnerability:** The `generate` method in `AiCoverLetter` placed the `RateLimiter::hit` call *after* `$this->validate()`.
 **Learning:** An attacker could spam payloads larger than the validation limits. Validation triggers an exception, aborting the request before the rate limiter triggers. This consumes server resources repeatedly, bypassing the rate limiter logic.
 **Prevention:** Always place rate limiting token consumption (`RateLimiter::hit`) strictly *before* any validation logic to properly consume rate limits on every request.
+
+## 2024-05-18 - Rate Limiting on All Data-Mutating Methods (ManageProfiles)
+**Vulnerability:** The state-modifying method (`setAsLandingPage`) in `ManageProfiles` lacked rate limiting, making it vulnerable to resource exhaustion or abuse.
+**Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple state toggles can consume resources if spammed.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
