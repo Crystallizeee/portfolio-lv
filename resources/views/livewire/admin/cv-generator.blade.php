@@ -384,7 +384,13 @@
                     <!-- Experiences Toggle -->
                     <div 
                         wire:click="$toggle('useDbExperiences')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbExperiences ? 'bg-purple-500/10 border-purple-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbExperiences')"
+                        wire:keydown.space.prevent="$toggle('useDbExperiences')"
+                        role="switch"
+                        aria-checked="{{ $useDbExperiences ? 'true' : 'false' }}"
+                        aria-label="Use database experiences"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-purple-500 {{ $useDbExperiences ? 'bg-purple-500/10 border-purple-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
@@ -405,7 +411,13 @@
                     <!-- Skills Toggle -->
                     <div 
                         wire:click="$toggle('useDbSkills')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbSkills ? 'bg-cyan-500/10 border-cyan-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbSkills')"
+                        wire:keydown.space.prevent="$toggle('useDbSkills')"
+                        role="switch"
+                        aria-checked="{{ $useDbSkills ? 'true' : 'false' }}"
+                        aria-label="Use database skills"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-cyan-500 {{ $useDbSkills ? 'bg-cyan-500/10 border-cyan-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
@@ -426,7 +438,13 @@
                     <!-- Education Toggle -->
                     <div 
                         wire:click="$toggle('useDbEducations')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbEducations ? 'bg-pink-500/10 border-pink-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbEducations')"
+                        wire:keydown.space.prevent="$toggle('useDbEducations')"
+                        role="switch"
+                        aria-checked="{{ $useDbEducations ? 'true' : 'false' }}"
+                        aria-label="Use database education"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-pink-500 {{ $useDbEducations ? 'bg-pink-500/10 border-pink-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
@@ -449,7 +467,13 @@
                     <!-- Languages Toggle -->
                     <div 
                         wire:click="$toggle('useDbLanguages')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbLanguages ? 'bg-green-500/10 border-green-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbLanguages')"
+                        wire:keydown.space.prevent="$toggle('useDbLanguages')"
+                        role="switch"
+                        aria-checked="{{ $useDbLanguages ? 'true' : 'false' }}"
+                        aria-label="Use database languages"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-green-500 {{ $useDbLanguages ? 'bg-green-500/10 border-green-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                          <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
@@ -468,7 +492,13 @@
                     </div>
                     <div 
                         wire:click="$toggle('useDbCertifications')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbCertifications ? 'bg-yellow-500/10 border-yellow-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbCertifications')"
+                        wire:keydown.space.prevent="$toggle('useDbCertifications')"
+                        role="switch"
+                        aria-checked="{{ $useDbCertifications ? 'true' : 'false' }}"
+                        aria-label="Use database certifications"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-yellow-500 {{ $useDbCertifications ? 'bg-yellow-500/10 border-yellow-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
@@ -489,7 +519,13 @@
                     <!-- Projects Toggle -->
                     <div 
                         wire:click="$toggle('useDbProjects')"
-                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden {{ $useDbProjects ? 'bg-blue-500/10 border-blue-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
+                        wire:keydown.enter="$toggle('useDbProjects')"
+                        wire:keydown.space.prevent="$toggle('useDbProjects')"
+                        role="switch"
+                        aria-checked="{{ $useDbProjects ? 'true' : 'false' }}"
+                        aria-label="Use database projects"
+                        tabindex="0"
+                        class="p-4 rounded-xl border cursor-pointer transition-all duration-200 group relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 focus-visible:ring-blue-500 {{ $useDbProjects ? 'bg-blue-500/10 border-blue-500/50' : 'bg-slate-800/30 border-slate-700 hover:border-slate-600' }}"
                     >
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center space-x-4">
