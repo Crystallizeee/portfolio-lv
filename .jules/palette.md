@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2025-02-23 - Isolated Loading States in Iterative Lists
+**Learning:** When using Livewire iterative lists (like comments), action buttons require `wire:target="method(id)"` to isolate loading states, preventing all buttons in the list from entering a loading state simultaneously when one is clicked. Additionally, these admin/moderation icon buttons lacked keyboard focus styles (`focus-visible:ring-2`) and aria-hidden on internal icons.
+**Action:** Always bind `wire:target` with the specific ID (`method({{ $id }})`) in loops, ensure `focus-visible` is present, and add `aria-hidden="true"` to Lucide icons inside admin action buttons.
