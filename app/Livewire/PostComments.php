@@ -138,6 +138,14 @@ class PostComments extends Component
     public function deleteComment($commentId)
     {
         if (auth()->check()) {
+            $throttleKey = 'delete-comment|' . auth()->id();
+            if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+                $seconds = RateLimiter::availableIn($throttleKey);
+                session()->flash('error', "Terlalu banyak percobaan. Coba lagi dalam {$seconds} detik.");
+                return;
+            }
+            RateLimiter::hit($throttleKey, 60);
+
             Comment::whereHas('post', function($q) {
                 $q->where('user_id', auth()->id());
             })->findOrFail($commentId)->delete();
@@ -151,6 +159,14 @@ class PostComments extends Component
     public function approveComment($commentId)
     {
         if (auth()->check()) {
+            $throttleKey = 'approve-comment|' . auth()->id();
+            if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+                $seconds = RateLimiter::availableIn($throttleKey);
+                session()->flash('error', "Terlalu banyak percobaan. Coba lagi dalam {$seconds} detik.");
+                return;
+            }
+            RateLimiter::hit($throttleKey, 60);
+
             Comment::whereHas('post', function($q) {
                 $q->where('user_id', auth()->id());
             })->findOrFail($commentId)->update(['is_approved' => true]);
