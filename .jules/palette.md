@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2025-07-06 - Livewire Button Loading States Target
+**Learning:** In Livewire, when implementing loading states (spinners or text changes) on generic submit buttons, explicitly defining `wire:target="methodName"` is critical. Without it, global interactions on the page might inadvertently trigger the loading state of unrelated buttons, causing visual confusion.
+**Action:** Always pair `wire:loading` (and `wire:loading.attr="disabled"`) with a specific `wire:target="methodName"` when enhancing action buttons to isolate the loading feedback correctly.
