@@ -83,3 +83,8 @@
 **Vulnerability:** The state-modifying methods `deleteComment` and `approveComment` in `PostComments.php` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple deletes or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+
+## 2025-10-24 - Rate Limiting on Read-Only Sensitive Data Endpoints
+**Vulnerability:** The `showRecoveryCodes` method in `ProfileSettings.php` lacked rate limiting, allowing an attacker to repeatedly request and view sensitive recovery codes, potentially leading to automated abuse or resource exhaustion.
+**Learning:** Even read-only endpoints that access or generate highly sensitive data (like 2FA recovery codes) must be protected with rate limiting to prevent automated scraping or abuse.
+**Prevention:** Always apply rate limiting consistently to all methods that access or generate sensitive data, including read-only endpoints.
