@@ -516,6 +516,14 @@ class ProfileSettings extends Component
 
     public function showRecoveryCodes()
     {
+        $throttleKey = 'show-recovery-codes|' . \Illuminate\Support\Facades\Auth::id();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $user = Auth::user();
         $this->recoveryCodes = $user->two_factor_recovery_codes ?? [];
     }
