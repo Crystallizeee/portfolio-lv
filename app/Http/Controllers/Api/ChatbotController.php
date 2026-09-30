@@ -160,7 +160,7 @@ class ChatbotController extends Controller
         $website  = $this->security->sanitizePromptData($owner?->website  ?? '');
 
         // --- Experiences ---
-        $experiences = Experience::orderBy('sort_order')->get()
+        $experiences = Experience::orderBy('sort_order')->get(['role', 'company', 'date_range', 'description'])
             ->map(function ($e) {
                 $role    = $this->security->sanitizePromptData($e->role ?? '');
                 $company = $this->security->sanitizePromptData($e->company ?? '');
@@ -172,7 +172,7 @@ class ChatbotController extends Controller
             ->implode("\n") ?: 'Not specified.';
 
         // --- Skills ---
-        $skills = Skill::orderBy('level', 'desc')->get()
+        $skills = Skill::orderBy('level', 'desc')->get(['name', 'level'])
             ->map(function ($s) {
                 $name  = $this->security->sanitizePromptData($s->name ?? '');
                 $level = (int) $s->level; // Cast to int — no injection possible
