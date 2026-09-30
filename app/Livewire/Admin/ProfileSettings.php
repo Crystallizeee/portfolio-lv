@@ -517,6 +517,16 @@ class ProfileSettings extends Component
     public function showRecoveryCodes()
     {
         $user = Auth::user();
+
+        // 🛡️ Sentinel: Apply rate limiting to read-only endpoints that expose sensitive data
+        $throttleKey = 'show-recovery-codes|' . $user->id . '|' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->recoveryCodes = $user->two_factor_recovery_codes ?? [];
     }
 
