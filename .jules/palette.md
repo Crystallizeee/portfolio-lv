@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2024-03-22 - External Link Cards Missing Screen Reader Context
+**Learning:** Found that social/external link cards in `contact-form.blade.php` using `target="_blank"` lacked `rel="noopener noreferrer"`, visually hidden screen reader text indicating they open in a new tab, and the decorative SVG icons lacked `aria-hidden="true"`.
+**Action:** Always ensure external links that open in new tabs include `rel="noopener noreferrer"` and a `<span class="sr-only">(opens in a new tab)</span>`. Also, explicitly hide purely decorative SVG icons within these links from screen readers.
