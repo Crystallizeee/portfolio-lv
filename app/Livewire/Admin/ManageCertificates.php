@@ -85,7 +85,7 @@ class ManageCertificates extends Component
 
     public function save()
     {
-        $throttleKey = 'save-certificate|' . Auth::id() . '|' . request()->ip();
+        $throttleKey = 'save-certificate|' . Auth::id();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");

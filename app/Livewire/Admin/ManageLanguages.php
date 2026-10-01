@@ -65,7 +65,7 @@ class ManageLanguages extends Component
 
     public function save()
     {
-        $throttleKey = 'save-language|' . Auth::id() . '|' . request()->ip();
+        $throttleKey = 'save-language|' . Auth::id();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");

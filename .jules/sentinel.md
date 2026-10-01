@@ -83,3 +83,8 @@
 **Vulnerability:** The state-modifying methods `deleteComment` and `approveComment` in `PostComments.php` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple deletes or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+
+## 2025-05-18 - Avoid Using IP Addresses in Authenticated Rate Limiters
+**Vulnerability:** Many authenticated Livewire components used `request()->ip()` alongside `Auth::id()` for rate limiters (e.g., `save-experience|{id}|{ip}`).
+**Learning:** Using IP addresses for authenticated endpoints is redundant since the user ID uniquely identifies the source.
+**Prevention:** Strictly rely on `Auth::id()` for rate limiting on authenticated endpoints to prevent logical vulnerabilities and align with internal groundedness rules. Note that authentication endpoints like `AdminLogin` and `TwoFactorChallenge` MUST retain the IP address to prevent account lockout DoS attacks.

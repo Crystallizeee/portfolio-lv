@@ -64,7 +64,7 @@ class ManageExperiences extends Component
 
     public function save()
     {
-        $throttleKey = 'save-experience|' . Auth::id() . '|' . request()->ip();
+        $throttleKey = 'save-experience|' . Auth::id();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             session()->flash('error', "Too many attempts. Please try again in {$seconds} seconds.");
