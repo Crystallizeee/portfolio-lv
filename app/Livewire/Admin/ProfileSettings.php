@@ -517,6 +517,16 @@ class ProfileSettings extends Component
     public function showRecoveryCodes()
     {
         $user = Auth::user();
+
+        // 🛡️ Sentinel: Apply rate limiting to prevent abuse of viewing recovery codes
+        $throttleKey = 'show-2fa-codes|' . $user->id;
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
+
         $this->recoveryCodes = $user->two_factor_recovery_codes ?? [];
     }
 
