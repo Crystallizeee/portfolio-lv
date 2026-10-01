@@ -104,7 +104,7 @@ class ProfileSettings extends Component
 
     public function saveEducation()
     {
-        $throttleKey = 'save-education|' . Auth::id() . '|' . request()->ip();
+        $throttleKey = 'save-education|' . Auth::id();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -196,7 +196,7 @@ class ProfileSettings extends Component
 
     public function updateProfile()
     {
-        $throttleKey = 'update-profile|' . Auth::id() . '|' . request()->ip();
+        $throttleKey = 'update-profile|' . Auth::id();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -247,7 +247,7 @@ class ProfileSettings extends Component
     public function updateAvatar()
     {
         $user = Auth::user();
-        $throttleKey = 'update-avatar|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'update-avatar|' . $user->id;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -317,7 +317,7 @@ class ProfileSettings extends Component
     public function updatePassword()
     {
         $user = Auth::user();
-        $throttleKey = 'update-password|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'update-password|' . $user->id;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -357,7 +357,7 @@ class ProfileSettings extends Component
         $user = Auth::user();
 
         // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the 2FA enable process
-        $throttleKey = 'enable-2fa|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'enable-2fa|' . $user->id;
         if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
@@ -398,7 +398,7 @@ class ProfileSettings extends Component
     public function confirmTwoFactor()
     {
         $user = Auth::user();
-        $throttleKey = 'confirm-2fa|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'confirm-2fa|' . $user->id;
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -460,7 +460,7 @@ class ProfileSettings extends Component
         $user = Auth::user();
 
         // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the 2FA disable process
-        $throttleKey = 'disable-2fa|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'disable-2fa|' . $user->id;
         if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
@@ -488,7 +488,7 @@ class ProfileSettings extends Component
         $user = Auth::user();
 
         // 🛡️ Sentinel: Apply rate limiting to prevent abuse of the recovery codes generation process
-        $throttleKey = 'regen-2fa-codes|' . $user->id . '|' . request()->ip();
+        $throttleKey = 'regen-2fa-codes|' . $user->id;
         if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
             session()->flash('twofactor_error', "Terlalu banyak percobaan. Silakan coba lagi dalam {$seconds} detik.");
