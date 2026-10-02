@@ -83,3 +83,8 @@
 **Vulnerability:** The state-modifying methods `deleteComment` and `approveComment` in `PostComments.php` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple deletes or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+
+## 2023-10-25 - Rate Limiting on State Mutation (ManageProfiles)
+**Vulnerability:** The `setAsLandingPage` method in `ManageProfiles` lacked rate limiting, allowing an attacker to repeatedly toggle landing pages, updating records and clearing cache, leading to resource exhaustion.
+**Learning:** Even simple boolean toggles and cache clearing actions can be abused if not rate-limited.
+**Prevention:** Consistently implement rate limiting on all data-mutating methods, including state changes like toggles.
