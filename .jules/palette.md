@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2026-10-04 - External Links Accessibility in Contact Form
+**Learning:** The external links for social profiles in the contact form were missing `rel="noopener noreferrer"` and screen reader context indicating they opened in a new tab. Additionally, decorative inline `<svg>` icons were lacking `aria-hidden="true"`, causing screen readers to improperly announce them.
+**Action:** Always add `rel="noopener noreferrer"` and `<span class="sr-only">(opens in a new tab)</span>` to `target="_blank"` links. Make sure decorative `<svg>` or `<i data-lucide>` elements have `aria-hidden="true"`.
