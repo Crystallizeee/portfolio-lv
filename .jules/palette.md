@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2026-10-23 - External Links and Decorative Icons Accessibility
+**Learning:** Found that external social links in the contact form (LinkedIn, GitHub) lacked `rel="noopener noreferrer"` for security and a screen reader warning `(opens in a new tab)`. Furthermore, decorative icons within these links (like the mail or SVG icons) were announced by screen readers because they lacked `aria-hidden="true"`.
+**Action:** Always add `rel="noopener noreferrer"` and screen-reader-only text (e.g., `<span class="sr-only">(opens in a new tab)</span>`) to `target="_blank"` links. Apply `aria-hidden="true"` to purely decorative icons (like Lucide icons or raw SVGs) inside interactive elements to prevent confusing announcements.
