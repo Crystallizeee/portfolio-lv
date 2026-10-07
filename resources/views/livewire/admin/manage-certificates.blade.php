@@ -74,12 +74,13 @@
                 @if($cert['credential_url'])
                     <a 
                         href="{{ $cert['credential_url'] }}" 
-                        target="_blank"
+                        target="_blank" rel="noopener noreferrer"
                         class="mt-3 inline-flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
                     >
-                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                        <i data-lucide="external-link" class="w-3 h-3" aria-hidden="true"></i>
                         <span>View Credential</span>
-                    </a>
+
+<span class="sr-only">(opens in a new tab)</span></a>
                 @endif
             </div>
         @empty
