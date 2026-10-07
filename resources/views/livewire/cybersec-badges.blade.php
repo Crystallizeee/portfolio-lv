@@ -147,8 +147,7 @@
 
                         {{-- View Profile Link --}}
                         <a href="{{ $profile->profile_url ?? $profile->generated_profile_url }}" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
+                           target="_blank" rel="noopener noreferrer"
                            class="flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-mono font-medium border transition-all duration-300 group/btn"
                            style="color: {{ $platformColor }}; border-color: rgba({{ $platformColorRgb }}, 0.3); background: rgba({{ $platformColorRgb }}, 0.05);"
                            onmouseover="this.style.background='rgba({{ $platformColorRgb }}, 0.15)'; this.style.borderColor='rgba({{ $platformColorRgb }}, 0.5)'; this.style.boxShadow='0 0 20px rgba({{ $platformColorRgb }}, 0.15)';"

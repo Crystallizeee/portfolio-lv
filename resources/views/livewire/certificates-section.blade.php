@@ -82,8 +82,7 @@
                             @if($cert->credential_url)
                                 <a 
                                     href="{{ $cert->credential_url }}" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
+                                    target="_blank" rel="noopener noreferrer"
                                     class="inline-flex items-center justify-center w-full px-4 py-2 bg-slate-800 hover:bg-yellow-500/20 text-slate-300 hover:text-yellow-400 border border-slate-700 hover:border-yellow-500/50 rounded-lg text-sm font-medium transition-all duration-300 group/btn"
                                 >
                                     <span>Verify Credential</span>

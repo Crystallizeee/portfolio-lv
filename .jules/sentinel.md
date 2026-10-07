@@ -83,3 +83,7 @@
 **Vulnerability:** The state-modifying methods `deleteComment` and `approveComment` in `PostComments.php` lacked rate limiting, making them vulnerable to resource exhaustion or abuse.
 **Learning:** Assuming component-level protection when only some methods are protected leaves unprotected methods vulnerable to resource exhaustion or abuse. Even simple deletes or boolean toggles can consume resources if spammed.
 **Prevention:** Consistently implement rate limiting on all data-mutating methods before any validation or execution logic.
+## 2025-03-01 - Missing rel="noopener noreferrer" on external links
+**Vulnerability:** External links with `target="_blank"` lacked `rel="noopener noreferrer"` and basic accessibility metadata.
+**Learning:** When `target="_blank"` is used, the newly opened tab can gain a reference to the original window via `window.opener`. This exposes the application to reverse tabnabbing (phishing) and potential performance degradation. Accessibility is also impaired if screen readers don't announce it opens in a new tab.
+**Prevention:** Always pair `target="_blank"` with `rel="noopener noreferrer"`. Add `aria-hidden="true"` to decorative icons and `<span class="sr-only">(opens in a new tab)</span>` for screen reader announcements.
