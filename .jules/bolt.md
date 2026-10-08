@@ -49,3 +49,6 @@
 ## 2026-09-23 - Pluck Specific Columns for Large Models
 **Learning:** Loading entire Eloquent models into memory (e.g., `Project::get()`) just to map a few fields (like `title` and `description`) for AI prompts or simple lists creates a massive memory footprint, especially if the models contain large text blobs or JSON fields (like `challenge`, `solution`, `gallery`).
 **Action:** Always pass an array of required columns to the `get()` method (e.g., `Project::get(['title', 'description'])`) when building aggregates or simple text mappings to drastically reduce memory usage and database transport time.
+## 2025-05-19 - Optimizing Cache Rebuilds by Plucking Columns
+**Learning:** Even when caching heavy aggregates (like the Chatbot system prompt generation), the act of *rebuilding* the cache still loads entire Eloquent collections (e.g., all `Project` records) into memory simultaneously, causing occasional memory spikes.
+**Action:** When gathering extensive datasets for AI context, strictly specify required columns in the `get()` method (e.g., `get(['role', 'company', 'description'])`) to drastically reduce the memory footprint required during cache rebuilds.
