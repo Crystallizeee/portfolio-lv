@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2025-02-23 - Focus States and Screen Reader Context in Certificates
+**Learning:** Found that the "Read more" toggle button and "Verify Credential" external link in the Certificates grid lacked explicit `focus-visible` styling, making keyboard navigation difficult. Furthermore, decorative Lucide icons (`award`, `hash`, `external-link`) lacked `aria-hidden="true"`, and the external link was missing a screen-reader-only hint that it opens in a new tab.
+**Action:** Always verify custom styled interactive elements include `focus:outline-none focus-visible:ring-2`, append `aria-hidden="true"` to decorative icons to prevent redundant screen reader announcements, and add `<span class="sr-only">(opens in a new tab)</span>` to links with `target="_blank"`.
