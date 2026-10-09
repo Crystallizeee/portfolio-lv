@@ -291,22 +291,22 @@ class CvGenerator extends Component
                 'professional_title' => $this->professional_title,
             ],
             'educations' => $this->useDbEducations 
-                ? Education::where('user_id', $userId)->orderBy('sort_order')->get()->toArray() 
+                ? Education::where('user_id', $userId)->orderBy('sort_order')->get(['degree', 'school', 'year'])->toArray()
                 : array_filter($this->educations, fn($e) => !empty($e['school'])),
             'certifications' => $this->useDbCertifications 
-                ? Certificate::where('user_id', $userId)->orderBy('sort_order')->get()->toArray() 
+                ? Certificate::where('user_id', $userId)->orderBy('sort_order')->get(['name', 'issuer'])->toArray()
                 : array_filter($this->certifications, fn($c) => !empty($c['name'])),
             'experiences' => $this->useDbExperiences 
-                ? Experience::orderBy('sort_order')->get()->toArray() 
+                ? Experience::orderBy('sort_order')->get(['role', 'company', 'date_range', 'description'])->toArray()
                 : $this->manualExperiences, 
             'skills' => $this->useDbSkills 
-                ? Skill::orderBy('level', 'desc')->get()->toArray() 
+                ? Skill::orderBy('level', 'desc')->get(['name', 'category'])->toArray()
                 : $this->manualSkills,
             'languages' => $this->useDbLanguages
-                ? \App\Models\Language::where('user_id', $userId)->orderBy('sort_order')->get()->toArray()
+                ? \App\Models\Language::where('user_id', $userId)->orderBy('sort_order')->get(['name', 'level'])->toArray()
                 : array_filter($this->manualLanguages, fn($l) => !empty($l['name'])),
             'projects' => $this->useDbProjects
-                ? Project::where('status', 'online')->orderBy('created_at', 'desc')->get()->toArray()
+                ? Project::where('status', 'online')->orderBy('created_at', 'desc')->get(['title', 'description'])->toArray()
                 : [],
         ];
 

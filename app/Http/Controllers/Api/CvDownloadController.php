@@ -78,12 +78,12 @@ class CvDownloadController extends Controller
                 'summary'  => $user->summary ?? '',
                 'professional_title' => $user->professional_title ?? 'ICT Security Professional & Software Engineer',
             ],
-            'educations'     => Education::where('user_id', $user->id)->orderBy('sort_order')->get()->toArray(),
-            'certifications' => Certificate::where('user_id', $user->id)->orderBy('sort_order')->get()->toArray(),
-            'experiences'    => Experience::orderBy('sort_order')->get()->toArray(),
-            'skills'         => Skill::orderBy('level', 'desc')->get()->toArray(),
-            'languages'      => Language::where('user_id', $user->id)->orderBy('sort_order')->get()->toArray(),
-            'projects'       => Project::where('status', 'online')->orderBy('created_at', 'desc')->get()->toArray(),
+            'educations'     => Education::where('user_id', $user->id)->orderBy('sort_order')->get(['degree', 'school', 'year'])->toArray(),
+            'certifications' => Certificate::where('user_id', $user->id)->orderBy('sort_order')->get(['name', 'issuer'])->toArray(),
+            'experiences'    => Experience::orderBy('sort_order')->get(['role', 'company', 'date_range', 'description'])->toArray(),
+            'skills'         => Skill::orderBy('level', 'desc')->get(['name', 'category'])->toArray(),
+            'languages'      => Language::where('user_id', $user->id)->orderBy('sort_order')->get(['name', 'level'])->toArray(),
+            'projects'       => Project::where('status', 'online')->orderBy('created_at', 'desc')->get(['title', 'description'])->toArray(),
         ];
 
         // Generate PDF with selected template
