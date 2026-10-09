@@ -49,3 +49,6 @@
 ## 2026-09-23 - Pluck Specific Columns for Large Models
 **Learning:** Loading entire Eloquent models into memory (e.g., `Project::get()`) just to map a few fields (like `title` and `description`) for AI prompts or simple lists creates a massive memory footprint, especially if the models contain large text blobs or JSON fields (like `challenge`, `solution`, `gallery`).
 **Action:** Always pass an array of required columns to the `get()` method (e.g., `Project::get(['title', 'description'])`) when building aggregates or simple text mappings to drastically reduce memory usage and database transport time.
+## 2026-10-15 - Pluck Specific Columns for PDF/CV Generators
+**Learning:** Instantiating full Eloquent models for PDF/CV generation, especially models containing large text/JSON blobs like Projects, severely inflates memory usage.
+**Action:** When building aggregated data arrays to pass into heavy rendering facades like `Pdf::loadHtml()`, always append the specific required columns to the `get()` calls (e.g., `Project::get(['title', 'description'])`) to drastically minimize overhead and memory footprint.
