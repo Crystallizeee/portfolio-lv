@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2024-08-03 - Added missing focus rings to main navigation links
+**Learning:** Main navigation anchor links that rely purely on hover colors (`hover:text-cyan-400`) might completely lack visible focus indicators for keyboard navigation (`Tab`) if `focus-visible` classes aren't explicitly added. This is a subtle but critical accessibility flaw in many custom Tailwind navigation implementations.
+**Action:** Always verify that interactive elements, especially custom-styled anchors and buttons, have explicit `focus-visible` utility classes (e.g., `focus:outline-none focus-visible:ring-2`) to ensure a proper visual indicator for keyboard users.
