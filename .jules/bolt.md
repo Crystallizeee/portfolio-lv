@@ -49,3 +49,6 @@
 ## 2026-09-23 - Pluck Specific Columns for Large Models
 **Learning:** Loading entire Eloquent models into memory (e.g., `Project::get()`) just to map a few fields (like `title` and `description`) for AI prompts or simple lists creates a massive memory footprint, especially if the models contain large text blobs or JSON fields (like `challenge`, `solution`, `gallery`).
 **Action:** Always pass an array of required columns to the `get()` method (e.g., `Project::get(['title', 'description'])`) when building aggregates or simple text mappings to drastically reduce memory usage and database transport time.
+## 2026-10-05 - Pluck Specific Columns for Chatbot System Prompt Context
+**Learning:** Constructing the AI system prompt by retrieving entire Eloquent models for Experiences, Skills, Projects, Certificates, Languages, and Education forces Laravel to load unnecessary and large data fields (such as Project JSON galleries or heavy descriptions) into memory, spiking memory usage significantly.
+**Action:** Always verify the specific properties accessed by the application logic (e.g., inside `map()` closures) and pluck only those exact columns by passing them as an array to `get()` (e.g., `get(['col1', 'col2'])`) to optimize memory footprint and database overhead.
