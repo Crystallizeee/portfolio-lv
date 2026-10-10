@@ -37,3 +37,6 @@
 ## 2026-09-23 - ARIA Roles for Custom Toggle Switches
 **Learning:** Custom toggle buttons implemented with generic `<button>` tags and Alpine/Livewire state (e.g., "Show on Landing Page") are completely opaque to screen readers if they lack `role="switch"` and `aria-checked` attributes. Users hear "button" but have no idea it acts as a toggle or what its current state is.
 **Action:** Always add `role="switch"`, `aria-checked="true/false"`, and a descriptive `aria-label` to custom toggle buttons to ensure screen readers correctly interpret them as switches and announce their current state.
+## 2024-10-11 - Inline SVGs and External Links in Contact Cards
+**Learning:** Contact cards using complex inline SVGs (like GitHub or LinkedIn logos) without `aria-hidden="true"` cause screen readers to announce meaningless structural SVG data. Additionally, missing screen-reader-only text for `target="_blank"` links creates a disorienting experience when users are unexpectedly navigated away from the page.
+**Action:** Always verify that inline decorative SVGs have `aria-hidden="true"` and external links explicitly warn screen reader users with `<span class="sr-only">(opens in a new tab)</span>`, particularly on external portfolio links.
