@@ -1,4 +1,4 @@
-const CACHE_NAME = 'portfolio-pwa-v2';
+const CACHE_NAME = 'portfolio-pwa-v3';
 const STATIC_ASSETS = [
     '/manifest.json',
     '/favicon.ico',
@@ -60,5 +60,46 @@ self.addEventListener('fetch', (event) => {
     // Everything else: network-first
     event.respondWith(
         fetch(event.request).catch(() => caches.match(event.request))
+    );
+});
+
+// Web Push: show system notification on incoming push message
+self.addEventListener('push', (event) => {
+    if (!event.data) return;
+
+    let data = {};
+    try {
+        data = event.data.json();
+    } catch {
+        data = { title: 'New Post', body: event.data.text() };
+    }
+
+    const title = data.title || 'New Post Published';
+    const options = {
+        body: data.body || 'Check out the latest article.',
+        icon: data.icon || '/apple-touch-icon.png',
+        badge: data.badge || '/favicon.ico',
+        data: { url: data.url || '/blog' },
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Web Push: open article URL when user taps the notification
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const targetUrl = event.notification.data?.url || '/blog';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+            for (const client of clientList) {
+                if (client.url === targetUrl && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow(targetUrl);
+            }
+        })
     );
 });

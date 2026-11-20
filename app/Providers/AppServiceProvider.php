@@ -46,6 +46,14 @@ class AppServiceProvider extends ServiceProvider
             // Quietly fail if table doesn't exist yet
         }
 
+        \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
+            try {
+                $view->with('latestPostNotifications', \App\Models\Post::latestNotifications());
+            } catch (\Exception $e) {
+                $view->with('latestPostNotifications', []);
+            }
+        });
+
         // ── AI Chatbot Rate Limiters ──────────────────────────────────────────
         \Illuminate\Support\Facades\RateLimiter::for('chatbot-short', function (\Illuminate\Http\Request $request) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip())

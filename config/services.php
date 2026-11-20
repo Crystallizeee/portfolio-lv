@@ -67,4 +67,10 @@ return [
         'block_seconds' => (int) env('AI_CIRCUIT_BREAKER_BLOCK_SECONDS', 300),
     ],
 
+    'webpush' => [
+        'subject' => env('VAPID_SUBJECT', env('APP_URL')),
+        'public_key' => env('VAPID_PUBLIC_KEY'),
+        'private_key' => env('VAPID_PRIVATE_KEY'),
+    ],
+
 ];

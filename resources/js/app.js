@@ -265,6 +265,143 @@ document.addEventListener('alpine:init', () => {
             });
         }
     }));
+
+    // In-app + PWA Web Push New Post Notifications store
+    Alpine.store('postNotif', {
+        posts: [],
+        readIds: [],
+        dropdownOpen: false,
+        showToast: false,
+        latestPost: null,
+        pushSupported: false,
+        pushSubscribed: false,
+        pushBusy: false,
+
+        init() {
+            this.posts = Array.isArray(window.__latestPosts) ? window.__latestPosts : [];
+            try {
+                const stored = JSON.parse(localStorage.getItem('portfolio_read_posts') || '[]');
+                this.readIds = Array.isArray(stored) ? stored : [];
+            } catch {
+                this.readIds = [];
+            }
+
+            const currentPath = window.location.pathname;
+            for (const post of this.posts) {
+                try {
+                    if (new URL(post.url, window.location.origin).pathname === currentPath) {
+                        this.markAsRead(post.id);
+                    }
+                } catch {}
+            }
+
+            if (this.posts.length > 0) {
+                const latest = this.posts[0];
+                this.latestPost = latest;
+                const dismissedId = localStorage.getItem('portfolio_dismissed_toast_post_id');
+                if (this.isUnread(latest.id) && dismissedId !== String(latest.id)) {
+                    setTimeout(() => {
+                        this.showToast = true;
+                    }, 1500);
+                }
+            }
+
+            if ('serviceWorker' in navigator && 'PushManager' in window && window.__vapidPublicKey) {
+                this.pushSupported = true;
+                navigator.serviceWorker.ready
+                    .then((reg) => reg.pushManager.getSubscription())
+                    .then((sub) => {
+                        this.pushSubscribed = Boolean(sub);
+                    })
+                    .catch(() => {});
+            }
+        },
+
+        async togglePush() {
+            if (!this.pushSupported || this.pushBusy) return;
+            this.pushBusy = true;
+
+            try {
+                const reg = await navigator.serviceWorker.ready;
+                const existing = await reg.pushManager.getSubscription();
+
+                if (existing) {
+                    const endpoint = existing.endpoint;
+                    await existing.unsubscribe();
+                    await fetch('/api/push/unsubscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ endpoint }),
+                    });
+                    this.pushSubscribed = false;
+                } else {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') return;
+
+                    const sub = await reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: this.urlBase64ToUint8Array(window.__vapidPublicKey),
+                    });
+
+                    const res = await fetch('/api/push/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(sub.toJSON()),
+                    });
+
+                    if (res.ok) {
+                        this.pushSubscribed = true;
+                    }
+                }
+            } catch (e) {
+                console.error('Push subscription error:', e);
+            } finally {
+                this.pushBusy = false;
+            }
+        },
+
+        urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        },
+
+        isUnread(id) {
+            return !this.readIds.includes(id);
+        },
+
+        get unreadCount() {
+            return this.posts.filter((p) => this.isUnread(p.id)).length;
+        },
+
+        markAsRead(id) {
+            if (!this.readIds.includes(id)) {
+                this.readIds.push(id);
+                localStorage.setItem('portfolio_read_posts', JSON.stringify(this.readIds));
+            }
+            if (this.latestPost && this.latestPost.id === id) {
+                this.showToast = false;
+            }
+        },
+
+        markAllRead() {
+            this.readIds = Array.from(new Set([...this.readIds, ...this.posts.map((p) => p.id)]));
+            localStorage.setItem('portfolio_read_posts', JSON.stringify(this.readIds));
+            this.dismissToast();
+        },
+
+        dismissToast() {
+            this.showToast = false;
+            if (this.latestPost) {
+                localStorage.setItem('portfolio_dismissed_toast_post_id', String(this.latestPost.id));
+            }
+        }
+    });
 });
 
 // Global keyboard shortcut for command palette
