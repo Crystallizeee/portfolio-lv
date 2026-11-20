@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             // Quietly fail if table doesn't exist yet
         }
 
-        \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
+        \Illuminate\Support\Facades\View::composer(['layouts.app', 'components.layouts.app'], function ($view) {
             try {
                 $view->with('latestPostNotifications', \App\Models\Post::latestNotifications());
             } catch (\Exception $e) {

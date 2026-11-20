@@ -70,8 +70,10 @@
                     <a href="{{ route('home') }}#contact" class="text-slate-400 hover:text-cyan-400 transition-colors font-medium">Contact</a>
                 </div>
                 
-                <!-- Mobile Menu Button & Command Palette -->
-                <div class="flex items-center space-x-4">
+                <!-- Mobile Menu Button, Post Notifications & Command Palette -->
+                <div class="flex items-center space-x-3">
+                    @include('partials.post-notifications-bell')
+
                     <button 
                         @click="$dispatch('toggle-command-palette')"
                         class="hidden md:flex items-center space-x-2 px-3 py-1.5 glass-card text-xs text-slate-400 hover:text-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 transition-colors"
@@ -216,6 +218,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        window.__latestPosts = @json($latestPostNotifications ?? []);
+        window.__vapidPublicKey = @json(config('services.webpush.public_key'));
+    </script>
 
     @livewireScripts
     
@@ -382,6 +389,8 @@
             <span x-show="!hasInteracted && !isOpen" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[var(--color-cyber-dark)] animate-pulse"></span>
         </button>
     </div>
+
+    @include('partials.post-notifications-toast')
 
 </body>
 </html>
