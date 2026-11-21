@@ -44,6 +44,12 @@ class CvGenerator extends Component
             'icon' => 'crown',
             'color' => 'amber',
         ],
+        'ats' => [
+            'label' => 'ATS Friendly',
+            'description' => 'Plain single-column, no tables/icons. Best for job portals.',
+            'icon' => 'scan-text',
+            'color' => 'blue',
+        ],
     ];
 
     // Personal Info

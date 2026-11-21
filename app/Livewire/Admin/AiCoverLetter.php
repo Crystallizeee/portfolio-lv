@@ -2,26 +2,89 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
+use App\Models\Analytics;
+use App\Models\Certificate;
 use App\Models\Experience;
-use App\Models\Skill;
 use App\Models\Project;
+use App\Models\Skill;
+use App\Services\AiSecurityService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class AiCoverLetter extends Component
 {
+    use WithFileUploads;
+
     public $jobUrl = '';
     public $manualJobDescription = '';
+    public $screenshot;
+    public $signatureUpload;
+    public $language = 'id';
+    public $companyName = '';
+    public $jobTitle = '';
     public $coverLetter = '';
     public $isGenerating = false;
     public $errorMessage = '';
+    public $signatureSavedMessage = '';
 
-    protected $rules = [
-        'jobUrl' => 'nullable|url',
-        'manualJobDescription' => 'nullable|string',
-    ];
+    protected const SIGNATURE_PATH = 'cover-letter-signature.png';
+
+    protected function rules(): array
+    {
+        return [
+            'jobUrl' => 'nullable|url',
+            'manualJobDescription' => 'nullable|string',
+            'screenshot' => 'nullable|image|max:5120',
+            'language' => 'in:id,en',
+        ];
+    }
+
+    public function updatedSignatureUpload(): void
+    {
+        $this->validate([
+            'signatureUpload' => 'required|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ]);
+
+        Storage::disk('local')->put(
+            self::SIGNATURE_PATH,
+            file_get_contents($this->signatureUpload->getRealPath())
+        );
+
+        $this->signatureUpload = null;
+        $this->signatureSavedMessage = 'Tanda tangan berhasil disimpan.';
+    }
+
+    public function removeSignature(): void
+    {
+        Storage::disk('local')->delete(self::SIGNATURE_PATH);
+        $this->signatureSavedMessage = 'Tanda tangan dihapus.';
+    }
+
+    public function getHasSignatureProperty(): bool
+    {
+        return Storage::disk('local')->exists(self::SIGNATURE_PATH);
+    }
+
+    public function getSignaturePreviewUrlProperty(): ?string
+    {
+        if (! $this->hasSignature) {
+            return null;
+        }
+
+        $bytes = Storage::disk('local')->get(self::SIGNATURE_PATH);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = $finfo ? (finfo_buffer($finfo, $bytes) ?: 'image/png') : 'image/png';
+        if ($finfo) {
+            finfo_close($finfo);
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode($bytes);
+    }
 
     public function generate()
     {
@@ -34,11 +97,10 @@ class AiCoverLetter extends Component
         }
 
         RateLimiter::hit($throttleKey, 60);
-
         $this->validate();
 
-        if (empty($this->jobUrl) && empty($this->manualJobDescription)) {
-            $this->errorMessage = 'Please provide either a job URL or a manual job description.';
+        if (! $this->screenshot && empty($this->jobUrl) && empty($this->manualJobDescription)) {
+            $this->errorMessage = 'Upload screenshot loker, isi link loker, atau paste deskripsi pekerjaan.';
             return;
         }
 
@@ -47,47 +109,19 @@ class AiCoverLetter extends Component
         $this->coverLetter = '';
 
         try {
-            $apiKey  = config('services.ollama.key') ?? env('OLLAMA_API_KEY');
-            $baseUrl = config('services.ollama.base_url', 'https://api.ollama.com/v1');
-            $model   = config('services.ollama.model', 'llama3.2');
-
-            if (!$apiKey) {
-                throw new \Exception('Ollama API key not found. Please set OLLAMA_API_KEY in your .env file.');
-            }
-
-            // Gather CV Data
             $cvData = $this->gatherCvData();
-
-            // Construct Prompt
             $prompt = $this->constructPrompt($cvData);
 
-            // Call Ollama API (OpenAI-compatible)
-            $response = Http::withToken($apiKey)
-                ->withHeaders(['Content-Type' => 'application/json'])
-                ->timeout(30)
-                ->post("{$baseUrl}/chat/completions", [
-                    'model'    => $model,
-                    'messages' => [
-                        ['role' => 'user', 'content' => $prompt],
-                    ],
-                    'temperature' => 0.7,
-                    'max_tokens'  => 2048,
-                    'stream'      => false,
-                ]);
-
-            if ($response->failed()) {
-                $errBody = $response->json();
-                $errMsg  = $errBody['error']['message'] ?? $response->body();
-                throw new \Exception('Ollama API request failed: ' . $errMsg);
+            $geminiKey = config('services.gemini.key');
+            if ($this->screenshot && ! $geminiKey) {
+                throw new \Exception('GEMINI_API_KEY belum diset di .env untuk membaca screenshot loker.');
             }
 
-            $result = $response->json();
-            $rawContent = $result['choices'][0]['message']['content']
-                              ?? $result['message']['content']
-                              ?? 'Failed to generate cover letter.';
+            $rawJson = $geminiKey
+                ? $this->callGemini($geminiKey, $prompt)
+                : $this->callOllama($prompt);
 
-            $this->coverLetter = app(\App\Services\AiSecurityService::class)->sanitizeOutput($rawContent);
-
+            $this->applyGeneratedPayload($rawJson);
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
             Log::error('AI Cover Letter Generation Error: ' . $e->getMessage());
@@ -96,34 +130,193 @@ class AiCoverLetter extends Component
         }
     }
 
-    protected function gatherCvData()
+    protected function callGemini(string $apiKey, string $prompt): string
     {
-        // ⚡ Bolt Optimization: Only select the required columns instead of loading the entire models into memory. 
-        // This dramatically reduces memory usage, especially since Projects have large text fields (challenge, solution, results) and JSON galleries.
-        $experiences = Experience::orderBy('sort_order')->get(['role', 'company', 'description'])->map(fn($e) => "- {$e->role} at {$e->company}: {$e->description}")->implode("\n");
-        $skills = Skill::orderBy('level', 'desc')->get(['name', 'level'])->map(fn($s) => "- {$s->name} ({$s->level}%)")->implode(", ");
-        $projects = Project::where('status', 'online')->get(['title', 'description'])->map(fn($p) => "- {$p->title}: {$p->description}")->implode("\n");
+        $parts = [['text' => $prompt]];
+
+        if ($this->screenshot) {
+            $bytes = file_get_contents($this->screenshot->getRealPath());
+            $mime = $this->screenshot->getMimeType() ?: 'image/png';
+            $parts[] = [
+                'inline_data' => [
+                    'mime_type' => $mime,
+                    'data' => base64_encode($bytes),
+                ],
+            ];
+        }
+
+        $response = Http::timeout(45)->post(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}",
+            [
+                'contents' => [['parts' => $parts]],
+                'generationConfig' => [
+                    'temperature' => 0.6,
+                    'maxOutputTokens' => 2048,
+                    'responseMimeType' => 'application/json',
+                ],
+            ]
+        );
+
+        if ($response->failed()) {
+            $errMsg = $response->json('error.message') ?? $response->body();
+            throw new \Exception('Gemini API error: ' . $errMsg);
+        }
+
+        return $response->json('candidates.0.content.parts.0.text')
+            ?? throw new \Exception('Gemini mengembalikan respons kosong.');
+    }
+
+    protected function callOllama(string $prompt): string
+    {
+        $apiKey = config('services.ollama.key');
+        $baseUrl = config('services.ollama.base_url', 'https://ollama.com/v1');
+        $model = config('services.ollama.model', 'gemma4:31b');
+
+        if (! $apiKey) {
+            throw new \Exception('GEMINI_API_KEY dan OLLAMA_API_KEY tidak ditemukan di .env.');
+        }
+
+        $response = Http::withToken($apiKey)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->timeout(45)
+            ->post("{$baseUrl}/chat/completions", [
+                'model' => $model,
+                'messages' => [['role' => 'user', 'content' => $prompt]],
+                'temperature' => 0.7,
+                'max_tokens' => 2048,
+                'stream' => false,
+            ]);
+
+        if ($response->failed()) {
+            $errMsg = $response->json('error.message') ?? $response->body();
+            throw new \Exception('Ollama API error: ' . $errMsg);
+        }
+
+        return $response->json('choices.0.message.content')
+            ?? $response->json('message.content')
+            ?? throw new \Exception('Ollama mengembalikan respons kosong.');
+    }
+
+    protected function applyGeneratedPayload(string $raw): void
+    {
+        $security = app(AiSecurityService::class);
+        $cleaned = preg_replace('/^```(?:json)?\s*|\s*```$/m', '', trim($raw));
+        $decoded = json_decode($cleaned, true);
+
+        if (is_array($decoded) && ! empty($decoded['body'])) {
+            $this->companyName = trim((string) ($decoded['company_name'] ?? ''));
+            $this->jobTitle = trim((string) ($decoded['job_title'] ?? ''));
+            $this->coverLetter = $security->sanitizeOutput((string) $decoded['body']);
+            return;
+        }
+
+        $this->coverLetter = $security->sanitizeOutput($raw);
+    }
+
+    public function downloadPdf()
+    {
+        if (empty(trim($this->coverLetter))) {
+            $this->errorMessage = 'Generate atau isi cover letter terlebih dahulu sebelum export PDF.';
+            return;
+        }
+
+        $user = auth()->user();
+        $lang = $this->language === 'en' ? 'en' : 'id';
+
+        if ($lang === 'id') {
+            \Carbon\Carbon::setLocale('id');
+            $date = now()->translatedFormat('d F Y');
+        } else {
+            $date = now()->format('F d, Y');
+        }
+
+        $pdf = Pdf::loadHtml(view('pdf.cover-letter', [
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'address' => $user->address,
+            'linkedin' => $user->linkedin,
+            'website' => $user->website,
+            'companyName' => $this->companyName,
+            'jobTitle' => $this->jobTitle,
+            'body' => $this->coverLetter,
+            'language' => $lang,
+            'date' => $date,
+            'signatureDataUri' => $this->signaturePreviewUrl,
+        ])->render())->setPaper('a4', 'portrait');
+
+        Analytics::track($user->id, 'cover_letter_pdf_download');
+
+        $slug = \Illuminate\Support\Str::slug(
+            trim($this->companyName . '-' . $this->jobTitle) ?: 'application',
+            '_'
+        );
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, "Cover_Letter_{$slug}.pdf");
+    }
+
+    protected function gatherCvData(): array
+    {
+        $experiences = Experience::orderBy('sort_order')
+            ->get(['role', 'company', 'date_range', 'description'])
+            ->map(fn ($e) => "- {$e->role} at {$e->company} ({$e->date_range}): {$e->description}")
+            ->implode("\n");
+
+        $skills = Skill::orderBy('level', 'desc')
+            ->get(['name', 'category'])
+            ->map(fn ($s) => $s->category ? "{$s->name} ({$s->category})" : $s->name)
+            ->implode(', ');
+
+        $projects = Project::where('status', 'online')
+            ->get(['title', 'description'])
+            ->map(fn ($p) => "- {$p->title}: " . strip_tags((string) $p->description))
+            ->implode("\n");
+
+        $certificates = Certificate::where('user_id', auth()->id())
+            ->orderBy('sort_order')
+            ->get(['name', 'issuer'])
+            ->map(fn ($c) => $c->issuer ? "{$c->name} ({$c->issuer})" : $c->name)
+            ->implode(', ');
 
         return [
             'name' => auth()->user()->name,
             'experiences' => $experiences,
             'skills' => $skills,
             'projects' => $projects,
+            'certificates' => $certificates,
         ];
     }
 
-    protected function constructPrompt($cvData)
+    protected function constructPrompt(array $cvData): string
     {
-        $sanitizedJobDescription = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->manualJobDescription);
-        $sanitizedJobUrl = app(\App\Services\AiSecurityService::class)->sanitizeInput($this->jobUrl);
-        $jobContext = $sanitizedJobDescription ?: "Job link: {$sanitizedJobUrl}";
+        $security = app(AiSecurityService::class);
+        $sanitizedDesc = $security->sanitizeInput((string) $this->manualJobDescription);
+        $sanitizedUrl = $security->sanitizeInput((string) $this->jobUrl);
 
-        return "
-You are a professional hiring consultant. Your task is to write a compelling cover letter based on the user's CV data and a job description (or link provided).
+        $jobContextParts = [];
+        if ($this->screenshot) {
+            $jobContextParts[] = 'Read the attached job vacancy screenshot carefully for company name, role, and requirements.';
+        }
+        if ($sanitizedDesc) {
+            $jobContextParts[] = "Job description:\n{$sanitizedDesc}";
+        }
+        if ($sanitizedUrl) {
+            $jobContextParts[] = "Job link: {$sanitizedUrl}";
+        }
+        $jobContext = implode("\n\n", $jobContextParts);
 
-USER CV DATA:
+        $langInstruction = $this->language === 'en'
+            ? "Write in natural, professional English. Start with 'Dear Hiring Team,' (or specific company/recipient)."
+            : "Write in natural, formal Indonesian. Start with 'Yth. Tim Rekrutmen PT [Nama Perusahaan],' (or 'Yth. Tim Hiring,' if company name is unknown).";
+
+        return "You are a professional career consultant. Write a tailored 1-page cover letter matching the candidate's CV data to the job requirements.
+
+CANDIDATE CV DATA:
 Name: {$cvData['name']}
 Skills: {$cvData['skills']}
+Certifications: {$cvData['certificates']}
 Experiences:
 {$cvData['experiences']}
 Key Projects:
@@ -132,14 +325,12 @@ Key Projects:
 JOB CONTEXT:
 {$jobContext}
 
-STRICT GUIDELINES:
-1. Start the letter with 'Yth. Tim Hiring PT [Nama Perusahaan yang relevan dari konteks]'. If company name is not found, use 'Yth. Tim Hiring'.
-2. The content must be in Indonesian.
-3. Align the user's skills and experiences with the job requirements mentioned in the context.
-4. Keep it professional, concise, and persuasive.
-5. DO NOT include a signature or 'Sincerely' at the end. End with the final paragraph.
-6. Return ONLY the content of the cover letter.
-";
+GUIDELINES:
+1. {$langInstruction}
+2. Highlight only relevant experiences, technical skills, and certifications that directly match the job requirements.
+3. Keep it concise (3-4 tight paragraphs) so it fits cleanly on a single A4 page.
+4. DO NOT include any closing ('Hormat saya', 'Sincerely') or signature/name at the end — the PDF template adds those automatically.
+5. Return ONLY valid JSON with keys: \"company_name\" (string), \"job_title\" (string), \"body\" (string with paragraphs separated by double newlines \\n\\n).";
     }
 
     public function render()

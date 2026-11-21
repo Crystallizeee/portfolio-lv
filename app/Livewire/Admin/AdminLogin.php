@@ -39,8 +39,8 @@ class AdminLogin extends Component
 
             $user = Auth::user();
 
-            // If user has 2FA enabled, redirect to the TOTP challenge page
-            if ($user->hasTwoFactorEnabled()) {
+            // If user has 2FA enabled (and not skipped via config), redirect to the TOTP challenge page
+            if (! config('auth.skip_2fa', false) && $user->hasTwoFactorEnabled()) {
                 // Clear any stale 2FA verification from previous sessions
                 session()->forget('two_factor_verified');
 
