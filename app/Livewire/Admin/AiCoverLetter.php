@@ -11,6 +11,7 @@ use App\Services\AiSecurityService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -23,6 +24,8 @@ class AiCoverLetter extends Component
     public $jobUrl = '';
     public $manualJobDescription = '';
     public $screenshot;
+    public $driveScreenshotPath = '';
+    public $driveScreenshotName = '';
     public $signatureUpload;
     public $language = 'id';
     public $companyName = '';
@@ -30,6 +33,7 @@ class AiCoverLetter extends Component
     public $coverLetter = '';
     public $isGenerating = false;
     public $errorMessage = '';
+    public $driveStatusMessage = '';
     public $signatureSavedMessage = '';
 
     protected const SIGNATURE_PATH = 'cover-letter-signature.png';
@@ -63,6 +67,100 @@ class AiCoverLetter extends Component
     {
         Storage::disk('local')->delete(self::SIGNATURE_PATH);
         $this->signatureSavedMessage = 'Tanda tangan dihapus.';
+    }
+
+    public function getIsRcloneConfiguredProperty(): bool
+    {
+        return ! empty(trim((string) config('services.rclone.remote')));
+    }
+
+    protected function rcloneRemoteBase(): string
+    {
+        $remote = rtrim(trim((string) config('services.rclone.remote')), ':');
+        $basePath = trim((string) config('services.rclone.cover_letter_path', 'Automation/Project Cover Letter'), '/');
+
+        return "{$remote}:{$basePath}";
+    }
+
+    public function fetchLatestFromDrive(): void
+    {
+        $this->errorMessage = '';
+        $this->driveStatusMessage = '';
+
+        if (! $this->isRcloneConfigured) {
+            $this->errorMessage = 'RCLONE_REMOTE belum diset di .env.';
+            return;
+        }
+
+        $bin = (string) config('services.rclone.bin', 'rclone');
+        $screenshootDir = $this->rcloneRemoteBase() . '/Screenshoot';
+
+        $list = Process::timeout(30)->run([$bin, 'lsjson', $screenshootDir, '--files-only']);
+        if (! $list->successful()) {
+            $this->errorMessage = 'Gagal membaca folder GDrive via rclone: ' . trim($list->errorOutput() ?: $list->output());
+            return;
+        }
+
+        $items = json_decode($list->output(), true);
+        if (! is_array($items)) {
+            $this->errorMessage = 'Respons rclone lsjson tidak valid.';
+            return;
+        }
+
+        $images = array_values(array_filter($items, function ($item) {
+            $name = strtolower((string) ($item['Name'] ?? ''));
+            return preg_match('/\.(png|jpe?g|webp)$/', $name) === 1;
+        }));
+
+        if (empty($images)) {
+            $this->errorMessage = 'Tidak ada file screenshot gambar di folder Screenshoot GDrive.';
+            return;
+        }
+
+        usort($images, fn ($a, $b) => strcmp((string) ($b['ModTime'] ?? ''), (string) ($a['ModTime'] ?? '')));
+        $latest = $images[0]['Name'];
+        $ext = strtolower(pathinfo($latest, PATHINFO_EXTENSION)) ?: 'png';
+        $localRelPath = "cover-letter-drive-screenshot.{$ext}";
+
+        Storage::disk('local')->makeDirectory('.');
+        $localAbsPath = Storage::disk('local')->path($localRelPath);
+
+        $copy = Process::timeout(45)->run([$bin, 'copyto', "{$screenshootDir}/{$latest}", $localAbsPath]);
+        if (! $copy->successful() || ! file_exists($localAbsPath)) {
+            $this->errorMessage = 'Gagal mengunduh screenshot dari GDrive: ' . trim($copy->errorOutput() ?: $copy->output());
+            return;
+        }
+
+        $this->screenshot = null;
+        $this->driveScreenshotPath = $localRelPath;
+        $this->driveScreenshotName = $latest;
+        $this->driveStatusMessage = "Screenshot diambil dari GDrive: {$latest}";
+    }
+
+    public function clearDriveScreenshot(): void
+    {
+        if ($this->driveScreenshotPath) {
+            Storage::disk('local')->delete($this->driveScreenshotPath);
+        }
+        $this->driveScreenshotPath = '';
+        $this->driveScreenshotName = '';
+        $this->driveStatusMessage = '';
+    }
+
+    public function getDriveScreenshotPreviewUrlProperty(): ?string
+    {
+        if (! $this->driveScreenshotPath || ! Storage::disk('local')->exists($this->driveScreenshotPath)) {
+            return null;
+        }
+
+        $bytes = Storage::disk('local')->get($this->driveScreenshotPath);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = $finfo ? (finfo_buffer($finfo, $bytes) ?: 'image/png') : 'image/png';
+        if ($finfo) {
+            finfo_close($finfo);
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode($bytes);
     }
 
     public function getHasSignatureProperty(): bool
@@ -99,8 +197,8 @@ class AiCoverLetter extends Component
         RateLimiter::hit($throttleKey, 60);
         $this->validate();
 
-        if (! $this->screenshot && empty($this->jobUrl) && empty($this->manualJobDescription)) {
-            $this->errorMessage = 'Upload screenshot loker, isi link loker, atau paste deskripsi pekerjaan.';
+        if (! $this->screenshot && ! $this->hasDriveScreenshot() && empty($this->jobUrl) && empty($this->manualJobDescription)) {
+            $this->errorMessage = 'Upload screenshot loker, ambil dari GDrive, isi link loker, atau paste deskripsi pekerjaan.';
             return;
         }
 
@@ -113,7 +211,7 @@ class AiCoverLetter extends Component
             $prompt = $this->constructPrompt($cvData);
 
             $geminiKey = config('services.gemini.key');
-            if ($this->screenshot && ! $geminiKey) {
+            if (($this->screenshot || $this->hasDriveScreenshot()) && ! $geminiKey) {
                 throw new \Exception('GEMINI_API_KEY belum diset di .env untuk membaca screenshot loker.');
             }
 
@@ -130,6 +228,11 @@ class AiCoverLetter extends Component
         }
     }
 
+    protected function hasDriveScreenshot(): bool
+    {
+        return ! empty($this->driveScreenshotPath) && Storage::disk('local')->exists($this->driveScreenshotPath);
+    }
+
     protected function callGemini(string $apiKey, string $prompt): string
     {
         $parts = [['text' => $prompt]];
@@ -137,6 +240,19 @@ class AiCoverLetter extends Component
         if ($this->screenshot) {
             $bytes = file_get_contents($this->screenshot->getRealPath());
             $mime = $this->screenshot->getMimeType() ?: 'image/png';
+            $parts[] = [
+                'inline_data' => [
+                    'mime_type' => $mime,
+                    'data' => base64_encode($bytes),
+                ],
+            ];
+        } elseif ($this->hasDriveScreenshot()) {
+            $bytes = Storage::disk('local')->get($this->driveScreenshotPath);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = $finfo ? (finfo_buffer($finfo, $bytes) ?: 'image/png') : 'image/png';
+            if ($finfo) {
+                finfo_close($finfo);
+            }
             $parts[] = [
                 'inline_data' => [
                     'mime_type' => $mime,
@@ -213,13 +329,8 @@ class AiCoverLetter extends Component
         $this->coverLetter = $security->sanitizeOutput($raw);
     }
 
-    public function downloadPdf()
+    protected function buildPdf(): array
     {
-        if (empty(trim($this->coverLetter))) {
-            $this->errorMessage = 'Generate atau isi cover letter terlebih dahulu sebelum export PDF.';
-            return;
-        }
-
         $user = auth()->user();
         $lang = $this->language === 'en' ? 'en' : 'id';
 
@@ -245,16 +356,62 @@ class AiCoverLetter extends Component
             'signatureDataUri' => $this->signaturePreviewUrl,
         ])->render())->setPaper('a4', 'portrait');
 
-        Analytics::track($user->id, 'cover_letter_pdf_download');
-
         $slug = \Illuminate\Support\Str::slug(
             trim($this->companyName . '-' . $this->jobTitle) ?: 'application',
             '_'
         );
 
+        return [$pdf, "Cover_Letter_{$slug}.pdf"];
+    }
+
+    public function downloadPdf()
+    {
+        if (empty(trim($this->coverLetter))) {
+            $this->errorMessage = 'Generate atau isi cover letter terlebih dahulu sebelum export PDF.';
+            return;
+        }
+
+        [$pdf, $filename] = $this->buildPdf();
+        Analytics::track(auth()->id(), 'cover_letter_pdf_download');
+
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
-        }, "Cover_Letter_{$slug}.pdf");
+        }, $filename);
+    }
+
+    public function savePdfToDrive(): void
+    {
+        $this->errorMessage = '';
+        $this->driveStatusMessage = '';
+
+        if (! $this->isRcloneConfigured) {
+            $this->errorMessage = 'RCLONE_REMOTE belum diset di .env.';
+            return;
+        }
+
+        if (empty(trim($this->coverLetter))) {
+            $this->errorMessage = 'Generate atau isi cover letter terlebih dahulu sebelum upload ke GDrive.';
+            return;
+        }
+
+        [$pdf, $filename] = $this->buildPdf();
+        $localRelPath = "tmp-{$filename}";
+        Storage::disk('local')->put($localRelPath, $pdf->output());
+        $localAbsPath = Storage::disk('local')->path($localRelPath);
+
+        $bin = (string) config('services.rclone.bin', 'rclone');
+        $dest = $this->rcloneRemoteBase() . "/Output/{$filename}";
+
+        $upload = Process::timeout(45)->run([$bin, 'copyto', $localAbsPath, $dest]);
+        Storage::disk('local')->delete($localRelPath);
+
+        if (! $upload->successful()) {
+            $this->errorMessage = 'Gagal upload PDF ke GDrive: ' . trim($upload->errorOutput() ?: $upload->output());
+            return;
+        }
+
+        Analytics::track(auth()->id(), 'cover_letter_pdf_gdrive_upload');
+        $this->driveStatusMessage = "PDF tersimpan di GDrive: Output/{$filename}";
     }
 
     protected function gatherCvData(): array
@@ -296,7 +453,7 @@ class AiCoverLetter extends Component
         $sanitizedUrl = $security->sanitizeInput((string) $this->jobUrl);
 
         $jobContextParts = [];
-        if ($this->screenshot) {
+        if ($this->screenshot || $this->hasDriveScreenshot()) {
             $jobContextParts[] = 'Read the attached job vacancy screenshot carefully for company name, role, and requirements.';
         }
         if ($sanitizedDesc) {

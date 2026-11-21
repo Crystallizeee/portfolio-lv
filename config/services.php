@@ -73,4 +73,10 @@ return [
         'private_key' => env('VAPID_PRIVATE_KEY'),
     ],
 
+    'rclone' => [
+        'bin' => env('RCLONE_BIN', 'rclone'),
+        'remote' => env('RCLONE_REMOTE', ''),
+        'cover_letter_path' => env('RCLONE_COVER_LETTER_PATH', 'Automation/Project Cover Letter'),
+    ],
+
 ];

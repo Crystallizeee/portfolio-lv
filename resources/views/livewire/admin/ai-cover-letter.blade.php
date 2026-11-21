@@ -24,14 +24,30 @@
             <div class="space-y-6">
                 <!-- Screenshot Upload -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">
-                        Screenshot Loker (Opsional - PNG/JPG)
-                    </label>
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <label class="block text-sm font-medium text-slate-400">
+                            Screenshot Loker (Opsional - PNG/JPG)
+                        </label>
+                        @if($this->isRcloneConfigured)
+                            <button type="button" wire:click="fetchLatestFromDrive" wire:loading.attr="disabled"
+                                    class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-medium text-cyan-300 transition-all flex items-center space-x-1.5">
+                                <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i>
+                                <span wire:loading.remove wire:target="fetchLatestFromDrive">Ambil Terbaru dari GDrive</span>
+                                <span wire:loading wire:target="fetchLatestFromDrive">Mengambil...</span>
+                            </button>
+                        @endif
+                    </div>
                     <div class="flex flex-col sm:flex-row gap-4 items-start">
                         <label class="flex-1 w-full cursor-pointer border border-dashed border-slate-700 hover:border-cyan-500/60 bg-slate-900/40 rounded-xl p-4 transition-all flex items-center justify-center space-x-3">
                             <i data-lucide="image-plus" class="w-5 h-5 text-cyan-400 shrink-0"></i>
                             <span class="text-sm text-slate-300 truncate">
-                                {{ $screenshot ? $screenshot->getClientOriginalName() : 'Pilih atau drop screenshot requirement loker...' }}
+                                @if($screenshot)
+                                    {{ $screenshot->getClientOriginalName() }}
+                                @elseif($driveScreenshotName)
+                                    GDrive: {{ $driveScreenshotName }}
+                                @else
+                                    Pilih atau drop screenshot requirement loker...
+                                @endif
                             </span>
                             <input type="file" wire:model="screenshot" accept="image/*" class="hidden">
                         </label>
@@ -41,9 +57,18 @@
                                 <button type="button" wire:click="$set('screenshot', null)"
                                         class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-500 text-white text-xs flex items-center justify-center">×</button>
                             </div>
+                        @elseif($this->driveScreenshotPreviewUrl)
+                            <div class="relative shrink-0">
+                                <img src="{{ $this->driveScreenshotPreviewUrl }}" alt="GDrive Preview" class="h-16 w-24 object-cover rounded-lg border border-cyan-500/40">
+                                <button type="button" wire:click="clearDriveScreenshot"
+                                        class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-rose-500 text-white text-xs flex items-center justify-center">×</button>
+                            </div>
                         @endif
                     </div>
                     <div wire:loading wire:target="screenshot" class="text-xs text-cyan-400 mt-1">Mengunggah screenshot...</div>
+                    @if($driveStatusMessage)
+                        <div class="text-xs text-emerald-400 mt-1.5">{{ $driveStatusMessage }}</div>
+                    @endif
                 </div>
 
                 <!-- Job URL -->
@@ -146,6 +171,14 @@
                         <i data-lucide="file-down" class="w-4 h-4"></i>
                         <span>Download PDF</span>
                     </button>
+                    @if($this->isRcloneConfigured)
+                        <button type="button" wire:click="savePdfToDrive" wire:loading.attr="disabled"
+                                class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 shadow-lg shadow-cyan-500/20">
+                            <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                            <span wire:loading.remove wire:target="savePdfToDrive">Simpan ke GDrive</span>
+                            <span wire:loading wire:target="savePdfToDrive">Mengunggah...</span>
+                        </button>
+                    @endif
                 </div>
             </div>
 
