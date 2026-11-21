@@ -69,6 +69,69 @@ class AiCoverLetter extends Component
         $this->signatureSavedMessage = 'Tanda tangan dihapus.';
     }
 
+    public function fetchSignatureFromDrive(): void
+    {
+        $this->errorMessage = '';
+        $this->signatureSavedMessage = '';
+
+        if (! $this->isRcloneConfigured) {
+            $this->errorMessage = 'RCLONE_REMOTE belum diset di .env.';
+            return;
+        }
+
+        $bin = (string) config('services.rclone.bin', 'rclone');
+        $assetDir = $this->rcloneRemoteBase() . '/Asset';
+
+        $list = Process::timeout(30)->run([$bin, 'lsjson', $assetDir, '--files-only']);
+        if (! $list->successful()) {
+            $this->errorMessage = 'Gagal membaca folder Asset GDrive: ' . trim($list->errorOutput() ?: $list->output());
+            return;
+        }
+
+        $items = json_decode($list->output(), true);
+        if (! is_array($items)) {
+            $this->errorMessage = 'Respons rclone lsjson tidak valid.';
+            return;
+        }
+
+        $images = array_values(array_filter($items, function ($item) {
+            $name = strtolower((string) ($item['Name'] ?? ''));
+            return preg_match('/\.(png|jpe?g|webp)$/', $name) === 1;
+        }));
+
+        if (empty($images)) {
+            $this->errorMessage = 'Tidak ada gambar TTD di folder Asset GDrive.';
+            return;
+        }
+
+        usort($images, function ($a, $b) {
+            $aName = strtolower((string) ($a['Name'] ?? ''));
+            $bName = strtolower((string) ($b['Name'] ?? ''));
+            $aScore = (str_contains($aName, 'signature') || str_contains($aName, 'ttd') ? 2 : 0)
+                + (str_ends_with($aName, '.png') ? 1 : 0);
+            $bScore = (str_contains($bName, 'signature') || str_contains($bName, 'ttd') ? 2 : 0)
+                + (str_ends_with($bName, '.png') ? 1 : 0);
+
+            if ($aScore !== $bScore) {
+                return $bScore <=> $aScore;
+            }
+
+            return strcmp((string) ($b['ModTime'] ?? ''), (string) ($a['ModTime'] ?? ''));
+        });
+
+        $picked = $images[0]['Name'];
+        Storage::disk('local')->makeDirectory('.');
+        $localAbsPath = Storage::disk('local')->path(self::SIGNATURE_PATH);
+
+        $copy = Process::timeout(45)->run([$bin, 'copyto', "{$assetDir}/{$picked}", $localAbsPath]);
+        if (! $copy->successful() || ! file_exists($localAbsPath)) {
+            $this->errorMessage = 'Gagal mengunduh TTD dari GDrive: ' . trim($copy->errorOutput() ?: $copy->output());
+            return;
+        }
+
+        $this->signatureSavedMessage = "TTD diambil dari GDrive: {$picked}";
+    }
+
     public function getIsRcloneConfiguredProperty(): bool
     {
         return ! empty(trim((string) config('services.rclone.remote')));

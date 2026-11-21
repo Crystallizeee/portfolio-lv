@@ -115,6 +115,13 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0">
+                        @if($this->isRcloneConfigured)
+                            <button type="button" wire:click="fetchSignatureFromDrive" wire:loading.attr="disabled"
+                                    class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs text-cyan-300 transition-colors">
+                                <span wire:loading.remove wire:target="fetchSignatureFromDrive">Ambil dari GDrive</span>
+                                <span wire:loading wire:target="fetchSignatureFromDrive">Mengambil...</span>
+                            </button>
+                        @endif
                         <label class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 cursor-pointer transition-colors">
                             <span>{{ $this->hasSignature ? 'Ganti TTD' : 'Upload TTD' }}</span>
                             <input type="file" wire:model="signatureUpload" accept="image/png,image/jpeg,image/webp" class="hidden">
