@@ -1,4 +1,8 @@
-<x-layouts.app>
+<x-layouts.app
+    title="Blog & Cybersecurity Writeups | Benidictus Tri Wibowo"
+    description="Artikel, panduan teknis, dan catatan seputar Cybersecurity, Blue Team, Linux Forensics, Homelab Proxmox, dan Laravel."
+    :canonical_url="route('blog.index')"
+>
     <div class="pt-32 pb-20 relative overflow-hidden">
         <!-- Background Decorations -->
         <div class="absolute top-20 left-1/4 w-96 h-96 bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none"></div>

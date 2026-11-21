@@ -13,3 +13,6 @@ Schedule::command('analytics:purge-visits')->dailyAt('03:00');
 
 // Auto-sync cybersec profiles (TryHackMe & LetsDefend) daily at 04:00 AM
 Schedule::command('cybersec:sync')->dailyAt('04:00');
+
+// Auto-regenerate sitemap daily at 02:00 AM
+Schedule::command('sitemap:generate')->dailyAt('02:00');

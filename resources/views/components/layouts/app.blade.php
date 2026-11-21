@@ -7,12 +7,13 @@
         $globalSeo = \Illuminate\Support\Facades\Cache::remember('global_seo_metadata', 86400, function () {
             return \App\Models\SeoMetadata::where('model_type', 'global')->first();
         });
-        $seoTitle = $title ?? $globalSeo?->title ?? 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional';
-        $seoDescription = $description ?? $globalSeo?->description ?? 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security';
-        $seoKeywords = $keywords ?? $globalSeo?->keywords ?? 'cybersecurity, grc, penetration testing, laravel';
-        $seoImage = $og_image ?? $globalSeo?->og_image ?? asset('images/og-default.jpg');
-        $seoCanonical = $canonical_url ?? $globalSeo?->canonical_url ?? url()->current();
+        $seoTitle = ($title ?? null) ?: ($globalSeo?->title ?: 'Benidictus Tri Wibowo | Cybersecurity & ICT Risk Professional');
+        $seoDescription = ($description ?? null) ?: ($globalSeo?->description ?: 'Hybrid GRC & Technical Practitioner specializing in ISO 27001 and Offensive Security');
+        $seoKeywords = ($keywords ?? null) ?: ($globalSeo?->keywords ?: 'cybersecurity, grc, penetration testing, laravel');
+        $seoImage = ($og_image ?? null) ?: ($globalSeo?->og_image ?: asset('images/og-default.jpg'));
+        $seoCanonical = ($canonical_url ?? null) ?: ($globalSeo?->canonical_url ?: url()->current());
         $seoIndex = $globalSeo?->indexable ?? true;
+        $seoOgType = ($og_type ?? (isset($attributes) ? $attributes->get('og_type') : null)) ?: 'website';
     @endphp
 
     <title>{{ $seoTitle }}</title>
@@ -22,7 +23,7 @@
     <link rel="canonical" href="{{ $seoCanonical }}">
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{{ $seoOgType }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="{{ $seoTitle }}">
     <meta property="og:description" content="{{ $seoDescription }}">
@@ -48,6 +49,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
+    @include('partials.jsonld-website')
+    @stack('structured-data')
 </head>
 <body class="bg-[var(--color-cyber-dark)] text-slate-300 antialiased scanline-effect">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-white focus:rounded-lg focus:outline-none">Skip to content</a>

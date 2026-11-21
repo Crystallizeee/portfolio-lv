@@ -4,8 +4,8 @@
     '@context' => 'https://schema.org',
     '@type' => 'SoftwareSourceCode',
     'name' => $project->title,
-    'description' => $project->seo?->description ?? $project->description,
-    'url' => route('projects.show', $project),
+    'description' => $project->seo?->description ?: $project->description,
+    'url' => route('projects.show', $project->slug ?: $project->id),
     'dateModified' => $project->updated_at->toIso8601String(),
     'programmingLanguage' => $project->tech_stack ?? [],
     'author' => [
@@ -15,7 +15,7 @@
     ],
     'mainEntityOfPage' => [
         '@type' => 'WebPage',
-        '@id' => route('projects.show', $project),
+        '@id' => route('projects.show', $project->slug ?: $project->id),
     ],
 ] + ($project->url ? ['codeRepository' => $project->url] : []),
 JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}

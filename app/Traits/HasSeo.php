@@ -13,12 +13,12 @@ trait HasSeo
 
     public function getSeoTitleAttribute()
     {
-        return $this->seo?->title ?? $this->title ?? $this->name ?? config('app.name');
+        return ($this->seo?->title ?: null) ?? $this->title ?? $this->name ?? config('app.name');
     }
 
     public function getSeoDescriptionAttribute()
     {
-        return $this->seo?->description ?? $this->description ?? $this->summary ?? '';
+        return ($this->seo?->description ?: null) ?? $this->description ?? $this->summary ?? '';
     }
 
     public function getSeoImageAttribute()
@@ -76,7 +76,7 @@ trait HasSeo
             '@type' => 'SoftwareSourceCode',
             'name' => $this->title,
             'description' => $this->seo_description,
-            'url' => route('projects.show', $this),
+            'url' => route('projects.show', $this->slug ?: $this->id),
             'author' => [
                 '@type' => 'Person',
                 'name' => 'Benidictus Tri Wibowo',

@@ -18,6 +18,11 @@ class ProjectController extends Controller
             abort(404);
         }
 
+        // 301 redirect numeric ID or non-canonical slug to canonical slug URL for SEO
+        if ($project->slug && $slug !== $project->slug) {
+            return redirect()->route('projects.show', $project->slug, 301);
+        }
+
         return view('projects.show', compact('project'));
     }
 }

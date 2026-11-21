@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin*
-Disallow: /livewire*
-Disallow: /storage*
+Disallow: /admin
+Disallow: /livewire
+Disallow: /mcp
 
-Sitemap: https://great-x-attach.xyz/sitemap.xml
+Sitemap: https://benidictus.my.id/sitemap.xml

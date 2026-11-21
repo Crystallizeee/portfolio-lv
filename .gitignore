@@ -40,3 +40,6 @@ sourceoftruth.md
 agent.md
 public/debug-cv.pdf
 source_of_truth.md
+
+# Generated dynamically on production
+/public/sitemap.xml

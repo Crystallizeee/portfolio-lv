@@ -1,10 +1,18 @@
 <x-layouts.app 
-    :title="$post->title" 
-    :description="$post->excerpt ?? Str::limit(strip_tags(Str::markdown($post->content)), 160)"
-    :og_image="$post->featured_image ? $post->featured_image : route('og-image', ['type' => 'post', 'slug' => $post->slug])"
+    :title="$post->seo?->title ?: $post->title" 
+    :description="$post->seo?->description ?: ($post->excerpt ?: Str::limit(strip_tags(Str::markdown($post->content)), 160))"
+    :keywords="$post->seo?->keywords ?: null"
+    :og_image="$post->seo?->og_image ?: ($post->featured_image ?: route('og-image', ['type' => 'post', 'slug' => $post->slug]))"
+    :canonical_url="$post->seo?->canonical_url ?: route('blog.show', $post->slug)"
     og_type="article"
 >
-    @include('partials.jsonld-blogposting', ['post' => $post])
+    @if($post->seo?->schema_markup)
+        @push('structured-data')
+            {!! $post->seo->getJsonLd() !!}
+        @endpush
+    @else
+        @include('partials.jsonld-blogposting', ['post' => $post])
+    @endif
 
     <!-- Progress Bar -->
     <div x-data="{ width: '0%' }" x-on:scroll.window="width = ((window.scrollY) / (document.body.scrollHeight - window.innerHeight) * 100) + '%'" class="fixed top-0 left-0 h-1 bg-cyan-500 z-[60]" :style="`width: ${width}`"></div>

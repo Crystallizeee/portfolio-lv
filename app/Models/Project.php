@@ -34,7 +34,7 @@ class Project extends Model implements Sitemapable
     ];
     public function toSitemapTag(): \Spatie\Sitemap\Tags\Url | string | array
     {
-        return \Spatie\Sitemap\Tags\Url::create(route('projects.show', $this))
+        return \Spatie\Sitemap\Tags\Url::create(route('projects.show', $this->slug ?: $this->id))
             ->setLastModificationDate($this->updated_at)
             ->setChangeFrequency(\Spatie\Sitemap\Tags\Url::CHANGE_FREQUENCY_WEEKLY)
             ->setPriority(0.8);

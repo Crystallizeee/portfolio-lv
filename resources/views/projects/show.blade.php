@@ -1,7 +1,9 @@
 <x-layouts.app 
-    :title="$project->seo?->title ?? $project->title" 
-    :description="$project->seo?->description ?? $project->description"
-    :keywords="$project->seo?->keywords"
+    :title="($project->seo?->title ?: $project->title) . ' | Benidictus Tri Wibowo'" 
+    :description="$project->seo?->description ?: \Illuminate\Support\Str::limit(strip_tags($project->description ?? ''), 160)"
+    :keywords="$project->seo?->keywords ?: null"
+    :og_image="$project->seo?->og_image ?: null"
+    :canonical_url="route('projects.show', $project->slug ?: $project->id)"
 >
     @include('partials.jsonld-project', ['project' => $project])
 

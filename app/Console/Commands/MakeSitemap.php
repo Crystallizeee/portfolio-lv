@@ -19,12 +19,12 @@ class MakeSitemap extends Command
 
         $sitemap = Sitemap::create()
             // Homepage
-            ->add(Url::create('/')
+            ->add(Url::create(route('home'))
                 ->setLastModificationDate(now())
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
                 ->setPriority(1.0))
             // Blog index
-            ->add(Url::create('/blog')
+            ->add(Url::create(route('blog.index'))
                 ->setLastModificationDate(Post::published()->latest('published_at')->first()?->published_at ?? now())
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                 ->setPriority(0.9));
@@ -42,8 +42,9 @@ class MakeSitemap extends Command
                 );
             });
 
-        // Projects
-        Project::all()->each(function ($project) use ($sitemap) {
+        // Online projects only
+        $projects = Project::where('status', 'online')->get();
+        $projects->each(function ($project) use ($sitemap) {
             $sitemap->add($project->toSitemapTag());
         });
 
@@ -53,6 +54,6 @@ class MakeSitemap extends Command
         $this->info('  - Homepage');
         $this->info('  - Blog index');
         $this->info('  - ' . Post::published()->count() . ' blog posts');
-        $this->info('  - ' . Project::count() . ' projects');
+        $this->info('  - ' . $projects->count() . ' online projects');
     }
 }
